@@ -6,6 +6,8 @@
 # V2X-ROS-Driver
 V2X-ROS-Driver is the driver for use with V2X radios and had been tested with the following OBUs: Cohda (MK5/MK6C/MK6), Commsignia, Kapsch. It implements the communication interface allowing UPER-encoded SAE J2735 communication to be exposed to a ROS network using [carma_driver_msgs/msg/ByteArray](https://github.com/usdot-fhwa-stol/carma-msgs/blob/develop/carma_driver_msgs/msg/ByteArray.msg). It has been tested with SAE J2735 2016 but can support later versions as well.
 
+This fork of the driver has been tested in Ros2 Jazzy with Ubuntu 24.04 using a Commsignia OBU, enabled C2P on server 192.168.0.10 and UDP port number 7943. IFM was also enabled seperately with default settings. 
+
 For more information regarding the recommended setup/configuration for an OBU, please refer to this [documentation](/docs/).
 
 Runtime usage and expected behavior are documented in:

@@ -1,0 +1,64 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from j2735_v2x_msgs/msg/TrafficControlBounds.msg
+// generated code does not contain a copyright notice
+
+#include "j2735_v2x_msgs/msg/OffsetPoint.idl"
+
+module j2735_v2x_msgs {
+  module msg {
+    typedef j2735_v2x_msgs::msg::OffsetPoint j2735_v2x_msgs__msg__OffsetPoint;
+    typedef j2735_v2x_msgs__msg__OffsetPoint j2735_v2x_msgs__msg__OffsetPoint__3[3];
+    module TrafficControlBounds_Constants {
+      const int32 REFLON_MAX = 1800000000;
+      const int32 REFLON_MIN = -1799999999;
+      const int32 REFLON_UNAVAILABLE = 1800000001;
+      const int32 REFLAT_MAX = 900000000;
+      const int32 REFLAT_MIN = -900000000;
+      const int32 REFLAT_UNAVAILABLE = 900000001;
+    };
+    @verbatim (language="comment", text=
+      "TrafficControlBounds.msg" "\n"
+      "" "\n"
+      "Part of the CARMA Cloud geo-fence specification not part of the official SAE j2735 standard" "\n"
+      "" "\n"
+      "J2735 2016 message format." "\n"
+      "" "\n"
+      "" "\n"
+      "@version 0.1" "\n"
+      "" "\n"
+      "Description" "\n"
+      "...")
+    struct TrafficControlBounds {
+      @verbatim (language="comment", text=
+        "TrafficControlBounds ::= SEQUENCE" "\n"
+        "{" "\n"
+        " oldest EpochMins, -- timestamp of oldest traffic control message within bounds" "\n"
+        " reflon Longitude, -- initial vertex reference longitude" "\n"
+        " reflat Latitude, -- initial vertex reference latitude" "\n"
+        " offsets SEQUENCE (SIZE(3)) OF OffsetPoint -- relative vertex positions in scaled meters" "\n"
+        "}" "\n"
+        "oldest ::= EpochMins")
+      uint64 oldest;
+
+      @verbatim (language="comment", text=
+        "reflon ::= INTEGER (-1799999999..1800000000)" "\n"
+        " -- initial vertex reference longitude" "\n"
+        " -- LSB = 1/10 micro degree" "\n"
+        " -- Providing a range of plus-minus 180 degrees" "\n"
+        " -- Convert to degree with factor 0.0000001 when field is used")
+      int32 reflon;
+
+      @verbatim (language="comment", text=
+        "reflat ::= INTEGER (-900000000..900000000)" "\n"
+        " -- initial vertex reference latitude" "\n"
+        " -- LSB = 1/10 micro degree" "\n"
+        " -- Providing a range of plus-minus 90 degrees" "\n"
+        " -- Convert to degree with factor 0.0000001 when field is used")
+      int32 reflat;
+
+      @verbatim (language="comment", text=
+        "offsets ::= SEQUENCE (SIZE(3)) OF OffsetPoint")
+      j2735_v2x_msgs__msg__OffsetPoint__3 offsets;
+    };
+  };
+};

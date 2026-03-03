@@ -1,0 +1,105 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from j2735_v2x_msgs/msg/ComputedLane.msg
+// generated code does not contain a copyright notice
+
+#include "j2735_v2x_msgs/msg/OffsetXaxis.idl"
+#include "j2735_v2x_msgs/msg/OffsetYaxis.idl"
+
+module j2735_v2x_msgs {
+  module msg {
+    module ComputedLane_Constants {
+      const uint16 ROTATEXY_INVALID = 255;
+    };
+    @verbatim (language="comment", text=
+      "NodeListXY.msg" "\n"
+      "" "\n"
+      "J2735 2016 message format." "\n"
+      "" "\n"
+      "@author Mae Fromm" "\n"
+      "@version 0.1" "\n"
+      "" "\n"
+      "ComputedLane ::= SEQUENCE {" "\n"
+      "-- Data needed to created a computed lane" "\n"
+      "referenceLaneId LaneID," "\n"
+      " -- the lane ID upon which this" "\n"
+      " -- computed lane will be based" "\n"
+      " -- Lane Offset in X and Y direction" "\n"
+      "offsetXaxis CHOICE {" "\n"
+      "  small DrivenLineOffsetSm," "\n"
+      "  large DrivenLineOffsetLg" "\n"
+      "  }," "\n"
+      "offsetYaxis CHOICE {" "\n"
+      "  small DrivenLineOffsetSm," "\n"
+      "  large DrivenLineOffsetLg" "\n"
+      "  }," "\n"
+      " -- A path X offset value for translations of the" "\n"
+      " -- path's points when creating translated lanes." "\n"
+      " -- The values found in the reference lane are" "\n"
+      " -- all offset based on the X and Y values from" "\n"
+      " -- the coordinates of the reference lane's" "\n"
+      " -- initial path point." "\n"
+      "" "\n"
+      "-- Lane Rotation" "\n"
+      "rotateXY Angle OPTIONAL," "\n"
+      " -- A path rotation value for the entire lane" "\n"
+      " -- Observe that this rotates the existing orientation" "\n"
+      " -- of the referenced lane, it does not replace it." "\n"
+      " -- Rotation occurs about the initial path point." "\n"
+      "-- Lane Path Scale (zooming)" "\n"
+      "scaleXaxis Scale-B12 OPTIONAL," "\n"
+      "scaleYaxis Scale-B12 OPTIONAL," "\n"
+      " -- value for translations or zooming of the path's" "\n"
+      " -- points. The values found in the reference lane" "\n"
+      " -- are all expanded or contracted based on the X" "\n"
+      " -- and Y and width values from the coordinates of" "\n"
+      " -- the reference lane's initial path point." "\n"
+      " -- The Z axis remains untouched." "\n"
+      "regional SEQUENCE (SIZE(1..4)) OF RegionalExtension {{REGION.Reg-ComputedLane}} OPTIONAL," "\n"
+      "..." "\n"
+      "}")
+    struct ComputedLane {
+      @verbatim (language="comment", text=
+        "LaneID ::= INTEGER (0..255)" "\n"
+        "-- the value 0 shall be used when the lane ID is" "\n"
+        "-- not available or not known" "\n"
+        "-- the value 255 is reserved for future use")
+      uint16 reference_lane_id;
+
+      @verbatim (language="comment", text=
+        "The DrivenLineOffsetSmall data element is an integer value expressing the offset in a defined axis from a reference" "\n"
+        "lane number from which a computed lane is offset." "\n"
+        "DrivenLineOffsetSm ::= INTEGER (-2047..2047)" "\n"
+        "-- LSB units are 1 cm." "\n"
+        "The DE_DrivenLineOffsetLarge data element is an integer value expressing the offset in a defined axis from a" "\n"
+        "reference lane number from which a computed lane is offset." "\n"
+        "DrivenLineOffsetLg ::= INTEGER (-32767..32767)" "\n"
+        "-- LSB units are 1 cm.")
+      j2735_v2x_msgs::msg::OffsetXaxis offset_x_axis;
+
+      j2735_v2x_msgs::msg::OffsetYaxis offset_y_axis;
+
+      @verbatim (language="comment", text=
+        "Angle ::= INTEGER (0..239)" "\n"
+        " -- Unsigned units of 1.5 degree, in 1 octet" "\n"
+        " -- the true north is 0, positive is clockwise" "\n"
+        " -- the values 240 to 254 shall not be sent" "\n"
+        " -- the value 255 (0xFF) indicates an invalid value" "\n"
+        "NOTE: use invalid value to indicate unavailability as well.")
+      uint16 rotate_xy;
+
+      boolean rotatexy_exists;
+
+      @verbatim (language="comment", text=
+        "Scale-B12 ::= INTEGER (-2048..2047)" "\n"
+        "A 12-bit signed scaling factor supporting scales from zero (which is not used) to >200%." "\n"
+        "In this data element, the value zero is taken to represent a value of one (scale 1:1).")
+      int16 scale_x_axis;
+
+      boolean scale_x_axis_exists;
+
+      int16 scale_y_axis;
+
+      boolean scale_y_axis_exists;
+    };
+  };
+};

@@ -1,0 +1,36 @@
+{
+  "type_description_msg": {
+    "type_description": {
+      "type_name": "j2735_v2x_msgs/msg/NodeXY28b",
+      "fields": [
+        {
+          "name": "x",
+          "type": {
+            "type_id": 10,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": ""
+          },
+          "default_value": ""
+        },
+        {
+          "name": "y",
+          "type": {
+            "type_id": 10,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": ""
+          },
+          "default_value": ""
+        }
+      ]
+    },
+    "referenced_type_descriptions": []
+  },
+  "type_hashes": [
+    {
+      "type_name": "j2735_v2x_msgs/msg/NodeXY28b",
+      "hash_string": "RIHS01_82d50a595f16bde668da2bc0522c23bab1ff1fad2375a94e63e3bdb666d9cd43"
+    }
+  ]
+}

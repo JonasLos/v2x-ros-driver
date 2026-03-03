@@ -1,0 +1,44 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from j2735_v2x_msgs/msg/SpeedConfidence.msg
+// generated code does not contain a copyright notice
+
+
+module j2735_v2x_msgs {
+  module msg {
+    module SpeedConfidence_Constants {
+      const uint8 UNAVAILABLE = 0;
+      const uint8 PREC100MS = 1;
+      const uint8 PREC10MS = 2;
+      const uint8 PREC5MS = 3;
+      const uint8 PREC1MS = 4;
+      const uint8 PREC0_1MS = 5;
+      const uint8 PREC0_05MS = 6;
+      const uint8 PREC0_01MS = 7;
+    };
+    @verbatim (language="comment", text=
+      "SpeedConfidence.msg" "\n"
+      "" "\n"
+      "J2735 2016 message format." "\n"
+      "" "\n"
+      "@author Mae Fromm" "\n"
+      "@version 0.1" "\n"
+      "" "\n"
+      "The DE_SpeedConfidence data element is used to provide the 95% confidence level for the currently reported" "\n"
+      "value of DE_Speed, taking into account the current calibration and precision of the sensor(s) used to measure and/or" "\n"
+      "calculate the value.")
+    struct SpeedConfidence {
+      @verbatim (language="comment", text=
+        "SpeedConfidence ::= ENUMERATED {" "\n"
+        "unavailable (0), -- Not Equipped or unavailable" "\n"
+        "prec100ms (1), -- 100 meters / sec" "\n"
+        "prec10ms(2), -- 10 meters / sec" "\n"
+        "prec5ms (3), -- 5 meters / sec" "\n"
+        "prec1ms (4), -- 1 meters / sec" "\n"
+        "prec0-1ms (5), -- 0.1 meters / sec" "\n"
+        "prec0-05ms (6), -- -- 0.05 meters / sec" "\n"
+        "prec0-01ms (7) -- -- 0.01 meters / sec" "\n"
+        "}")
+      uint8 speed_confidence;
+    };
+  };
+};

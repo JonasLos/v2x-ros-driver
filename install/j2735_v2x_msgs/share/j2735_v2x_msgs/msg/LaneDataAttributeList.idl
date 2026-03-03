@@ -1,0 +1,24 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from j2735_v2x_msgs/msg/LaneDataAttributeList.msg
+// generated code does not contain a copyright notice
+
+#include "j2735_v2x_msgs/msg/LaneDataAttribute.idl"
+
+module j2735_v2x_msgs {
+  module msg {
+    @verbatim (language="comment", text=
+      "LaneDataAttributeList.msg" "\n"
+      "" "\n"
+      "J2735 2016 message format." "\n"
+      "" "\n"
+      "@author Mae Fromm" "\n"
+      "@version 0.1" "\n"
+      "" "\n"
+      "The LaneDataAttributeList data frame consists of a list of LaneDataAttribute entries." "\n"
+      "" "\n"
+      "LaneDataAttributeList ::= SEQUENCE (SIZE(1..8)) OF LaneDataAttribute")
+    struct LaneDataAttributeList {
+      sequence<j2735_v2x_msgs::msg::LaneDataAttribute> lane_attribute_list;
+    };
+  };
+};

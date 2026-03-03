@@ -146,18 +146,22 @@ void V2XRadioClient::process(const std::shared_ptr<const std::vector<uint8_t>> &
     // Check if data is empty or smaller than the minimum required bytes
     if (entry.empty() || entry.size() < 3)
     {
-        RCLCPP_WARN_STREAM(logger_, "Received empty or insufficient data, nothing to process.");
+        RCLCPP_DEBUG_STREAM(logger_, "Received empty or insufficient data, nothing to process.");
         return;
     }
+
+    bool saw_valid_msg_id = false;
+    bool saw_incomplete_or_mismatch = false;
 
     for (size_t i = 0; i < entry.size() - 3; i++)
     {   // Leave 3 bytes after (for lsb of id, length byte 1, and either message body or length byte 2)
         // Generate a 16-bit message id from two bytes, e.g. [0 20 ...] = 0x0014, skip if it isn't a valid one
         auto msg_id = (static_cast<uint16_t>(entry[i]) << 8) | static_cast<uint16_t>(entry[i + 1]);
         if (!IsValidMsgID(std::to_string(msg_id))) { continue; }
+        saw_valid_msg_id = true;
 
         if ((i + short_frame_) >= entry.size()) {
-            break; // Break if not enough data remaining
+            continue;
         }
 
         auto start_index = i;
@@ -166,13 +170,33 @@ void V2XRadioClient::process(const std::shared_ptr<const std::vector<uint8_t>> &
         // TODO lengths greater than 16383 (0x3FFF) are encoded by splitting up the message into discrete chunks, each with its own length
         // marker. It doesn't look like we'll be receiving anything that long
         if (msg_vec.size() > 16383) {
-            RCLCPP_WARN_STREAM(logger_, "V2XRadioClient::process() : discarding received message with length field longer than 16383.");
-            break;
+            saw_incomplete_or_mismatch = true;
+            continue;
         }
 
+        // Determine message boundaries from MessageFrame length field. This allows valid payload extraction
+        // even when non-J2735 bytes trail the frame in the same UDP datagram.
+        size_t frame_len = short_frame_;
+        uint16_t payload_size = 0;
+
+        if (msg_vec.size() >= static_cast<size_t>(long_frame_) && (msg_vec[2] & 0x80)) {
+            frame_len = long_frame_;
+            payload_size = (static_cast<uint16_t>(msg_vec[2] & 0x7F) << 8) | msg_vec[3];
+        } else {
+            payload_size = msg_vec[2];
+        }
+
+        size_t total_msg_size = frame_len + payload_size;
+        if (payload_size == 0 || total_msg_size > msg_vec.size()) {
+            saw_incomplete_or_mismatch = true;
+            continue;
+        }
+
+        std::vector<uint8_t> extracted_msg(entry.begin() + start_index, entry.begin() + start_index + total_msg_size);
+
         // Second check for a valid message. Checks MessageFrame length field against actual payload size.
-        if (!isValidMsgSize(msg_vec, start_index, entry)) {
-            RCLCPP_WARN_STREAM(logger_, "Size in possible MessageFrame does not match actual data size. Checking rest of data.");
+        if (!isValidMsgSize(extracted_msg, 0, extracted_msg)) {
+            saw_incomplete_or_mismatch = true;
             continue;
         }
 
@@ -183,12 +207,17 @@ void V2XRadioClient::process(const std::shared_ptr<const std::vector<uint8_t>> &
                              !isValidMsgAssumingBSMPSID(start_index, entry);
 
         if (shouldProcess) {
-            onMessageReceived(msg_vec, msg_id);
+            onMessageReceived(extracted_msg, msg_id);
             break;
         } else {
-            RCLCPP_WARN_STREAM(logger_, "PSID found, parsing rest of data for MessageID.");
+            saw_incomplete_or_mismatch = true;
             continue;
         }
+    }
+
+    if (saw_valid_msg_id && saw_incomplete_or_mismatch)
+    {
+        RCLCPP_DEBUG_STREAM(logger_, "Received UDP datagram with valid MessageID candidates but no complete publishable frame.");
     }
 }
 

@@ -1,0 +1,26 @@
+{
+  "type_description_msg": {
+    "type_description": {
+      "type_name": "j2735_v2x_msgs/msg/TrafficControlVehClass",
+      "fields": [
+        {
+          "name": "vehicle_class",
+          "type": {
+            "type_id": 3,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": ""
+          },
+          "default_value": ""
+        }
+      ]
+    },
+    "referenced_type_descriptions": []
+  },
+  "type_hashes": [
+    {
+      "type_name": "j2735_v2x_msgs/msg/TrafficControlVehClass",
+      "hash_string": "RIHS01_243da39e707266ec58b1720cf23a4bd94c10c3d0627476aecb9fd48c5e072785"
+    }
+  ]
+}

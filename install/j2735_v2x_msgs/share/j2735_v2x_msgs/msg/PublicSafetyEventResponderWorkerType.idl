@@ -1,0 +1,41 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from j2735_v2x_msgs/msg/PublicSafetyEventResponderWorkerType.msg
+// generated code does not contain a copyright notice
+
+
+module j2735_v2x_msgs {
+  module msg {
+    module PublicSafetyEventResponderWorkerType_Constants {
+      const uint8 UNAVAILABLE = 0;
+      const uint8 TOW_OPERATOR = 1;
+      const uint8 FIRE_EMS_WORKER = 2;
+      const uint8 ADOT_WORKER = 3;
+      const uint8 LAW_ENFORCEMENT = 4;
+      const uint8 HAZMAT_RESPONDER = 5;
+      const uint8 ANIMAL_CONTROL_WORKER = 6;
+      const uint8 OTHER_PERSONNEL = 7;
+    };
+    @verbatim (language="comment", text=
+      "PublicSafetyEventResponderWorkerType.msg" "\n"
+      "" "\n"
+      "J2735 2016 message format." "\n"
+      "" "\n"
+      "Parsed description of PublicSafetyDirectingTrafficSubType from the SAE J2735 2016 specification." "\n"
+      "For further usage details consult the specification." "\n"
+      "" "\n"
+      "PublicSafetyEventResponderWorkerType ::= ENUMERATED { " "\n"
+      "   unavailable               (0)," "\n"
+      "   towOperater               (1)," "\n"
+      "   fireAndEMSWorker          (2)," "\n"
+      "   aDOTWorker                (3)," "\n"
+      "   lawEnforcement            (4)," "\n"
+      "   hazmatResponder           (5), -- also any toxicSubstanceCleanupCrew" "\n"
+      "   animalControlWorker       (6)," "\n"
+      "   otherPersonnel            (7)," "\n"
+      "   ..." "\n"
+      "   }")
+    struct PublicSafetyEventResponderWorkerType {
+      uint8 type;
+    };
+  };
+};

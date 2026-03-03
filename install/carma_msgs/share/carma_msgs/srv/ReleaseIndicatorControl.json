@@ -1,0 +1,260 @@
+{
+  "type_description_msg": {
+    "type_description": {
+      "type_name": "carma_msgs/srv/ReleaseIndicatorControl",
+      "fields": [
+        {
+          "name": "request_message",
+          "type": {
+            "type_id": 1,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": "carma_msgs/srv/ReleaseIndicatorControl_Request"
+          },
+          "default_value": ""
+        },
+        {
+          "name": "response_message",
+          "type": {
+            "type_id": 1,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": "carma_msgs/srv/ReleaseIndicatorControl_Response"
+          },
+          "default_value": ""
+        },
+        {
+          "name": "event_message",
+          "type": {
+            "type_id": 1,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": "carma_msgs/srv/ReleaseIndicatorControl_Event"
+          },
+          "default_value": ""
+        }
+      ]
+    },
+    "referenced_type_descriptions": [
+      {
+        "type_name": "builtin_interfaces/msg/Time",
+        "fields": [
+          {
+            "name": "sec",
+            "type": {
+              "type_id": 6,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "nanosec",
+            "type": {
+              "type_id": 7,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "carma_msgs/msg/LightBarCDAType",
+        "fields": [
+          {
+            "name": "type",
+            "type": {
+              "type_id": 3,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "carma_msgs/msg/LightBarIndicator",
+        "fields": [
+          {
+            "name": "indicator",
+            "type": {
+              "type_id": 3,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "carma_msgs/srv/ReleaseIndicatorControl_Event",
+        "fields": [
+          {
+            "name": "info",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "service_msgs/msg/ServiceEventInfo"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "request",
+            "type": {
+              "type_id": 97,
+              "capacity": 1,
+              "string_capacity": 0,
+              "nested_type_name": "carma_msgs/srv/ReleaseIndicatorControl_Request"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "response",
+            "type": {
+              "type_id": 97,
+              "capacity": 1,
+              "string_capacity": 0,
+              "nested_type_name": "carma_msgs/srv/ReleaseIndicatorControl_Response"
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "carma_msgs/srv/ReleaseIndicatorControl_Request",
+        "fields": [
+          {
+            "name": "ind_list",
+            "type": {
+              "type_id": 145,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "carma_msgs/msg/LightBarIndicator"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "cda_list",
+            "type": {
+              "type_id": 145,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "carma_msgs/msg/LightBarCDAType"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "requester_name",
+            "type": {
+              "type_id": 17,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "carma_msgs/srv/ReleaseIndicatorControl_Response",
+        "fields": [
+          {
+            "name": "structure_needs_at_least_one_member",
+            "type": {
+              "type_id": 3,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "service_msgs/msg/ServiceEventInfo",
+        "fields": [
+          {
+            "name": "event_type",
+            "type": {
+              "type_id": 3,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "stamp",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "builtin_interfaces/msg/Time"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "client_gid",
+            "type": {
+              "type_id": 51,
+              "capacity": 16,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "sequence_number",
+            "type": {
+              "type_id": 8,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      }
+    ]
+  },
+  "type_hashes": [
+    {
+      "type_name": "carma_msgs/srv/ReleaseIndicatorControl",
+      "hash_string": "RIHS01_09ac7293fb9752ab8f0324485f34cf71d94532400b82f88d161af027ced33fd3"
+    },
+    {
+      "type_name": "builtin_interfaces/msg/Time",
+      "hash_string": "RIHS01_b106235e25a4c5ed35098aa0a61a3ee9c9b18d197f398b0e4206cea9acf9c197"
+    },
+    {
+      "type_name": "carma_msgs/msg/LightBarCDAType",
+      "hash_string": "RIHS01_9e9e49fc39bec26aea7a24fe01dbfe9eb71759c992b1180445f889b82c4b738c"
+    },
+    {
+      "type_name": "carma_msgs/msg/LightBarIndicator",
+      "hash_string": "RIHS01_e9e9b8a69a032f35104665fb2520f6dac867c95aeaae1f332b903342e8cafe8c"
+    },
+    {
+      "type_name": "carma_msgs/srv/ReleaseIndicatorControl_Event",
+      "hash_string": "RIHS01_cc7f6bf4120d48a3b9b9fa92bcdeed23222a35f24af34822a59f17ebbc20f1a0"
+    },
+    {
+      "type_name": "carma_msgs/srv/ReleaseIndicatorControl_Request",
+      "hash_string": "RIHS01_aa91a8bfc2ff66889c7cc54038929cc96097e3a880207da083ee9c6bb07ebf7e"
+    },
+    {
+      "type_name": "carma_msgs/srv/ReleaseIndicatorControl_Response",
+      "hash_string": "RIHS01_20d2b5f0d2821d07fae78bfe91adfb6131cd30b10dc3e94fc56cd77e1a993fb2"
+    },
+    {
+      "type_name": "service_msgs/msg/ServiceEventInfo",
+      "hash_string": "RIHS01_41bcbbe07a75c9b52bc96bfd5c24d7f0fc0a08c0cb7921b3373c5732345a6f45"
+    }
+  ]
+}

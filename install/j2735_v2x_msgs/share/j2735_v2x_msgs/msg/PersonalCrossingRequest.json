@@ -1,0 +1,26 @@
+{
+  "type_description_msg": {
+    "type_description": {
+      "type_name": "j2735_v2x_msgs/msg/PersonalCrossingRequest",
+      "fields": [
+        {
+          "name": "cross_request",
+          "type": {
+            "type_id": 15,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": ""
+          },
+          "default_value": ""
+        }
+      ]
+    },
+    "referenced_type_descriptions": []
+  },
+  "type_hashes": [
+    {
+      "type_name": "j2735_v2x_msgs/msg/PersonalCrossingRequest",
+      "hash_string": "RIHS01_e2e43550589ff5a1bd340f381aec7201a46ca5af6b354d56ecd2718ba84b0d47"
+    }
+  ]
+}

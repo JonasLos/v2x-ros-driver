@@ -1,0 +1,46 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from j2735_v2x_msgs/msg/LaneAttributesVehicle.msg
+// generated code does not contain a copyright notice
+
+
+module j2735_v2x_msgs {
+  module msg {
+    module LaneAttributesVehicle_Constants {
+      const uint8 ISVEHICLEREVOCABLELANE = 0;
+      const uint8 ISVEHICLEFLYOVERLANE = 1;
+      const uint8 HOVLANEUSEONLY = 2;
+      const uint8 RESTRICTEDTOBUSUSE = 3;
+      const uint8 RESTRICTEDTOTAXIUSE = 4;
+      const uint8 RESTRICTEDFROMPUBLICUSE = 5;
+      const uint8 HASIRBEACONCOVERAGE = 6;
+      const uint8 PERMISSIONONREQUEST = 7;
+    };
+    @verbatim (language="comment", text=
+      "LaneAttributesVehicle.msg" "\n"
+      "" "\n"
+      "J2735 2016 message format." "\n"
+      "" "\n"
+      "@author Mae Fromm" "\n"
+      "@version 0.1" "\n"
+      "" "\n"
+      "LaneAttributes-Vehicle ::= BIT STRING {" "\n"
+      "-- With bits as defined:" "\n"
+      "isVehicleRevocableLane (0)," "\n"
+      "      -- this lane may be activated or not based" "\n"
+      "      -- on the current SPAT message contents" "\n"
+      "      -- if not asserted, the lane is ALWAYS present" "\n"
+      "isVehicleFlyOverLane (1)," "\n"
+      "      -- path of lane is not at grade" "\n"
+      "hovLaneUseOnly (2)," "\n"
+      "restrictedToBusUse (3)," "\n"
+      "restrictedToTaxiUse(4)," "\n"
+      "restrictedFromPublicUse (5)," "\n"
+      "hasIRbeaconCoverage(6)," "\n"
+      "permissionOnRequest(7)" "\n"
+      "      -- e.g. to inform about a lane for e-cars" "\n"
+      "} (SIZE (8,...))")
+    struct LaneAttributesVehicle {
+      uint8 lane_attributes_vehicle;
+    };
+  };
+};

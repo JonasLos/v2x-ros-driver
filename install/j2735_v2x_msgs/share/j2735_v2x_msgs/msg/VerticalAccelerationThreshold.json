@@ -1,0 +1,26 @@
+{
+  "type_description_msg": {
+    "type_description": {
+      "type_name": "j2735_v2x_msgs/msg/VerticalAccelerationThreshold",
+      "fields": [
+        {
+          "name": "exceeded_wheels",
+          "type": {
+            "type_id": 3,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": ""
+          },
+          "default_value": ""
+        }
+      ]
+    },
+    "referenced_type_descriptions": []
+  },
+  "type_hashes": [
+    {
+      "type_name": "j2735_v2x_msgs/msg/VerticalAccelerationThreshold",
+      "hash_string": "RIHS01_5cd99da55803c5b859217ecec8f55a3decc6cabb500041f8d33a2ed205245fbc"
+    }
+  ]
+}

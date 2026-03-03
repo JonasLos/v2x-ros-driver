@@ -1,0 +1,63 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from j2735_v2x_msgs/msg/ObstacleDetection.msg
+// generated code does not contain a copyright notice
+
+#include "j2735_v2x_msgs/msg/DDateTime.idl"
+#include "j2735_v2x_msgs/msg/ITISGenericLocations.idl"
+#include "j2735_v2x_msgs/msg/ITIScodes.idl"
+#include "j2735_v2x_msgs/msg/ObstacleDirection.idl"
+#include "j2735_v2x_msgs/msg/ObstacleDistance.idl"
+#include "j2735_v2x_msgs/msg/VerticalAccelerationThreshold.idl"
+
+module j2735_v2x_msgs {
+  module msg {
+    module ObstacleDetection_Constants {
+      const uint16 HAS_DESCRIPTION = 1;
+      const uint16 HAS_LOCATION_DETAILS = 2;
+      const uint16 HAS_VERT_EVENT = 4;
+      const uint16 DESCRIPTION_MIN = 523;
+      const uint16 DESCRIPTION_MAX = 541;
+    };
+    @verbatim (language="comment", text=
+      "ObstacleDetection.msg" "\n"
+      "" "\n"
+      "J2735 2016 message format.")
+    struct ObstacleDetection {
+      @verbatim (language="comment", text=
+        "ObstacleDetection ::= SEQUENCE {" "\n"
+        "   obDist          ObstacleDistance,        -- Obstacle Distance" "\n"
+        "   obDirect        ObstacleDirection,       -- Obstacle Direction" "\n"
+        "   description     ITIS.ITIScodes(523..541) OPTIONAL," "\n"
+        "                                            -- Uses a limited set of ITIS codes" "\n"
+        "   locationDetails ITIS.GenericLocations OPTIONAL," "\n"
+        "   dateTime        DDateTime,               -- Time detected" "\n"
+        "   vertEvent       VerticalAccelerationThreshold OPTIONAL," "\n"
+        "                                            -- Any wheels which have" "\n"
+        "                                            -- exceeded the acceleration point" "\n"
+        "   ..." "\n"
+        "   }" "\n"
+        "A BIT STRING defining the presence of optional fields." "\n"
+        "Compare with bitwise-and" "\n"
+        "if (presence_vector & HAS_DESCRIPTION) etc." "\n"
+        "Create with bitwise-or" "\n"
+        "presence_vector = presence_vector | HAS_DESCRIPTION")
+      uint16 presence_vector;
+
+      j2735_v2x_msgs::msg::ObstacleDistance ob_dist;
+
+      j2735_v2x_msgs::msg::ObstacleDirection ob_direct;
+
+      j2735_v2x_msgs::msg::DDateTime date_time;
+
+      @verbatim (language="comment", text=
+        "OPTIONAL FIELDS" "\n"
+        "All fields below this section are optional." "\n"
+        "The presence of a given field can be idenfied by checking the presence_vector")
+      j2735_v2x_msgs::msg::ITIScodes description;
+
+      j2735_v2x_msgs::msg::ITISGenericLocations location_details;
+
+      j2735_v2x_msgs::msg::VerticalAccelerationThreshold vert_event;
+    };
+  };
+};

@@ -1,0 +1,65 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from j2735_v2x_msgs/msg/LaneTypeAttributes.msg
+// generated code does not contain a copyright notice
+
+#include "j2735_v2x_msgs/msg/LaneAttributesBarrier.idl"
+#include "j2735_v2x_msgs/msg/LaneAttributesBike.idl"
+#include "j2735_v2x_msgs/msg/LaneAttributesCrosswalk.idl"
+#include "j2735_v2x_msgs/msg/LaneAttributesParking.idl"
+#include "j2735_v2x_msgs/msg/LaneAttributesSidewalk.idl"
+#include "j2735_v2x_msgs/msg/LaneAttributesStriping.idl"
+#include "j2735_v2x_msgs/msg/LaneAttributesTrackedVehicle.idl"
+#include "j2735_v2x_msgs/msg/LaneAttributesVehicle.idl"
+
+module j2735_v2x_msgs {
+  module msg {
+    module LaneTypeAttributes_Constants {
+      const uint8 VEHICLE = 0;
+      const uint8 CROSSWALK = 1;
+      const uint8 BIKE_LANE = 2;
+      const uint8 SIDEWALK = 3;
+      const uint8 MEDIAN = 4;
+      const uint8 STRIPING = 5;
+      const uint8 TRACKED_VEHICLE = 6;
+      const uint8 PARKING = 7;
+    };
+    @verbatim (language="comment", text=
+      "LaneTypeAttributes.msg" "\n"
+      "" "\n"
+      "J2735 2016 message format." "\n"
+      "" "\n"
+      "@author Mae Fromm" "\n"
+      "@version 0.1" "\n"
+      "" "\n"
+      "The Lane Type Attributes data frame is used to hold attribute information specific to a given lane type." "\n"
+      "LaneTypeAttributes ::= CHOICE {" "\n"
+      "vehicle LaneAttributes-Vehicle, -- motor vehicle lanes" "\n"
+      "crosswalk LaneAttributes-Crosswalk, -- pedestrian crosswalks" "\n"
+      "bikeLane LaneAttributes-Bike, -- bike lanes" "\n"
+      "sidewalk LaneAttributes-Sidewalk, -- pedestrian sidewalk paths" "\n"
+      "median LaneAttributes-Barrier, -- medians & channelization" "\n"
+      "striping LaneAttributes-Striping, -- roadway markings" "\n"
+      "trackedVehicle LaneAttributes-TrackedVehicle, -- trains and trolleys" "\n"
+      "parking LaneAttributes-Parking, -- parking and stopping lanes" "\n"
+      "}")
+    struct LaneTypeAttributes {
+      uint8 choice;
+
+      j2735_v2x_msgs::msg::LaneAttributesVehicle vehicle;
+
+      j2735_v2x_msgs::msg::LaneAttributesCrosswalk crosswalk;
+
+      j2735_v2x_msgs::msg::LaneAttributesBike bike_lane;
+
+      j2735_v2x_msgs::msg::LaneAttributesSidewalk sidewalk;
+
+      j2735_v2x_msgs::msg::LaneAttributesBarrier median;
+
+      j2735_v2x_msgs::msg::LaneAttributesStriping striping;
+
+      j2735_v2x_msgs::msg::LaneAttributesTrackedVehicle tracked_vehicle;
+
+      j2735_v2x_msgs::msg::LaneAttributesParking parking;
+    };
+  };
+};

@@ -1,0 +1,82 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from j2735_v2x_msgs/msg/RoadSegment.msg
+// generated code does not contain a copyright notice
+
+#include "j2735_v2x_msgs/msg/Position3D.idl"
+#include "j2735_v2x_msgs/msg/RoadLaneSetList.idl"
+#include "j2735_v2x_msgs/msg/RoadSegmentReferenceID.idl"
+#include "j2735_v2x_msgs/msg/SpeedLimitList.idl"
+
+module j2735_v2x_msgs {
+  module msg {
+    @verbatim (language="comment", text=
+      "RoadSegment.msg" "\n"
+      "" "\n"
+      "J2735 2016 message format." "\n"
+      "" "\n"
+      "@author Mae Fromm" "\n"
+      "@version 0.1" "\n"
+      "" "\n"
+      "The DF_ RoadSegment data frame is a complete description of a RoadSegment including its geometry and its" "\n"
+      "allowed navigational paths (independent of any additional regulatory restrictions that may apply over time or from user" "\n"
+      "classification) and any current disruptions such as a work zone or incident event." "\n"
+      "" "\n"
+      "RoadSegment ::= SEQUENCE {" "\n"
+      "name DescriptiveName OPTIONAL," "\n"
+      "id RoadSegmentReferenceID," "\n"
+      "-- a globally unique value for the segment" "\n"
+      "revision MsgCount," "\n"
+      "-- Required default values about the descriptions to follow" "\n"
+      "refPoint Position3D," "\n"
+      "-- the reference from which subsequent" "\n"
+      "-- data points are offset until a new" "\n"
+      "-- point is used." "\n"
+      "laneWidth LaneWidth OPTIONAL," "\n"
+      "-- Reference width used by all subsequent" "\n"
+      "-- lanes unless a new width is given" "\n"
+      "speedLimits SpeedLimitList OPTIONAL," "\n"
+      "-- Reference regulatory speed limits" "\n"
+      "-- used by all subsequent" "\n"
+      "-- lanes unless a new speed is given" "\n"
+      "-- See Section 11 for converting and" "\n"
+      "-- translating speed expressed in mph" "\n"
+      "-- into units of m/s" "\n"
+      "-- Data describing disruptions in the RoadSegment" "\n"
+      "-- such as work zones etc will be added here;" "\n"
+      "-- in the US the SAE ITIS codes would be used here" "\n"
+      "-- The details regarding each lane type in the RoadSegment" "\n"
+      "roadLaneSet RoadLaneSetList," "\n"
+      "regional SEQUENCE (SIZE(1..4)) OF RegionalExtension {{REGION.Reg-RoadSegment}} OPTIONAL," "\n"
+      "..." "\n"
+      "}")
+    struct RoadSegment {
+      @verbatim (language="comment", text=
+        "name DescriptiveName OPTIONAL := IA5String (SIZE(1..63))" "\n"
+        "-- often for debug use only" "\n"
+        "-- but at times used to name ped crossings")
+      string name;
+
+      boolean name_exists;
+
+      j2735_v2x_msgs::msg::RoadSegmentReferenceID id;
+
+      @verbatim (language="comment", text=
+        "MsgCount ::= INTEGER (0..127)")
+      uint8 revision;
+
+      j2735_v2x_msgs::msg::Position3D ref_point;
+
+      @verbatim (language="comment", text=
+        "LaneWidth OPTIONAL ::= INTEGER (0..32767) -- units of 1 cm")
+      uint16 lane_width;
+
+      boolean lane_width_exists;
+
+      j2735_v2x_msgs::msg::SpeedLimitList speed_limits;
+
+      boolean speed_limits_exists;
+
+      j2735_v2x_msgs::msg::RoadLaneSetList road_lane_set;
+    };
+  };
+};

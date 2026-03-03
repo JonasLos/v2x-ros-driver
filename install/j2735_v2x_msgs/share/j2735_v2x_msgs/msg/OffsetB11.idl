@@ -1,0 +1,26 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from j2735_v2x_msgs/msg/OffsetB11.msg
+// generated code does not contain a copyright notice
+
+
+module j2735_v2x_msgs {
+  module msg {
+    module OffsetB11_Constants {
+      const int16 OFFSET_UNKNOWN = -1024;
+      const int16 OFFSET_MIN = -1023;
+      const int16 OFFSET_MAX = 1023;
+    };
+    @verbatim (language="comment", text=
+      "OffsetB11.msg" "\n"
+      "" "\n"
+      "J2735 2016 message format.")
+    struct OffsetB11 {
+      @verbatim (language="comment", text=
+        "Offset-B11 ::= INTEGER (-1024..1023)" "\n"
+        "   -- a range of +- 10.23 meters" "\n"
+        "An 11-bit delta offset in X or Y direction from some known point. For non-vehicle centric coordinate frames of reference," "\n"
+        "offset is positive to the east (X) and to the north (Y) directions. The most negative value shall be used to indicate an unknown value.")
+      int16 offset;
+    };
+  };
+};

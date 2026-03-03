@@ -1,0 +1,26 @@
+{
+  "type_description_msg": {
+    "type_description": {
+      "type_name": "j2735_v2x_msgs/msg/ThrottleConfidence",
+      "fields": [
+        {
+          "name": "confidence",
+          "type": {
+            "type_id": 3,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": ""
+          },
+          "default_value": ""
+        }
+      ]
+    },
+    "referenced_type_descriptions": []
+  },
+  "type_hashes": [
+    {
+      "type_name": "j2735_v2x_msgs/msg/ThrottleConfidence",
+      "hash_string": "RIHS01_eb4c0881a7d50a4ac8b47899a64b602419c571eeb795999ef8b3c06d751784e5"
+    }
+  ]
+}

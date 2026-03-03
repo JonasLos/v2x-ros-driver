@@ -1,0 +1,37 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from j2735_v2x_msgs/msg/PathPrediction.msg
+// generated code does not contain a copyright notice
+
+
+module j2735_v2x_msgs {
+  module msg {
+    @verbatim (language="comment", text=
+      "PathPrediction.msg" "\n"
+      "" "\n"
+      "J2735 2016 message format." "\n"
+      "" "\n"
+      "Parsed description of PathPrediction from the SAE J2735 2016 specification." "\n"
+      "For further usage details consult the specification." "\n"
+      "" "\n"
+      "PathPrediction ::= SEQUENCE {" "\n"
+      "   radiusOfCurve RadiusOfCurvature, " "\n"
+      "                 -- LSB units of 10cm" "\n"
+      "                 -- straight path to use value of 32767" "\n"
+      "   confidence    Confidence, " "\n"
+      "                 -- LSB units of 0.5 percent" "\n"
+      "   ...  " "\n"
+      "   }")
+    struct PathPrediction {
+      @verbatim (language="comment", text=
+        "RadiusOfCurvature ::= INTEGER (-32767..32767)" "\n"
+        "   -- LSB units of 10cm" "\n"
+        "   -- A straight path to use value of 32767")
+      int16 radius_of_curvature;
+
+      @verbatim (language="comment", text=
+        "Confidence ::= INTEGER (0..200)" "\n"
+        "   -- LSB units of 0.5 percent")
+      uint8 confidence;
+    };
+  };
+};

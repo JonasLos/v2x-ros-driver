@@ -1,0 +1,4 @@
+source;share/carma_ros2_utils/environment/ament_prefix_path.sh
+source;share/carma_ros2_utils/environment/library_path.sh
+source;share/carma_ros2_utils/environment/path.sh
+source;share/carma_ros2_utils/environment/pythonpath.sh

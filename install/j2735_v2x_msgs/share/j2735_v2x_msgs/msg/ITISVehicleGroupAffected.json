@@ -1,0 +1,26 @@
+{
+  "type_description_msg": {
+    "type_description": {
+      "type_name": "j2735_v2x_msgs/msg/ITISVehicleGroupAffected",
+      "fields": [
+        {
+          "name": "vehicle_group_affected",
+          "type": {
+            "type_id": 5,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": ""
+          },
+          "default_value": ""
+        }
+      ]
+    },
+    "referenced_type_descriptions": []
+  },
+  "type_hashes": [
+    {
+      "type_name": "j2735_v2x_msgs/msg/ITISVehicleGroupAffected",
+      "hash_string": "RIHS01_1e142b5015ee94b07f611bfbed2b91dcd516b50d666e3fe1d7d4d6bddd5f7b0d"
+    }
+  ]
+}

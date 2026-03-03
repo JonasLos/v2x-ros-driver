@@ -1,0 +1,44 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from j2735_v2x_msgs/msg/RTCMPackage.msg
+// generated code does not contain a copyright notice
+
+#include "j2735_v2x_msgs/msg/RTCMHeader.idl"
+
+module j2735_v2x_msgs {
+  module msg {
+    module RTCMPackage_Constants {
+      const uint16 HAS_RTCM_HEADER = 1;
+    };
+    @verbatim (language="comment", text=
+      "RTCMPackage.msg" "\n"
+      "" "\n"
+      "Modified J2735 2016 message format, adjusted to use base SI units (m,s, etc) in most case.")
+    struct RTCMPackage {
+      @verbatim (language="comment", text=
+        "RTCMPackage ::= SEQUENCE {" "\n"
+        "   -- precise antenna position and noise data for a rover" "\n"
+        "   rtcmHeader  RTCMheader OPTIONAL," "\n"
+        "" "\n"
+        "   -- one or more RTCM messages" "\n"
+        "   msgs        RTCMmessageList," "\n"
+        "   ..." "\n"
+        "   }" "\n"
+        "A BIT STRING defining the presence of optional fields." "\n"
+        "Compare with bitwise-and" "\n"
+        "if (presence_vector & HAS_RTCM_HEADER) etc." "\n"
+        "Create with bitwise-or" "\n"
+        "presence_vector = presence_vector | HAS_RTCM_HEADER")
+      uint16 presence_vector;
+
+      j2735_v2x_msgs::msg::RTCMHeader rtcm_header;
+
+      @verbatim (language="comment", text=
+        " The RTCMmessage data element contains the stream of octets of the actual RTCM message that is being sent. The" "\n"
+        " message’s contents are defined in RTCM Standard 10403.1 and in RTCM Standard 10402.1 and its successors. Note that" "\n"
+        " most RTCM messages are considerably smaller than the size limit defined here, but that some messages may need to be" "\n"
+        " broken into smaller messages (as per the rules defined in the RTCM work) in order to be transmitted using V2X" "\n"
+        "communications.")
+      sequence<uint8> messages;
+    };
+  };
+};

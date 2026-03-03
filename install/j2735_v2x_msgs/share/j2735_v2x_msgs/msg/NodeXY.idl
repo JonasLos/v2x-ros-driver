@@ -1,0 +1,39 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from j2735_v2x_msgs/msg/NodeXY.msg
+// generated code does not contain a copyright notice
+
+#include "j2735_v2x_msgs/msg/NodeAttributeSetXY.idl"
+#include "j2735_v2x_msgs/msg/NodeOffsetPointXY.idl"
+
+module j2735_v2x_msgs {
+  module msg {
+    @verbatim (language="comment", text=
+      "NodeXY.msg" "\n"
+      "" "\n"
+      "J2735 2016 message format." "\n"
+      "" "\n"
+      "@author Mae Fromm" "\n"
+      "@version 0.1" "\n"
+      "" "\n"
+      "The DF_NodeXY data frame presents a structure to hold data for a single node point in a path. Each selected node" "\n"
+      "has an X and Y offset from the prior node point (or a complete lat-long representation in some cases) as well as optional" "\n"
+      "attribute information." "\n"
+      "" "\n"
+      "NodeXY ::= SEQUENCE {" "\n"
+      "delta NodeOffsetPointXY," "\n"
+      "-- A choice of which X,Y offset value to use" "\n"
+      "-- this includes various delta values as well a regional choices" "\n"
+      "attributes NodeAttributeSetXY OPTIONAL," "\n"
+      "-- Any optional Attributes which are needed" "\n"
+      "-- This includes changes to the current lane width and elevation" "\n"
+      "..." "\n"
+      "}")
+    struct NodeXY {
+      j2735_v2x_msgs::msg::NodeOffsetPointXY delta;
+
+      j2735_v2x_msgs::msg::NodeAttributeSetXY attributes;
+
+      boolean attributes_exists;
+    };
+  };
+};

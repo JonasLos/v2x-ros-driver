@@ -1,0 +1,154 @@
+{
+  "type_description_msg": {
+    "type_description": {
+      "type_name": "j2735_v2x_msgs/msg/LaneDataAttribute",
+      "fields": [
+        {
+          "name": "choice",
+          "type": {
+            "type_id": 3,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": ""
+          },
+          "default_value": ""
+        },
+        {
+          "name": "path_end_point_angle",
+          "type": {
+            "type_id": 4,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": ""
+          },
+          "default_value": ""
+        },
+        {
+          "name": "lane_crown_point_center",
+          "type": {
+            "type_id": 2,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": ""
+          },
+          "default_value": ""
+        },
+        {
+          "name": "lane_crown_point_right",
+          "type": {
+            "type_id": 2,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": ""
+          },
+          "default_value": ""
+        },
+        {
+          "name": "lane_crown_point_left",
+          "type": {
+            "type_id": 2,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": ""
+          },
+          "default_value": ""
+        },
+        {
+          "name": "lane_angle",
+          "type": {
+            "type_id": 4,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": ""
+          },
+          "default_value": ""
+        },
+        {
+          "name": "speed_limits",
+          "type": {
+            "type_id": 1,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": "j2735_v2x_msgs/msg/SpeedLimitList"
+          },
+          "default_value": ""
+        }
+      ]
+    },
+    "referenced_type_descriptions": [
+      {
+        "type_name": "j2735_v2x_msgs/msg/RegulatorySpeedLimit",
+        "fields": [
+          {
+            "name": "type",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "j2735_v2x_msgs/msg/SpeedLimitType"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "speed",
+            "type": {
+              "type_id": 11,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/SpeedLimitList",
+        "fields": [
+          {
+            "name": "speed_limits",
+            "type": {
+              "type_id": 145,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "j2735_v2x_msgs/msg/RegulatorySpeedLimit"
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/SpeedLimitType",
+        "fields": [
+          {
+            "name": "speed_limit_type",
+            "type": {
+              "type_id": 3,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      }
+    ]
+  },
+  "type_hashes": [
+    {
+      "type_name": "j2735_v2x_msgs/msg/LaneDataAttribute",
+      "hash_string": "RIHS01_6e8450a7caaeff58ce1fba8f27e6e41cd88a6e2971b82bb9df0e43aa4686d87e"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/RegulatorySpeedLimit",
+      "hash_string": "RIHS01_74391f7d93526091cf37fecd3bc7d9ea2babf8cc582400f5c699dc5e449514f1"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/SpeedLimitList",
+      "hash_string": "RIHS01_bd2c79a8cfeb3d564ed71be7e1716673b65b0c178517254d5b0d8ecc49e7491b"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/SpeedLimitType",
+      "hash_string": "RIHS01_42a5a771958f1abaa6198ace4e7778ee70098729aa8f148902abcdf88298eb2a"
+    }
+  ]
+}

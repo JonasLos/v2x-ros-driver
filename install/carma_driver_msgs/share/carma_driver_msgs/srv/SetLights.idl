@@ -1,0 +1,23 @@
+// generated from rosidl_adapter/resource/srv.idl.em
+// with input from carma_driver_msgs/srv/SetLights.srv
+// generated code does not contain a copyright notice
+
+#include "carma_driver_msgs/msg/LightBarStatus.idl"
+
+module carma_driver_msgs {
+  module srv {
+    @verbatim (language="comment", text=
+      "SetLights.srv")
+    struct SetLights_Request {
+      @verbatim (language="comment", text=
+        "Request - set the light values" "\n"
+        "Used by lighbar driver" "\n"
+        "This should contain the desired state of all lights, not just the ones" "\n"
+        "intended to be changed")
+      carma_driver_msgs::msg::LightBarStatus set_state;
+    };
+    struct SetLights_Response {
+      uint8 structure_needs_at_least_one_member;
+    };
+  };
+};

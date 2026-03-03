@@ -1,0 +1,728 @@
+{
+  "type_description_msg": {
+    "type_description": {
+      "type_name": "j2735_v2x_msgs/msg/NodeSetXY",
+      "fields": [
+        {
+          "name": "node_set_xy",
+          "type": {
+            "type_id": 145,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": "j2735_v2x_msgs/msg/NodeXY"
+          },
+          "default_value": ""
+        }
+      ]
+    },
+    "referenced_type_descriptions": [
+      {
+        "type_name": "j2735_v2x_msgs/msg/LaneDataAttribute",
+        "fields": [
+          {
+            "name": "choice",
+            "type": {
+              "type_id": 3,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "path_end_point_angle",
+            "type": {
+              "type_id": 4,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "lane_crown_point_center",
+            "type": {
+              "type_id": 2,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "lane_crown_point_right",
+            "type": {
+              "type_id": 2,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "lane_crown_point_left",
+            "type": {
+              "type_id": 2,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "lane_angle",
+            "type": {
+              "type_id": 4,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "speed_limits",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "j2735_v2x_msgs/msg/SpeedLimitList"
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/LaneDataAttributeList",
+        "fields": [
+          {
+            "name": "lane_attribute_list",
+            "type": {
+              "type_id": 145,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "j2735_v2x_msgs/msg/LaneDataAttribute"
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/NodeAttributeSetXY",
+        "fields": [
+          {
+            "name": "local_node",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "j2735_v2x_msgs/msg/NodeAttributeXYList"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "local_node_exists",
+            "type": {
+              "type_id": 15,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "disabled",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "j2735_v2x_msgs/msg/SegmentAttributeXYList"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "disabled_exists",
+            "type": {
+              "type_id": 15,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "enabled",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "j2735_v2x_msgs/msg/SegmentAttributeXYList"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "enabled_exists",
+            "type": {
+              "type_id": 15,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "data",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "j2735_v2x_msgs/msg/LaneDataAttributeList"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "data_exists",
+            "type": {
+              "type_id": 15,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "d_width",
+            "type": {
+              "type_id": 10,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "d_width_exists",
+            "type": {
+              "type_id": 15,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "d_elevation",
+            "type": {
+              "type_id": 10,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "d_elevation_exists",
+            "type": {
+              "type_id": 15,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/NodeAttributeXY",
+        "fields": [
+          {
+            "name": "node_attribute_xy",
+            "type": {
+              "type_id": 3,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/NodeAttributeXYList",
+        "fields": [
+          {
+            "name": "node_attribute_xy_list",
+            "type": {
+              "type_id": 145,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "j2735_v2x_msgs/msg/NodeAttributeXY"
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/NodeLLmD64b",
+        "fields": [
+          {
+            "name": "longitude",
+            "type": {
+              "type_id": 6,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "latitude",
+            "type": {
+              "type_id": 6,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/NodeOffsetPointXY",
+        "fields": [
+          {
+            "name": "choice",
+            "type": {
+              "type_id": 3,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "node_xy1",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "j2735_v2x_msgs/msg/NodeXY20b"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "node_xy2",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "j2735_v2x_msgs/msg/NodeXY22b"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "node_xy3",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "j2735_v2x_msgs/msg/NodeXY24b"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "node_xy4",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "j2735_v2x_msgs/msg/NodeXY26b"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "node_xy5",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "j2735_v2x_msgs/msg/NodeXY28b"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "node_xy6",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "j2735_v2x_msgs/msg/NodeXY32b"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "node_latlon",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "j2735_v2x_msgs/msg/NodeLLmD64b"
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/NodeXY",
+        "fields": [
+          {
+            "name": "delta",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "j2735_v2x_msgs/msg/NodeOffsetPointXY"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "attributes",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "j2735_v2x_msgs/msg/NodeAttributeSetXY"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "attributes_exists",
+            "type": {
+              "type_id": 15,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/NodeXY20b",
+        "fields": [
+          {
+            "name": "x",
+            "type": {
+              "type_id": 10,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "y",
+            "type": {
+              "type_id": 10,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/NodeXY22b",
+        "fields": [
+          {
+            "name": "x",
+            "type": {
+              "type_id": 10,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "y",
+            "type": {
+              "type_id": 10,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/NodeXY24b",
+        "fields": [
+          {
+            "name": "x",
+            "type": {
+              "type_id": 4,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "y",
+            "type": {
+              "type_id": 4,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/NodeXY26b",
+        "fields": [
+          {
+            "name": "x",
+            "type": {
+              "type_id": 10,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "y",
+            "type": {
+              "type_id": 10,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/NodeXY28b",
+        "fields": [
+          {
+            "name": "x",
+            "type": {
+              "type_id": 10,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "y",
+            "type": {
+              "type_id": 10,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/NodeXY32b",
+        "fields": [
+          {
+            "name": "x",
+            "type": {
+              "type_id": 10,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "y",
+            "type": {
+              "type_id": 10,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/RegulatorySpeedLimit",
+        "fields": [
+          {
+            "name": "type",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "j2735_v2x_msgs/msg/SpeedLimitType"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "speed",
+            "type": {
+              "type_id": 11,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/SegmentAttributeXY",
+        "fields": [
+          {
+            "name": "segment_attribute_xy",
+            "type": {
+              "type_id": 3,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/SegmentAttributeXYList",
+        "fields": [
+          {
+            "name": "segment_attribute_xy",
+            "type": {
+              "type_id": 145,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "j2735_v2x_msgs/msg/SegmentAttributeXY"
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/SpeedLimitList",
+        "fields": [
+          {
+            "name": "speed_limits",
+            "type": {
+              "type_id": 145,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "j2735_v2x_msgs/msg/RegulatorySpeedLimit"
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/SpeedLimitType",
+        "fields": [
+          {
+            "name": "speed_limit_type",
+            "type": {
+              "type_id": 3,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      }
+    ]
+  },
+  "type_hashes": [
+    {
+      "type_name": "j2735_v2x_msgs/msg/NodeSetXY",
+      "hash_string": "RIHS01_1ef4fd36ddc0313e7aecc4066be6bb2101ba41fe0e5dea0a554602345c1aa500"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/LaneDataAttribute",
+      "hash_string": "RIHS01_6e8450a7caaeff58ce1fba8f27e6e41cd88a6e2971b82bb9df0e43aa4686d87e"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/LaneDataAttributeList",
+      "hash_string": "RIHS01_11ba3d3111711c0f750f16cc75ec986fdafeccf294a0a875f1766d43815e3a7f"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/NodeAttributeSetXY",
+      "hash_string": "RIHS01_0243d02f122e383d4b2c2b4a590a2a470481bd6674039979145dca883144e46d"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/NodeAttributeXY",
+      "hash_string": "RIHS01_b1fa338f278e54a92c2f4589b2562988355a1c4f8e79c519c156bc3e7e75a752"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/NodeAttributeXYList",
+      "hash_string": "RIHS01_4d5f82144592efdcca4db147ba70d5bbd391116ff6d60420386a4651786081e4"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/NodeLLmD64b",
+      "hash_string": "RIHS01_12055bcab509de4d0f1f28f5bb4466ad07bcc5353a3f11bb6cfe2c003fc9ffb3"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/NodeOffsetPointXY",
+      "hash_string": "RIHS01_18edb54ce50f6c0231a1f8526de131a2e3ebf9971fb39df079d768ec238cc845"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/NodeXY",
+      "hash_string": "RIHS01_e8a43cdf37786938893e6259e2f2bcc21fc16515c4e9efac1a58b0ba55dc23a2"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/NodeXY20b",
+      "hash_string": "RIHS01_c4e11bb45e6479d8005b4c8614d38551e9848a9378527081aad6a151e6d8e0c4"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/NodeXY22b",
+      "hash_string": "RIHS01_4525dc9b9564bd580d9ec5f9704144398f82c71747055eef2b088bb82860126a"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/NodeXY24b",
+      "hash_string": "RIHS01_e7b70d9915cd02bf77ded9294ff0a51203ac3da5b59393af8a006c4760c6232c"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/NodeXY26b",
+      "hash_string": "RIHS01_ea44eb8e26088db0857bb2ffdd0f750c3e8cd2d32122670b5422f09da31e2949"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/NodeXY28b",
+      "hash_string": "RIHS01_82d50a595f16bde668da2bc0522c23bab1ff1fad2375a94e63e3bdb666d9cd43"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/NodeXY32b",
+      "hash_string": "RIHS01_81cbf6dbfec9b68ca2df139ce6a20166e114e0b8569ba3a9defb0e13b0b4f505"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/RegulatorySpeedLimit",
+      "hash_string": "RIHS01_74391f7d93526091cf37fecd3bc7d9ea2babf8cc582400f5c699dc5e449514f1"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/SegmentAttributeXY",
+      "hash_string": "RIHS01_de72c9ca8e75aae97d26c13f63ba1be6d961ee853abda569bc4e94b3386e885e"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/SegmentAttributeXYList",
+      "hash_string": "RIHS01_3334c583c960b206383d8215d4edf8a2978a67a2a67fb8928603245b7c57413f"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/SpeedLimitList",
+      "hash_string": "RIHS01_bd2c79a8cfeb3d564ed71be7e1716673b65b0c178517254d5b0d8ecc49e7491b"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/SpeedLimitType",
+      "hash_string": "RIHS01_42a5a771958f1abaa6198ace4e7778ee70098729aa8f148902abcdf88298eb2a"
+    }
+  ]
+}

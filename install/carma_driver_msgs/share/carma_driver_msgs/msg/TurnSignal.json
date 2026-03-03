@@ -1,0 +1,26 @@
+{
+  "type_description_msg": {
+    "type_description": {
+      "type_name": "carma_driver_msgs/msg/TurnSignal",
+      "fields": [
+        {
+          "name": "state",
+          "type": {
+            "type_id": 3,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": ""
+          },
+          "default_value": ""
+        }
+      ]
+    },
+    "referenced_type_descriptions": []
+  },
+  "type_hashes": [
+    {
+      "type_name": "carma_driver_msgs/msg/TurnSignal",
+      "hash_string": "RIHS01_b2f62b42ec91e5d5a60044b3b311937d90ac899812b2a5aed6af6671ff867139"
+    }
+  ]
+}

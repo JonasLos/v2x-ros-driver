@@ -1,0 +1,27 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from j2735_v2x_msgs/msg/RestrictionClassList.msg
+// generated code does not contain a copyright notice
+
+#include "j2735_v2x_msgs/msg/RestrictionClassAssignment.idl"
+
+module j2735_v2x_msgs {
+  module msg {
+    @verbatim (language="comment", text=
+      "RestrictionClassList.msg" "\n"
+      "" "\n"
+      "J2735 2016 message format." "\n"
+      "" "\n"
+      "@author Mae Fromm" "\n"
+      "@version 0.1" "\n"
+      "" "\n"
+      "The DF_RestrictionClassList data frame is used to enumerate a list of user classes which belong to a given" "\n"
+      "assigned index. The resulting collection is treated as a group by the signal controller when it issues movement data" "\n"
+      "(signal phase information) with the GroupID for this group. This data frame is typically static for long periods of time" "\n"
+      "(months) and conveyed to the user by means of the MAP message.")
+    struct RestrictionClassList {
+      @verbatim (language="comment", text=
+        "RestrictionClassList ::= SEQUENCE (SIZE(1..254)) OF RestrictionClassAssignment")
+      sequence<j2735_v2x_msgs::msg::RestrictionClassAssignment> restriction_class_list;
+    };
+  };
+};

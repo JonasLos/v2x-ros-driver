@@ -1,0 +1,56 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from j2735_v2x_msgs/msg/PositionalAccuracy.msg
+// generated code does not contain a copyright notice
+
+
+module j2735_v2x_msgs {
+  module msg {
+    module PositionalAccuracy_Constants {
+      const uint8 ACCURACY_UNAVAILABLE = 255;
+      const uint8 ACCURACY_MAX = 254;
+      const uint8 ACCURACY_MIN = 0;
+      const uint16 ACCURACY_ORIENTATION_UNAVAILABLE = 65535;
+      const uint16 ACCURACY_ORIENTATION_MAX = 65534;
+      const uint16 ACCURACY_ORIENTATION_MIN = 0;
+    };
+    @verbatim (language="comment", text=
+      "PositionalAccuracy.msg" "\n"
+      "" "\n"
+      "J2735 2016 message format." "\n"
+      "" "\n"
+      "@author Mae Fromm" "\n"
+      "@version 0.1" "\n"
+      "" "\n"
+      "Used to model the accuracy of the positional determination with respect to each given axis.")
+    struct PositionalAccuracy {
+      @verbatim (language="comment", text=
+        "PositionalAccuracy ::= SEQUENCE {" "\n"
+        "   -- NMEA-183 values expressed in strict ASN form" "\n"
+        "   semiMajor     SemiMajorAxisAccuracy," "\n"
+        "   semiMinor     SemiMinorAxisAccuracy," "\n"
+        "   orientation   SemiMajorAxisOrientation" "\n"
+        "   }" "\n"
+        "SemiMajorAxisAccuracy ::= INTEGER (0..255)" "\n"
+        "   -- semi-major/semi-minor axis accuracy at one standard dev" "\n"
+        "   -- range 0-12.7 meter, LSB = .05m" "\n"
+        "   -- 254 = any value equal or greater than 12.70 meter" "\n"
+        "   -- 255 = unavailable semi-major axis value" "\n"
+        "   -- Convert to meter with factor 0.05 when this field is used")
+      uint8 semi_major;
+
+      uint8 semi_minor;
+
+      @verbatim (language="comment", text=
+        "SemiMajorAxisOrientation ::= INTEGER (0..65535)" "\n"
+        "   -- orientation of semi-major axis" "\n"
+        "   -- relative to true north (0~359.9945078786 degrees)" "\n"
+        "   -- LSB units of 360/65535 deg  = 0.0054932479" "\n"
+        "   -- a value of 0 shall be 0 degrees" "\n"
+        "   -- a value of 1 shall be 0.0054932479 degrees" "\n"
+        "   -- a value of 65534 shall be 359.9945078786 deg" "\n"
+        "   -- a value of 65535 shall be used for orientation unavailable" "\n"
+        "   -- Convert to degree with factor 0.0054932479 when this field is used")
+      uint16 orientation;
+    };
+  };
+};

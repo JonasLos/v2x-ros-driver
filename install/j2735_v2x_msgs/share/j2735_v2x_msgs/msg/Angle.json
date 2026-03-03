@@ -1,0 +1,26 @@
+{
+  "type_description_msg": {
+    "type_description": {
+      "type_name": "j2735_v2x_msgs/msg/Angle",
+      "fields": [
+        {
+          "name": "angle",
+          "type": {
+            "type_id": 5,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": ""
+          },
+          "default_value": ""
+        }
+      ]
+    },
+    "referenced_type_descriptions": []
+  },
+  "type_hashes": [
+    {
+      "type_name": "j2735_v2x_msgs/msg/Angle",
+      "hash_string": "RIHS01_d3714d57d2da35974cd10ccfcad695b93fec8d6131a6531625da6a32c2830c6d"
+    }
+  ]
+}

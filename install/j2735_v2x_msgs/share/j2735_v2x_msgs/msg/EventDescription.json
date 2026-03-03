@@ -1,0 +1,153 @@
+{
+  "type_description_msg": {
+    "type_description": {
+      "type_name": "j2735_v2x_msgs/msg/EventDescription",
+      "fields": [
+        {
+          "name": "presence_vector",
+          "type": {
+            "type_id": 5,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": ""
+          },
+          "default_value": ""
+        },
+        {
+          "name": "type_event",
+          "type": {
+            "type_id": 1,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": "j2735_v2x_msgs/msg/ITIScodes"
+          },
+          "default_value": ""
+        },
+        {
+          "name": "priority",
+          "type": {
+            "type_id": 1,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": "j2735_v2x_msgs/msg/Priority"
+          },
+          "default_value": ""
+        },
+        {
+          "name": "heading",
+          "type": {
+            "type_id": 1,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": "j2735_v2x_msgs/msg/HeadingSlice"
+          },
+          "default_value": ""
+        },
+        {
+          "name": "extent",
+          "type": {
+            "type_id": 1,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": "j2735_v2x_msgs/msg/Extent"
+          },
+          "default_value": ""
+        },
+        {
+          "name": "description",
+          "type": {
+            "type_id": 145,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": "j2735_v2x_msgs/msg/ITIScodes"
+          },
+          "default_value": ""
+        }
+      ]
+    },
+    "referenced_type_descriptions": [
+      {
+        "type_name": "j2735_v2x_msgs/msg/Extent",
+        "fields": [
+          {
+            "name": "extent_value",
+            "type": {
+              "type_id": 3,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/HeadingSlice",
+        "fields": [
+          {
+            "name": "heading_slice",
+            "type": {
+              "type_id": 5,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/ITIScodes",
+        "fields": [
+          {
+            "name": "code",
+            "type": {
+              "type_id": 5,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/Priority",
+        "fields": [
+          {
+            "name": "priority",
+            "type": {
+              "type_id": 51,
+              "capacity": 1,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      }
+    ]
+  },
+  "type_hashes": [
+    {
+      "type_name": "j2735_v2x_msgs/msg/EventDescription",
+      "hash_string": "RIHS01_7048e4d87c8c4d39e036373ab18e089124975de66964bce20f0daa3523e4cd8c"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/Extent",
+      "hash_string": "RIHS01_ae06a43f899673b71baf359625a7173fd94c08355f0f5f3ee7365e3f90ba6ab0"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/HeadingSlice",
+      "hash_string": "RIHS01_06179d8e81c8decf90c771da83885973bcb2692b48a828da5802e2000db40d3b"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/ITIScodes",
+      "hash_string": "RIHS01_5ce94e8eb98cd867c61d9ce975c2ee55047997b6e92decdaeb57d9a62e14095e"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/Priority",
+      "hash_string": "RIHS01_0cde86d330f3ba0440b61cf8361818362a13986b91d1539b230a25a791da650a"
+    }
+  ]
+}

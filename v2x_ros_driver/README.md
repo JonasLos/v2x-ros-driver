@@ -1,58 +1,160 @@
 # v2x_ros_driver
 
-This package defines a carma-plaform compatible driver for Cohda OBUs though other models of OBU may work as well. The driver is compatible with DSRC and C-V2X radios. The design documents for this driver can be found here <https://usdot-carma.atlassian.net/wiki/spaces/CRMMSG/pages/1319272562/Detailed+Design+-+DSRC+OBU+Driver>
+`v2x_ros_driver` receives UDP V2X traffic from an on-board unit (OBU), extracts SAE J2735 frames, and publishes ROS messages for CARMA interfaces.
 
-This driver is known to work successfully with the Cohda Wireless MK5 and MK6 OBU.  It implements the communication interface allowing UPER-encoded SAE J2735 communication to be exposed to a ROS network using [carma_driver_msgs/msg/ByteArray] (<https://github.com/usdot-fhwa-stol/carma-msgs/blob/develop/carma_driver_msgs/msg/ByteArray.msg>). It has been tested with SAE J2735 2016 but can support later versions as well.
+## What this package provides
 
-# Deployment Instructions
+- ROS 2 composable node: `v2x_ros_driver_node`
+- Inbound topic: `/comms/inbound_binary_msg` (`carma_driver_msgs/msg/ByteArray`)
+- Outbound topic: `/comms/outbound_binary_msg` (`carma_driver_msgs/msg/ByteArray`)
+- Runtime params:
+	- `v2x_radio_address` (OBU IP)
+	- `v2x_radio_listening_port` (OBU-side UDP port used for outbound transmission to radio)
+	- `listening_port` (host UDP port this driver binds for inbound OBU data)
 
-The v2x-ros-driver is a ros2 package currently implemented in [ros2-foxy] (<https://docs.ros.org/en/foxy/Installation.html>). It creates a UDP client to listen to input from the v2x radio and broadcast the UPER encoded message to ROS.
-In order to deploy the driver in a ros2-foxy configured environment, the following steps can be used
+Default params are in `config/params.yaml`. Override values are typically supplied via `global_params_override_file`.
 
-## Deploy using docker (recommended)
+## Quick start
 
-1. Pull the latest docker image for driver from dockerhub
+1. Build
 
-```
-docker pull usdotfhwastol/v2x-ros-driver:<latest-release-tag>
-```
-*Latest release tag can be obtained from github tags. Docker images are tagged with the same tag.*
-#### Note: The repository was recently renamed and until a new release is available, users may use usdotfhwastol/carma-cohda-dsrc-driver:carma-system-4.5.0 which builds an older versions of this code base but is manufacturer and DSRC/C-V2X agnostic.
-
-2. Run the Docker image
-
-```
-docker run -it --network host usdotfhwastol/v2x-ros-driver:<latest_release_tag_from_github>
-```
-
-
-## Build from source
-
-#### Note: Assumption here is that user is building on a ros2 foxy development environment.
-
-1. Clone the repository into workspace
-
-```
-git clone https://github.com/usdot-fhwa-stol/v2x-ros-driver.git
-```
-
-2. Clone the dependencies into workspace
-
-```
-chmod +x <path_to_workspace>/docker/checkout.bash
-./<path_to_workspace>/docker/checkout.bash -r <path_to_workspace> -b <latest_release_tag_from_github>
-```
-
-3. Build the package
-
-```
-source /opt/ros/foxy/setup.bash
+```bash
 colcon build --packages-up-to v2x_ros_driver
+source install/setup.bash
 ```
 
-4. Launch the node
+2. Launch with lifecycle enabled
 
+```bash
+ros2 launch v2x_ros_driver v2x_ros_driver.launch.py \
+	enable_v2x_driver_lifecycle:=True \
+	configuration_delay:=2.0 \
+	log_level:=INFO \
+	global_params_override_file:=/absolute/path/to/v2x_ros_driver/GlobalParamsOverride.yaml
 ```
-source <path_to_package_install_directory>/install/setup.bash
-ros2 launch v2x_ros_driver v2x_ros_driver.launch.py
+
+3. Confirm node and topic
+
+```bash
+ros2 node list | grep v2x_ros_driver_node
+ros2 topic echo /comms/inbound_binary_msg
 ```
+
+## IFM vs C2P mode selection
+
+Use the override file that matches your OBU stream mode:
+
+- IFM mode override: `GlobalParamsOverride.ifm.yaml` (`listening_port: 5398`)
+- C2P mode override: `GlobalParamsOverride.c2p.yaml` (`listening_port: 7943`)
+
+Example launch in C2P mode:
+
+```bash
+ros2 launch v2x_ros_driver v2x_ros_driver.launch.py \
+	enable_v2x_driver_lifecycle:=True \
+	configuration_delay:=2.0 \
+	log_level:=INFO \
+	global_params_override_file:=/absolute/path/to/v2x_ros_driver/GlobalParamsOverride.c2p.yaml
+```
+
+## Expected output and behavior
+
+### ROS topic output
+
+On healthy reception, `/comms/inbound_binary_msg` publishes `ByteArray` messages with:
+
+- `message_type` mapped from decoded message ID (for recognized J2735 IDs)
+- `content` containing extracted framed payload bytes
+
+In mixed C2P streams, you may see a mix of payload sizes:
+
+- small frames (marker/wrapper-like)
+- larger frames (full decodable J2735 content)
+
+Both can be expected depending on OBU stream composition.
+
+### Driver logs
+
+Expected at startup:
+
+- lifecycle transitions to `configuring` then `active`
+- log entries indicating UDP bind on configured `listening_port`
+
+If inbound traffic exists but no ROS messages appear, verify host firewall rules for the selected UDP listening port.
+
+## Runtime verification commands
+
+### Verify configured params
+
+```bash
+ros2 param get /v2x_ros_driver_node listening_port
+ros2 param get /v2x_ros_driver_node v2x_radio_address
+ros2 param get /v2x_ros_driver_node v2x_radio_listening_port
+```
+
+### Verify raw UDP reception on host
+
+```bash
+python3 scripts/check_udp_reception.py --port 7943 --duration 15
+```
+
+Expected success indicator:
+
+- `result: OK`
+- non-zero `packet_count`
+
+### Verify ROS-level driver reception
+
+```bash
+python3 scripts/check_v2x_reception.py --duration 20 --expected-listening-port 7943
+```
+
+Expected success indicator:
+
+- `result: OK`
+- non-zero `total_messages`
+
+## Decoder helper
+
+The helper `scripts/v2x_decoder_forwarder.py` can decode and forward structured J2735 JSON from UDP input.
+
+Example:
+
+```bash
+python3 scripts/v2x_decoder_forwarder.py --port 7943 --fwd_ip 127.0.0.1 --fwd_port 5400
+```
+
+Current decoder output behavior:
+
+- prints only structured decodes (`value` object/array)
+- ignores undecodable candidates and noisy wrapper-only candidates
+
+## Troubleshooting checklist
+
+## Known Commsignia C2P caveats
+
+- C2P streams can be mixed: many short wrapper/marker packets plus fewer full J2735 payload packets.
+- Seeing UDP on the host does not guarantee immediate structured decode output in short windows.
+- If packet sizes are mostly very small (for example, 25-46 bytes), decode helpers may print little or no structured JSON until larger frames appear.
+
+### 1-minute C2P triage flow
+
+1. Validate mode/port alignment:
+	- OBU C2P enabled and targeting host IP
+	- Driver `listening_port` set to `7943`
+2. Validate host packet ingress:
+	- Run `python3 scripts/check_udp_reception.py --port 7943 --duration 15`
+	- If `result: NO_UDP_PACKETS`, fix OBU route/IP or firewall first
+3. Validate ROS publish path:
+	- Run `python3 scripts/check_v2x_reception.py --duration 20 --expected-listening-port 7943`
+	- If `result: PARAM_MISMATCH`, launch with the correct override file
+4. If UDP is present but structured decodes are sparse:
+	- Extend capture window (30-120s)
+	- Expect mixed traffic; this can be normal for C2P wrapper-heavy streams
+
+1. Confirm OBU can reach host (`ping` and correct host IP configured on OBU).
+2. Confirm `listening_port` matches selected OBU stream mode (`5398` IFM, `7943` C2P).
+3. Confirm UDP packets arrive on host (`check_udp_reception.py` or `tcpdump`).
+4. Confirm firewall allows inbound UDP on the configured listening port.
+5. Confirm ROS node params match your intended override file.
+6. Confirm `/comms/inbound_binary_msg` has non-zero message count over a sufficient window.

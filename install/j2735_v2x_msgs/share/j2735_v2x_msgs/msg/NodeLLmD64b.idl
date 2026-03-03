@@ -1,0 +1,45 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from j2735_v2x_msgs/msg/NodeLLmD64b.msg
+// generated code does not contain a copyright notice
+
+
+module j2735_v2x_msgs {
+  module msg {
+    module NodeLLmD64b_Constants {
+      const int32 LONGITUDE_UNAVAILABLE = 1800000001;
+      const int32 LONGITUDE_MAX = 1800000000;
+      const int32 LONGITUDE_MIN = -1799999999;
+      const int32 LATITUDE_UNAVAILABLE = 900000001;
+      const int32 LATITUDE_MAX = 900000000;
+      const int32 LATITUDE_MIN = -900000000;
+    };
+    @verbatim (language="comment", text=
+      "NodeLLmD64b.msg" "\n"
+      "" "\n"
+      "J2735 2016 message format." "\n"
+      "" "\n"
+      "@author Mae Fromm" "\n"
+      "@version 0.1" "\n"
+      "" "\n"
+      "A 64-bit node type with lat-long values expressed in standard SAE one tenth of a micro degree.")
+    struct NodeLLmD64b {
+      @verbatim (language="comment", text=
+        " Node-LLmD-64b ::= SEQUENCE {" "\n"
+        " lon Longitude," "\n"
+        " lat Latitude" "\n"
+        " }" "\n"
+        "Longitude ::= INTEGER (-1799999999..1800000001)" "\n"
+        "  -- LSB = 1/10 micro degree" "\n"
+        "  -- Providing a range of plus-minus 180 degrees" "\n"
+        "  -- Convert to degree with factor 0.0000001 when field is used")
+      int32 longitude;
+
+      @verbatim (language="comment", text=
+        "Latitude ::= INTEGER (-900000000..900000001)" "\n"
+        "  -- LSB = 1/10 micro degree" "\n"
+        "  -- Providing a range of plus-minus 90 degrees" "\n"
+        "  -- Convert to degree with factor 0.0000001 when field is used")
+      int32 latitude;
+    };
+  };
+};

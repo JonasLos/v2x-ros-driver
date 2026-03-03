@@ -1,0 +1,35 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from j2735_v2x_msgs/msg/TrailerData.msg
+// generated code does not contain a copyright notice
+
+#include "j2735_v2x_msgs/msg/PivotPointDescription.idl"
+#include "j2735_v2x_msgs/msg/TrailerUnitDescriptionList.idl"
+
+module j2735_v2x_msgs {
+  module msg {
+    @verbatim (language="comment", text=
+      "TrailerData.msg" "\n"
+      "" "\n"
+      "J2735 2016 message format.")
+    struct TrailerData {
+      @verbatim (language="comment", text=
+        "TrailerData ::= SEQUENCE {" "\n"
+        "   notUsed SSPindex," "\n"
+        "   -- always set to 0 and carries no meaning;" "\n"
+        "   -- legacy field maintained for backward compatibility")
+      uint8 ssp_index;
+
+      @verbatim (language="comment", text=
+        "-- Offset connection point details from the" "\n"
+        "-- hauling vehicle to the first trailer unit" "\n"
+        "connection  PivotPointDescription")
+      j2735_v2x_msgs::msg::PivotPointDescription connection;
+
+      @verbatim (language="comment", text=
+        "-- One of more Trailer or Dolly Descriptions" "\n"
+        "-- (each called a unit)" "\n"
+        "units       TrailerUnitDescriptionList")
+      j2735_v2x_msgs::msg::TrailerUnitDescriptionList units;
+    };
+  };
+};

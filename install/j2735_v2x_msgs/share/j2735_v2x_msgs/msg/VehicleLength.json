@@ -1,0 +1,26 @@
+{
+  "type_description_msg": {
+    "type_description": {
+      "type_name": "j2735_v2x_msgs/msg/VehicleLength",
+      "fields": [
+        {
+          "name": "vehicle_length",
+          "type": {
+            "type_id": 5,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": ""
+          },
+          "default_value": ""
+        }
+      ]
+    },
+    "referenced_type_descriptions": []
+  },
+  "type_hashes": [
+    {
+      "type_name": "j2735_v2x_msgs/msg/VehicleLength",
+      "hash_string": "RIHS01_f7349726ad1af5f73d3520c2e02c0175373668a85269bc55e19559cafbb316ee"
+    }
+  ]
+}

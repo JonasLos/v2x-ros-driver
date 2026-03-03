@@ -1,0 +1,17 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from j2735_v2x_msgs/msg/ManeuverAssistList.msg
+// generated code does not contain a copyright notice
+
+#include "j2735_v2x_msgs/msg/ConnectionManeuverAssist.idl"
+
+module j2735_v2x_msgs {
+  module msg {
+    @verbatim (language="comment", text=
+      "This entry is used directly by one other data structure in this standard, a DF called DF_LaneAttributes <ASN>." "\n"
+      " In addition, this item may be used by data structures in other ITS standards." "\n"
+      "ManeuverAssistList ::= SEQUENCE (SIZE(1..16)) OF ConnectionManeuverAssist")
+    struct ManeuverAssistList {
+      sequence<j2735_v2x_msgs::msg::ConnectionManeuverAssist> connection_maneuver_assist_list;
+    };
+  };
+};

@@ -1,0 +1,300 @@
+{
+  "type_description_msg": {
+    "type_description": {
+      "type_name": "j2735_v2x_msgs/msg/NodeOffsetPointXY",
+      "fields": [
+        {
+          "name": "choice",
+          "type": {
+            "type_id": 3,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": ""
+          },
+          "default_value": ""
+        },
+        {
+          "name": "node_xy1",
+          "type": {
+            "type_id": 1,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": "j2735_v2x_msgs/msg/NodeXY20b"
+          },
+          "default_value": ""
+        },
+        {
+          "name": "node_xy2",
+          "type": {
+            "type_id": 1,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": "j2735_v2x_msgs/msg/NodeXY22b"
+          },
+          "default_value": ""
+        },
+        {
+          "name": "node_xy3",
+          "type": {
+            "type_id": 1,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": "j2735_v2x_msgs/msg/NodeXY24b"
+          },
+          "default_value": ""
+        },
+        {
+          "name": "node_xy4",
+          "type": {
+            "type_id": 1,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": "j2735_v2x_msgs/msg/NodeXY26b"
+          },
+          "default_value": ""
+        },
+        {
+          "name": "node_xy5",
+          "type": {
+            "type_id": 1,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": "j2735_v2x_msgs/msg/NodeXY28b"
+          },
+          "default_value": ""
+        },
+        {
+          "name": "node_xy6",
+          "type": {
+            "type_id": 1,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": "j2735_v2x_msgs/msg/NodeXY32b"
+          },
+          "default_value": ""
+        },
+        {
+          "name": "node_latlon",
+          "type": {
+            "type_id": 1,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": "j2735_v2x_msgs/msg/NodeLLmD64b"
+          },
+          "default_value": ""
+        }
+      ]
+    },
+    "referenced_type_descriptions": [
+      {
+        "type_name": "j2735_v2x_msgs/msg/NodeLLmD64b",
+        "fields": [
+          {
+            "name": "longitude",
+            "type": {
+              "type_id": 6,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "latitude",
+            "type": {
+              "type_id": 6,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/NodeXY20b",
+        "fields": [
+          {
+            "name": "x",
+            "type": {
+              "type_id": 10,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "y",
+            "type": {
+              "type_id": 10,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/NodeXY22b",
+        "fields": [
+          {
+            "name": "x",
+            "type": {
+              "type_id": 10,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "y",
+            "type": {
+              "type_id": 10,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/NodeXY24b",
+        "fields": [
+          {
+            "name": "x",
+            "type": {
+              "type_id": 4,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "y",
+            "type": {
+              "type_id": 4,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/NodeXY26b",
+        "fields": [
+          {
+            "name": "x",
+            "type": {
+              "type_id": 10,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "y",
+            "type": {
+              "type_id": 10,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/NodeXY28b",
+        "fields": [
+          {
+            "name": "x",
+            "type": {
+              "type_id": 10,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "y",
+            "type": {
+              "type_id": 10,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/NodeXY32b",
+        "fields": [
+          {
+            "name": "x",
+            "type": {
+              "type_id": 10,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "y",
+            "type": {
+              "type_id": 10,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      }
+    ]
+  },
+  "type_hashes": [
+    {
+      "type_name": "j2735_v2x_msgs/msg/NodeOffsetPointXY",
+      "hash_string": "RIHS01_18edb54ce50f6c0231a1f8526de131a2e3ebf9971fb39df079d768ec238cc845"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/NodeLLmD64b",
+      "hash_string": "RIHS01_12055bcab509de4d0f1f28f5bb4466ad07bcc5353a3f11bb6cfe2c003fc9ffb3"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/NodeXY20b",
+      "hash_string": "RIHS01_c4e11bb45e6479d8005b4c8614d38551e9848a9378527081aad6a151e6d8e0c4"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/NodeXY22b",
+      "hash_string": "RIHS01_4525dc9b9564bd580d9ec5f9704144398f82c71747055eef2b088bb82860126a"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/NodeXY24b",
+      "hash_string": "RIHS01_e7b70d9915cd02bf77ded9294ff0a51203ac3da5b59393af8a006c4760c6232c"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/NodeXY26b",
+      "hash_string": "RIHS01_ea44eb8e26088db0857bb2ffdd0f750c3e8cd2d32122670b5422f09da31e2949"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/NodeXY28b",
+      "hash_string": "RIHS01_82d50a595f16bde668da2bc0522c23bab1ff1fad2375a94e63e3bdb666d9cd43"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/NodeXY32b",
+      "hash_string": "RIHS01_81cbf6dbfec9b68ca2df139ce6a20166e114e0b8569ba3a9defb0e13b0b4f505"
+    }
+  ]
+}

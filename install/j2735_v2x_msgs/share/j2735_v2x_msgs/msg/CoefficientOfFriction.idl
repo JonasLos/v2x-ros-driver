@@ -1,0 +1,25 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from j2735_v2x_msgs/msg/CoefficientOfFriction.msg
+// generated code does not contain a copyright notice
+
+
+module j2735_v2x_msgs {
+  module msg {
+    module CoefficientOfFriction_Constants {
+      const uint8 COEFFICIENT_MIN = 0;
+      const uint8 COEFFICIENT_MAX = 50;
+      const uint8 COEFFICIENT_UNAVAILABLE = 0;
+    };
+    @verbatim (language="comment", text=
+      "CoefficientOfFriction.msg" "\n"
+      "" "\n"
+      "J2735 2016 message format.")
+    struct CoefficientOfFriction {
+      @verbatim (language="comment", text=
+        "CoefficientOfFriction ::= INTEGER (0..50)" "\n"
+        "   -- where 0 = 0.00 micro (frictionless), also used when data is unavailable" "\n"
+        "   -- and  50 = 1.00 micro, in steps of 0.02")
+      uint8 coefficient;
+    };
+  };
+};

@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 import argparse
+import contextlib
+import io
+import json
 import socket
 import j2735_202409
 
@@ -32,9 +35,9 @@ SO_RCVBUF_SIZE = 16384 * 20 # 16384 for multiples in KiB
 # Receive size from the socket (expecting max 16383 bytes)
 RECVFROM_SIZE = 16384
 
-def grab_payload(data: bytes):
+def grab_payloads(data: bytes):
     """
-    Extract payload containing a BSM or SDSM. May be extended to support additional message types.
+    Extract framed payload candidates from mixed UDP data.
 
     Parameters
     ----------
@@ -43,15 +46,69 @@ def grab_payload(data: bytes):
 
     Returns
     -------
-    bytes
-        The extracted payload, or None if not found.
+    list[bytes]
+        Candidate framed payloads.
     """
-    # BSM and SDSM DSRCmsgIDs as bytes, respectively
-    msg_ids = (b"\x00\x14", b"\x00\x29")
-    for id in msg_ids:
-        idx = data.find(id)
+    candidates = []
+
+    # Common DSRC/J2735 message IDs observed in this stream
+    valid_ids = {0x12, 0x13, 0x14, 0x1D, 0x1E, 0x1F, 0x20, 0x29}
+
+    # Primary path A: zero-prefixed msg_id + one-byte length + payload
+    for i in range(len(data) - 3):
+        if data[i] != 0x00:
+            continue
+        msg_id = data[i + 1]
+        msg_len = data[i + 2]
+        if msg_id in valid_ids and msg_len > 0:
+            end = i + 3 + msg_len
+            if end <= len(data):
+                candidates.append(data[i:end])
+
+    # Primary path B: one-byte msg_id + one-byte length + payload
+    for i in range(len(data) - 2):
+        msg_id = data[i]
+        msg_len = data[i + 1]
+        if msg_id in valid_ids and msg_len > 0:
+            end = i + 2 + msg_len
+            if end <= len(data):
+                candidates.append(data[i:end])
+
+    # Compatibility path for streams with 0x00-prefixed IDs and no usable length
+    msg_ids = (b"\x00\x12", b"\x00\x13", b"\x00\x14", b"\x00\x1d", b"\x00\x1e", b"\x00\x1f", b"\x00\x20", b"\x00\x29")
+    for msg_id in msg_ids:
+        idx = data.find(msg_id)
         if idx != -1:
-            return data[idx:]
+            candidates.append(data[idx:])
+
+    return candidates
+
+
+def decode_structured(MessageFrame, payload: bytes):
+    """
+    Decode a payload and return structured JSON string if available.
+
+    Parameters
+    ----------
+    MessageFrame
+        J2735 MessageFrame decoder object.
+    payload : bytes
+        Candidate framed payload.
+
+    Returns
+    -------
+    str | None
+        JSON string for structured decodes, otherwise None.
+    """
+    try:
+        with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+            MessageFrame.from_uper(payload)
+            decoded_msg = MessageFrame.to_jer()
+        parsed = json.loads(decoded_msg)
+        if isinstance(parsed.get("value"), (dict, list)):
+            return decoded_msg
+    except Exception:
+        pass
     return None
 
 def main():
@@ -85,24 +142,23 @@ def main():
                 except socket.timeout:
                     continue  # check for Ctrl+C and keep looping
 
-                payload = grab_payload(data)
-                if not payload:
+                payloads = grab_payloads(data)
+                if not payloads:
                     continue
 
-                try:
-                    # Decode using cached MessageFrame
-                    MessageFrame.from_uper(payload)
-                    decoded_msg = MessageFrame.to_jer()
-                except Exception:
-                    continue
-                print(decoded_msg)
+                for payload in payloads:
+                    decoded_msg = decode_structured(MessageFrame, payload)
+                    if not decoded_msg:
+                        continue
 
-                # Send the decoded message to the forward socket
-                try:
-                    forward_sock.sendto(decoded_msg.encode(), (args.fwd_ip, args.fwd_port))
-                except Exception as e:
-                    print(f"Error forwarding JSON: {e}")
-                    continue
+                    print(decoded_msg)
+
+                    # Send the decoded message to the forward socket
+                    try:
+                        forward_sock.sendto(decoded_msg.encode(), (args.fwd_ip, args.fwd_port))
+                    except Exception as e:
+                        print(f"Error forwarding JSON: {e}")
+                        continue
 
         except KeyboardInterrupt:
             print("\nKeyboard interrupt, shutting down")

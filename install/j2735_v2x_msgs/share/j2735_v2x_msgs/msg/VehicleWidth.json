@@ -1,0 +1,26 @@
+{
+  "type_description_msg": {
+    "type_description": {
+      "type_name": "j2735_v2x_msgs/msg/VehicleWidth",
+      "fields": [
+        {
+          "name": "vehicle_width",
+          "type": {
+            "type_id": 5,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": ""
+          },
+          "default_value": ""
+        }
+      ]
+    },
+    "referenced_type_descriptions": []
+  },
+  "type_hashes": [
+    {
+      "type_name": "j2735_v2x_msgs/msg/VehicleWidth",
+      "hash_string": "RIHS01_196002eee59cf0e7aed70854b890adc17498b9af343e95db81c2a5e4ce6e2c78"
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from j2735_v2x_msgs/msg/BSM.msg
+// generated code does not contain a copyright notice
+
+#include "j2735_v2x_msgs/msg/BSMCoreData.idl"
+#include "j2735_v2x_msgs/msg/BSMPartIIExtension.idl"
+#include "j2735_v2x_msgs/msg/BSMRegionalExtension.idl"
+#include "std_msgs/msg/Header.idl"
+
+module j2735_v2x_msgs {
+  module msg {
+    module BSM_Constants {
+      const uint8 HAS_PART_II = 1;
+      const uint8 HAS_REGIONAL = 2;
+      const uint8 PART_II_MIN_SIZE = 1;
+      const uint8 PART_II_MAX_SIZE = 8;
+      const uint8 REGIONAL_MIN_SIZE = 1;
+      const uint8 REGIONAL_MAX_SIZE = 4;
+    };
+    @verbatim (language="comment", text=
+      "BSM.msg" "\n"
+      "" "\n"
+      "J2735 2016 message format." "\n"
+      "" "\n"
+      "@author Mae Fromm" "\n"
+      "@version 0.1")
+    struct BSM {
+      std_msgs::msg::Header header;
+
+      @verbatim (language="comment", text=
+        "-- Part I, Sent at all times with each message")
+      j2735_v2x_msgs::msg::BSMCoreData core_data;
+
+      @verbatim (language="comment", text=
+        "   -- Part II Content" "\n"
+        "A BIT STRING defining the presence of optional fields." "\n"
+        "Compare with bitwise-and" "\n"
+        "if (presence_vector & HAS_PART_II_EXTENSION) etc." "\n"
+        "Create with bitwise-or" "\n"
+        "presence_vector = presence_vector | HAS_PART_II_EXTENSION")
+      uint8 presence_vector;
+
+      @verbatim (language="comment", text=
+        "partII        SEQUENCE (SIZE(1..8)) OF" "\n"
+        "              PartIIcontent {{ BSMpartIIExtension }} OPTIONAL,")
+      sequence<j2735_v2x_msgs::msg::BSMPartIIExtension> part_ii;
+
+      @verbatim (language="comment", text=
+        "regional      SEQUENCE (SIZE(1..4)) OF" "\n"
+        "             RegionalExtension {{REGION.Reg-BasicSafetyMessage}} OPTIONAL,")
+      sequence<j2735_v2x_msgs::msg::BSMRegionalExtension> regional;
+    };
+  };
+};

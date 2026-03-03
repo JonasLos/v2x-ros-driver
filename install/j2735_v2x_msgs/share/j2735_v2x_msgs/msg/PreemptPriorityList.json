@@ -1,0 +1,46 @@
+{
+  "type_description_msg": {
+    "type_description": {
+      "type_name": "j2735_v2x_msgs/msg/PreemptPriorityList",
+      "fields": [
+        {
+          "name": "preempt_priority_list",
+          "type": {
+            "type_id": 145,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": "j2735_v2x_msgs/msg/SignalControlZone"
+          },
+          "default_value": ""
+        }
+      ]
+    },
+    "referenced_type_descriptions": [
+      {
+        "type_name": "j2735_v2x_msgs/msg/SignalControlZone",
+        "fields": [
+          {
+            "name": "structure_needs_at_least_one_member",
+            "type": {
+              "type_id": 3,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      }
+    ]
+  },
+  "type_hashes": [
+    {
+      "type_name": "j2735_v2x_msgs/msg/PreemptPriorityList",
+      "hash_string": "RIHS01_f965ec18d29160210b94b2b43fba232bbc6343370a82f2d27711bb043a5db2b8"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/SignalControlZone",
+      "hash_string": "RIHS01_23e11973baafc52af0a7107d3e9d87e79903796520fd3cd05c6edb51df2e5cf5"
+    }
+  ]
+}

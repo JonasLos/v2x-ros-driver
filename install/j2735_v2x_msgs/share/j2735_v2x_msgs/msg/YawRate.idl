@@ -1,0 +1,23 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from j2735_v2x_msgs/msg/YawRate.msg
+// generated code does not contain a copyright notice
+
+
+module j2735_v2x_msgs {
+  module msg {
+    module YawRate_Constants {
+      const int16 MIN_YAW_RATE = -32767;
+      const int16 MAX_YAW_RATE = 32767;
+    };
+    @verbatim (language="comment", text=
+      "YawRate.msg" "\n"
+      "" "\n"
+      "J2735 2016 message format.")
+    struct YawRate {
+      @verbatim (language="comment", text=
+        "YawRate ::= INTEGER (-32767..32767)" "\n"
+        "  -- LSB units of 0.01 degrees per second (signed)")
+      int16 yaw_rate;
+    };
+  };
+};

@@ -1,0 +1,66 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from j2735_v2x_msgs/msg/NodeOffsetPointXY.msg
+// generated code does not contain a copyright notice
+
+#include "j2735_v2x_msgs/msg/NodeLLmD64b.idl"
+#include "j2735_v2x_msgs/msg/NodeXY20b.idl"
+#include "j2735_v2x_msgs/msg/NodeXY22b.idl"
+#include "j2735_v2x_msgs/msg/NodeXY24b.idl"
+#include "j2735_v2x_msgs/msg/NodeXY26b.idl"
+#include "j2735_v2x_msgs/msg/NodeXY28b.idl"
+#include "j2735_v2x_msgs/msg/NodeXY32b.idl"
+
+module j2735_v2x_msgs {
+  module msg {
+    module NodeOffsetPointXY_Constants {
+      const uint8 NODE_XY1 = 0;
+      const uint8 NODE_XY2 = 1;
+      const uint8 NODE_XY3 = 2;
+      const uint8 NODE_XY4 = 3;
+      const uint8 NODE_XY5 = 4;
+      const uint8 NODE_XY6 = 5;
+      const uint8 NODE_LATLON = 6;
+    };
+    @verbatim (language="comment", text=
+      "NodeOffsetPointXY.msg" "\n"
+      "" "\n"
+      "J2735 2016 message format." "\n"
+      "" "\n"
+      "@author Mae Fromm" "\n"
+      "@version 0.1" "\n"
+      "" "\n"
+      "The DF_NodeOffsetPointXY data frame presents a structure to hold different sized data frames for a single node" "\n"
+      "point in a lane. Nodes are described in terms of X and Y offsets in units of 1 centimeter (when zoom is 1:1)." "\n"
+      "" "\n"
+      "NodeOffsetPointXY ::= CHOICE {" "\n"
+      "-- Nodes with X,Y content" "\n"
+      "node-XY1 Node-XY-20b, -- node is within 5.11m of last node" "\n"
+      "node-XY2 Node-XY-22b, -- node is within 10.23m of last node" "\n"
+      "node-XY3 Node-XY-24b, -- node is within 20.47m of last node" "\n"
+      "node-XY4 Node-XY-26b, -- node is within 40.96m of last node" "\n"
+      "node-XY5 Node-XY-28b, -- node is within 81.91m of last node" "\n"
+      "node-XY6 Node-XY-32b, -- node is within 327.67m of last node" "\n"
+      "node-LatLon Node-LLmD-64b, -- node is a full 32b Lat/Lon range" "\n"
+      "regional RegionalExtension {{REGION.Reg-NodeOffsetPointXY}}" "\n"
+      " -- node which follows is of a" "\n"
+      " -- regional definition type" "\n"
+      "}")
+    struct NodeOffsetPointXY {
+      uint8 choice;
+
+      j2735_v2x_msgs::msg::NodeXY20b node_xy1;
+
+      j2735_v2x_msgs::msg::NodeXY22b node_xy2;
+
+      j2735_v2x_msgs::msg::NodeXY24b node_xy3;
+
+      j2735_v2x_msgs::msg::NodeXY26b node_xy4;
+
+      j2735_v2x_msgs::msg::NodeXY28b node_xy5;
+
+      j2735_v2x_msgs::msg::NodeXY32b node_xy6;
+
+      j2735_v2x_msgs::msg::NodeLLmD64b node_latlon;
+    };
+  };
+};

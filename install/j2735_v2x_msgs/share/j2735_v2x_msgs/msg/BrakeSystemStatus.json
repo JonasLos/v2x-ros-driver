@@ -1,0 +1,191 @@
+{
+  "type_description_msg": {
+    "type_description": {
+      "type_name": "j2735_v2x_msgs/msg/BrakeSystemStatus",
+      "fields": [
+        {
+          "name": "wheel_brakes",
+          "type": {
+            "type_id": 1,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": "j2735_v2x_msgs/msg/BrakeAppliedStatus"
+          },
+          "default_value": ""
+        },
+        {
+          "name": "traction",
+          "type": {
+            "type_id": 1,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": "j2735_v2x_msgs/msg/TractionControlStatus"
+          },
+          "default_value": ""
+        },
+        {
+          "name": "abs",
+          "type": {
+            "type_id": 1,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": "j2735_v2x_msgs/msg/AntiLockBrakeStatus"
+          },
+          "default_value": ""
+        },
+        {
+          "name": "scs",
+          "type": {
+            "type_id": 1,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": "j2735_v2x_msgs/msg/StabilityControlStatus"
+          },
+          "default_value": ""
+        },
+        {
+          "name": "brake_boost",
+          "type": {
+            "type_id": 1,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": "j2735_v2x_msgs/msg/BrakeBoostApplied"
+          },
+          "default_value": ""
+        },
+        {
+          "name": "aux_brakes",
+          "type": {
+            "type_id": 1,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": "j2735_v2x_msgs/msg/AuxiliaryBrakeStatus"
+          },
+          "default_value": ""
+        }
+      ]
+    },
+    "referenced_type_descriptions": [
+      {
+        "type_name": "j2735_v2x_msgs/msg/AntiLockBrakeStatus",
+        "fields": [
+          {
+            "name": "anti_lock_brake_status",
+            "type": {
+              "type_id": 3,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/AuxiliaryBrakeStatus",
+        "fields": [
+          {
+            "name": "auxiliary_brake_status",
+            "type": {
+              "type_id": 3,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/BrakeAppliedStatus",
+        "fields": [
+          {
+            "name": "brake_applied_status",
+            "type": {
+              "type_id": 3,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/BrakeBoostApplied",
+        "fields": [
+          {
+            "name": "brake_boost_applied",
+            "type": {
+              "type_id": 3,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/StabilityControlStatus",
+        "fields": [
+          {
+            "name": "stability_control_status",
+            "type": {
+              "type_id": 3,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/TractionControlStatus",
+        "fields": [
+          {
+            "name": "traction_control_status",
+            "type": {
+              "type_id": 3,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      }
+    ]
+  },
+  "type_hashes": [
+    {
+      "type_name": "j2735_v2x_msgs/msg/BrakeSystemStatus",
+      "hash_string": "RIHS01_d9d7ed3e862a09ccef227bddcbc0edeb24a251d7e2565456c71b53c35387f5bf"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/AntiLockBrakeStatus",
+      "hash_string": "RIHS01_58155f60f0683411dc60646e1720e661837e0203d858507e61642f4ab5eee274"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/AuxiliaryBrakeStatus",
+      "hash_string": "RIHS01_092cba7e4e9e07bc42f63d5d30eded9f805526af04c450616f0b4d61598c6b79"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/BrakeAppliedStatus",
+      "hash_string": "RIHS01_7234f36d461293082548f1837473a5dfbf1be3aa795a371836eca061b8a0b207"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/BrakeBoostApplied",
+      "hash_string": "RIHS01_79403bd2406bf6d19d668ec24726aafae7a08f3980b77cb5853732aa4bde1496"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/StabilityControlStatus",
+      "hash_string": "RIHS01_89a1abef37be18085baf6bab389271769a7dee9c347638f0c4251c8155b81633"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/TractionControlStatus",
+      "hash_string": "RIHS01_8a7e7f5e52c7e46b206f54bccfc2777b4f5f986a7632c50929904a788a0d4d38"
+    }
+  ]
+}

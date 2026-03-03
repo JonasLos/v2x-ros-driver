@@ -1,0 +1,26 @@
+{
+  "type_description_msg": {
+    "type_description": {
+      "type_name": "j2735_v2x_msgs/msg/UserSizeAndBehaviour",
+      "fields": [
+        {
+          "name": "sizes_and_behaviors",
+          "type": {
+            "type_id": 3,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": ""
+          },
+          "default_value": ""
+        }
+      ]
+    },
+    "referenced_type_descriptions": []
+  },
+  "type_hashes": [
+    {
+      "type_name": "j2735_v2x_msgs/msg/UserSizeAndBehaviour",
+      "hash_string": "RIHS01_1963c050f70ed24f2e8844db87a1b29f7d2e51d35b2643099fc8bfbc46a78996"
+    }
+  ]
+}

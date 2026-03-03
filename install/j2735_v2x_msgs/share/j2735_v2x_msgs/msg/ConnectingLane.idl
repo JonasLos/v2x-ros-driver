@@ -1,0 +1,48 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from j2735_v2x_msgs/msg/ConnectingLane.msg
+// generated code does not contain a copyright notice
+
+#include "j2735_v2x_msgs/msg/AllowedManeuvers.idl"
+
+module j2735_v2x_msgs {
+  module msg {
+    module ConnectingLane_Constants {
+      const uint16 LANE_UNAVAILABLE = 0;
+    };
+    @verbatim (language="comment", text=
+      "ConnectingLane.msg" "\n"
+      "" "\n"
+      "J2735 2016 message format." "\n"
+      "" "\n"
+      "@author Mae Fromm" "\n"
+      "@version 0.1" "\n"
+      "" "\n"
+      "ConnectingLane ::= SEQUENCE {" "\n"
+      "lane LaneID," "\n"
+      "-- Index of the connecting lane" "\n"
+      "maneuver AllowedManeuvers OPTIONAL" "\n"
+      "-- The Maneuver between" "\n"
+      "-- the enclosing lane and this lane" "\n"
+      "-- at the stop line to connect them" "\n"
+      "}")
+    struct ConnectingLane {
+      @verbatim (language="comment", text=
+        "LaneID ::= INTEGER (0..255)" "\n"
+        "-- the value 0 shall be used when the lane ID is" "\n"
+        "-- not available or not known" "\n"
+        "-- the value 255 is reserved for future use")
+      uint16 lane;
+
+      @verbatim (language="comment", text=
+        "-- the permitted maneuvers for this lane" "\n"
+        "AllowedManeuvers ::= BIT STRING {" "\n"
+        "-- With bits as defined:" "\n"
+        "-- Allowed maneuvers at path end (stop line)" "\n"
+        "-- *** All maneuvers with bits not set are therefore prohibited ! ***" "\n"
+        "-- A value of zero shall be used for unknown, indicating no Maneuver")
+      j2735_v2x_msgs::msg::AllowedManeuvers maneuver;
+
+      boolean maneuver_exists;
+    };
+  };
+};

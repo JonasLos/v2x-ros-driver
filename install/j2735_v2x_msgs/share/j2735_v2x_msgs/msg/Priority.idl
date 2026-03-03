@@ -1,0 +1,20 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from j2735_v2x_msgs/msg/Priority.msg
+// generated code does not contain a copyright notice
+
+
+module j2735_v2x_msgs {
+  module msg {
+    typedef uint8 uint8__1[1];
+    @verbatim (language="comment", text=
+      "Priority.msg" "\n"
+      "" "\n"
+      "J2735 2016 message format.")
+    struct Priority {
+      @verbatim (language="comment", text=
+        "Priority ::= OCTET STRING (SIZE(1))" "\n"
+        " -- Follow J2735 2016 definition notes on setting these bits")
+      uint8__1 priority;
+    };
+  };
+};

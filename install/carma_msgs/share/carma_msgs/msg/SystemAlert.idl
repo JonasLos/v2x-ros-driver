@@ -1,0 +1,36 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from carma_msgs/msg/SystemAlert.msg
+// generated code does not contain a copyright notice
+
+
+module carma_msgs {
+  module msg {
+    module SystemAlert_Constants {
+      @verbatim (language="comment", text=
+        "enumeration values for type." "\n"        "NOT_READY indicates that system is starting up" "\n"        "DRIVERS_READY is a one-time indicator that the startup sequence is complete.")
+      const uint8 CAUTION = 1;
+      const uint8 WARNING = 2;
+      const uint8 FATAL = 3;
+      const uint8 NOT_READY = 4;
+      const uint8 DRIVERS_READY = 5;
+      const uint8 SHUTDOWN = 6;
+    };
+    @verbatim (language="comment", text=
+      "SystemAlert.msg" "\n"
+      "" "\n"
+      "Broadcasts important alerts related to system health.")
+    struct SystemAlert {
+      @verbatim (language="comment", text=
+        "the enumerated alert type")
+      uint8 type;
+
+      @verbatim (language="comment", text=
+        "the specific alert message in human readable form")
+      string description;
+
+      @verbatim (language="comment", text=
+        "The fully specified name of the node which generated this message")
+      string source_node;
+    };
+  };
+};

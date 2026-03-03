@@ -1,0 +1,30 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from carma_msgs/msg/LightBarIndicator.msg
+// generated code does not contain a copyright notice
+
+
+module carma_msgs {
+  module msg {
+    module LightBarIndicator_Constants {
+      const uint8 GREEN_SOLID = 0;
+      const uint8 GREEN_FLASH = 1;
+      const uint8 YELLOW_SIDES = 2;
+      const uint8 YELLOW_DIM = 3;
+      const uint8 YELLOW_FLASH = 4;
+      const uint8 YELLOW_ARROW_LEFT = 5;
+      const uint8 YELLOW_ARROW_RIGHT = 6;
+      const uint8 YELLOW_ARROW_OUT = 7;
+    };
+    @verbatim (language="comment", text=
+      "LightBarIndicator.msg" "\n"
+      "" "\n"
+      "@author Misheel Bayartsengel" "\n"
+      "@version 0.1" "\n"
+      "" "\n"
+      "A component interacting with the lightbar manager can request/release control and set " "\n"
+      "lightbar indicators by specifying its IDs in here. ")
+    struct LightBarIndicator {
+      uint8 indicator;
+    };
+  };
+};

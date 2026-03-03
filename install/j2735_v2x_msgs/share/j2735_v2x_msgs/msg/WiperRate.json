@@ -1,0 +1,26 @@
+{
+  "type_description_msg": {
+    "type_description": {
+      "type_name": "j2735_v2x_msgs/msg/WiperRate",
+      "fields": [
+        {
+          "name": "wiper_rate",
+          "type": {
+            "type_id": 3,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": ""
+          },
+          "default_value": ""
+        }
+      ]
+    },
+    "referenced_type_descriptions": []
+  },
+  "type_hashes": [
+    {
+      "type_name": "j2735_v2x_msgs/msg/WiperRate",
+      "hash_string": "RIHS01_7a92198c1d7512d312fb932b07c09e5f5803b33e0e99e160cd8d7f531d1a9ffa"
+    }
+  ]
+}

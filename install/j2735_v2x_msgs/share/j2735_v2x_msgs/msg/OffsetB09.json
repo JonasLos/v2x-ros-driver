@@ -1,0 +1,26 @@
+{
+  "type_description_msg": {
+    "type_description": {
+      "type_name": "j2735_v2x_msgs/msg/OffsetB09",
+      "fields": [
+        {
+          "name": "offset",
+          "type": {
+            "type_id": 4,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": ""
+          },
+          "default_value": ""
+        }
+      ]
+    },
+    "referenced_type_descriptions": []
+  },
+  "type_hashes": [
+    {
+      "type_name": "j2735_v2x_msgs/msg/OffsetB09",
+      "hash_string": "RIHS01_6c439838ccb3b4b5e08d1cd3879b90dc6abc112efcdd17dacf3a924378752723"
+    }
+  ]
+}

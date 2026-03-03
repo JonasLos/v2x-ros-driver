@@ -1,0 +1,23 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from j2735_v2x_msgs/msg/TrailerWeight.msg
+// generated code does not contain a copyright notice
+
+
+module j2735_v2x_msgs {
+  module msg {
+    module TrailerWeight_Constants {
+      const uint16 TRAILER_WEIGHT_MAX = 64255;
+    };
+    @verbatim (language="comment", text=
+      "TrailerWeight.msg" "\n"
+      "" "\n"
+      "J2735 2016 message format.")
+    struct TrailerWeight {
+      @verbatim (language="comment", text=
+        "TrailerWeight ::= INTEGER (0..64255)" "\n"
+        "A data element re-used from the SAE J1939 standard and encoded as: 2 kg/bit, 0 degree offset, Range: 0 to" "\n"
+        "+128510 kg. See SPN 180, PGN reference 65258.")
+      uint16 trailer_weight;
+    };
+  };
+};

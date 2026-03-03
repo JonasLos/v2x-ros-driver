@@ -1,0 +1,60 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from j2735_v2x_msgs/msg/WeatherReport.msg
+// generated code does not contain a copyright notice
+
+#include "j2735_v2x_msgs/msg/CoefficientOfFriction.idl"
+#include "j2735_v2x_msgs/msg/NTCIPEssMobileFriction.idl"
+#include "j2735_v2x_msgs/msg/NTCIPEssPrecipRate.idl"
+#include "j2735_v2x_msgs/msg/NTCIPEssPrecipSituation.idl"
+#include "j2735_v2x_msgs/msg/NTCIPEssPrecipYesNo.idl"
+#include "j2735_v2x_msgs/msg/NTCIPEssSolarRadiation.idl"
+
+module j2735_v2x_msgs {
+  module msg {
+    module WeatherReport_Constants {
+      const uint16 HAS_RAIN_RATE = 1;
+      const uint16 HAS_PRECIP_SITUATION = 2;
+      const uint16 HAS_SOLAR_RADIATION = 4;
+      const uint16 HAS_FRICTION = 8;
+      const uint16 HAS_ROAD_FRICTION = 16;
+    };
+    @verbatim (language="comment", text=
+      "WeatherReport.msg" "\n"
+      "" "\n"
+      "J2735 2016 message format.")
+    struct WeatherReport {
+      @verbatim (language="comment", text=
+        "WeatherReport ::= SEQUENCE {" "\n"
+        "   isRaining        NTCIP.EssPrecipYesNo," "\n"
+        "   rainRate         NTCIP.EssPrecipRate       OPTIONAL," "\n"
+        "   precipSituation  NTCIP.EssPrecipSituation  OPTIONAL," "\n"
+        "   solarRadiation   NTCIP.EssSolarRadiation   OPTIONAL," "\n"
+        "   friction         NTCIP.EssMobileFriction   OPTIONAL," "\n"
+        "   roadFriction     CoefficientOfFriction     OPTIONAL," "\n"
+        "   ..." "\n"
+        "   }" "\n"
+        "A BIT STRING defining the presence of optional fields." "\n"
+        "Compare with bitwise-and" "\n"
+        "if (presence_vector & HAS_RAIN_RATE) etc." "\n"
+        "Create with bitwise-or" "\n"
+        "presence_vector = presence_vector | HAS_RAIN_RATE")
+      uint16 presence_vector;
+
+      j2735_v2x_msgs::msg::NTCIPEssPrecipYesNo is_raining;
+
+      @verbatim (language="comment", text=
+        "OPTIONAL FIELDS" "\n"
+        "All fields below this section are optional." "\n"
+        "The presence of a given field can be idenfied by checking the presence_vector")
+      j2735_v2x_msgs::msg::NTCIPEssPrecipRate rain_rate;
+
+      j2735_v2x_msgs::msg::NTCIPEssPrecipSituation precip_situation;
+
+      j2735_v2x_msgs::msg::NTCIPEssSolarRadiation solar_radiation;
+
+      j2735_v2x_msgs::msg::NTCIPEssMobileFriction friction;
+
+      j2735_v2x_msgs::msg::CoefficientOfFriction road_friction;
+    };
+  };
+};

@@ -1,0 +1,974 @@
+{
+  "type_description_msg": {
+    "type_description": {
+      "type_name": "j2735_v2x_msgs/msg/PathHistory",
+      "fields": [
+        {
+          "name": "presence_vector",
+          "type": {
+            "type_id": 3,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": ""
+          },
+          "default_value": ""
+        },
+        {
+          "name": "crumb_data",
+          "type": {
+            "type_id": 1,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": "j2735_v2x_msgs/msg/PathHistoryPointList"
+          },
+          "default_value": ""
+        },
+        {
+          "name": "initial_position",
+          "type": {
+            "type_id": 1,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": "j2735_v2x_msgs/msg/FullPositionVector"
+          },
+          "default_value": ""
+        },
+        {
+          "name": "curr_gnss_status",
+          "type": {
+            "type_id": 1,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": "j2735_v2x_msgs/msg/GNSSStatus"
+          },
+          "default_value": ""
+        }
+      ]
+    },
+    "referenced_type_descriptions": [
+      {
+        "type_name": "j2735_v2x_msgs/msg/CoarseHeading",
+        "fields": [
+          {
+            "name": "heading",
+            "type": {
+              "type_id": 3,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/DDateTime",
+        "fields": [
+          {
+            "name": "presence_vector",
+            "type": {
+              "type_id": 3,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "year",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "j2735_v2x_msgs/msg/DYear"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "month",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "j2735_v2x_msgs/msg/DMonth"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "day",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "j2735_v2x_msgs/msg/DDay"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "hour",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "j2735_v2x_msgs/msg/DHour"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "minute",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "j2735_v2x_msgs/msg/DMinute"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "second",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "j2735_v2x_msgs/msg/DSecond"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "offset",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "j2735_v2x_msgs/msg/DOffset"
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/DDay",
+        "fields": [
+          {
+            "name": "day",
+            "type": {
+              "type_id": 3,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/DHour",
+        "fields": [
+          {
+            "name": "hour",
+            "type": {
+              "type_id": 3,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/DMinute",
+        "fields": [
+          {
+            "name": "minute",
+            "type": {
+              "type_id": 3,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/DMonth",
+        "fields": [
+          {
+            "name": "month",
+            "type": {
+              "type_id": 3,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/DOffset",
+        "fields": [
+          {
+            "name": "offset_minute",
+            "type": {
+              "type_id": 4,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/DSecond",
+        "fields": [
+          {
+            "name": "millisecond",
+            "type": {
+              "type_id": 5,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/DYear",
+        "fields": [
+          {
+            "name": "year",
+            "type": {
+              "type_id": 5,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/Elevation",
+        "fields": [
+          {
+            "name": "elevation",
+            "type": {
+              "type_id": 6,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/ElevationConfidence",
+        "fields": [
+          {
+            "name": "confidence",
+            "type": {
+              "type_id": 3,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/FullPositionVector",
+        "fields": [
+          {
+            "name": "presence_vector",
+            "type": {
+              "type_id": 5,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "utc_time",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "j2735_v2x_msgs/msg/DDateTime"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "lon",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "j2735_v2x_msgs/msg/Longitude"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "lat",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "j2735_v2x_msgs/msg/Latitude"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "elevation",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "j2735_v2x_msgs/msg/Elevation"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "heading",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "j2735_v2x_msgs/msg/Heading"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "speed",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "j2735_v2x_msgs/msg/TransmissionAndSpeed"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "pos_accuracy",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "j2735_v2x_msgs/msg/PositionalAccuracy"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "time_confidence",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "j2735_v2x_msgs/msg/TimeConfidence"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "pos_confidence",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "j2735_v2x_msgs/msg/PositionConfidenceSet"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "speed_confidence",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "j2735_v2x_msgs/msg/SpeedandHeadingandThrottleConfidence"
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/GNSSStatus",
+        "fields": [
+          {
+            "name": "statuses",
+            "type": {
+              "type_id": 3,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/Heading",
+        "fields": [
+          {
+            "name": "heading",
+            "type": {
+              "type_id": 5,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/HeadingConfidence",
+        "fields": [
+          {
+            "name": "confidence",
+            "type": {
+              "type_id": 3,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/Latitude",
+        "fields": [
+          {
+            "name": "latitude",
+            "type": {
+              "type_id": 6,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/Longitude",
+        "fields": [
+          {
+            "name": "longitude",
+            "type": {
+              "type_id": 6,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/OffsetLLB18",
+        "fields": [
+          {
+            "name": "offset",
+            "type": {
+              "type_id": 6,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/PathHistoryPoint",
+        "fields": [
+          {
+            "name": "lat_offset",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "j2735_v2x_msgs/msg/OffsetLLB18"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "lon_offset",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "j2735_v2x_msgs/msg/OffsetLLB18"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "elevation_offset",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "j2735_v2x_msgs/msg/VertOffsetB12"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "time_offset",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "j2735_v2x_msgs/msg/TimeOffset"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "speed",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "j2735_v2x_msgs/msg/Speed"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "pos_accuracy",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "j2735_v2x_msgs/msg/PositionalAccuracy"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "heading",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "j2735_v2x_msgs/msg/CoarseHeading"
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/PathHistoryPointList",
+        "fields": [
+          {
+            "name": "points",
+            "type": {
+              "type_id": 145,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "j2735_v2x_msgs/msg/PathHistoryPoint"
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/PositionConfidence",
+        "fields": [
+          {
+            "name": "confidence",
+            "type": {
+              "type_id": 3,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/PositionConfidenceSet",
+        "fields": [
+          {
+            "name": "pos",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "j2735_v2x_msgs/msg/PositionConfidence"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "elevation",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "j2735_v2x_msgs/msg/ElevationConfidence"
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/PositionalAccuracy",
+        "fields": [
+          {
+            "name": "semi_major",
+            "type": {
+              "type_id": 3,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "semi_minor",
+            "type": {
+              "type_id": 3,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "orientation",
+            "type": {
+              "type_id": 5,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/Speed",
+        "fields": [
+          {
+            "name": "speed",
+            "type": {
+              "type_id": 5,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/SpeedConfidence",
+        "fields": [
+          {
+            "name": "speed_confidence",
+            "type": {
+              "type_id": 3,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/SpeedandHeadingandThrottleConfidence",
+        "fields": [
+          {
+            "name": "heading",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "j2735_v2x_msgs/msg/HeadingConfidence"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "speed",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "j2735_v2x_msgs/msg/SpeedConfidence"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "throttle",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "j2735_v2x_msgs/msg/ThrottleConfidence"
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/ThrottleConfidence",
+        "fields": [
+          {
+            "name": "confidence",
+            "type": {
+              "type_id": 3,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/TimeConfidence",
+        "fields": [
+          {
+            "name": "confidence",
+            "type": {
+              "type_id": 3,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/TimeOffset",
+        "fields": [
+          {
+            "name": "offset",
+            "type": {
+              "type_id": 5,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/TransmissionAndSpeed",
+        "fields": [
+          {
+            "name": "transmission",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "j2735_v2x_msgs/msg/TransmissionState"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "speed",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "j2735_v2x_msgs/msg/Velocity"
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/TransmissionState",
+        "fields": [
+          {
+            "name": "transmission_state",
+            "type": {
+              "type_id": 3,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/Velocity",
+        "fields": [
+          {
+            "name": "velocity",
+            "type": {
+              "type_id": 5,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/VertOffsetB12",
+        "fields": [
+          {
+            "name": "offset",
+            "type": {
+              "type_id": 4,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      }
+    ]
+  },
+  "type_hashes": [
+    {
+      "type_name": "j2735_v2x_msgs/msg/PathHistory",
+      "hash_string": "RIHS01_d15af076a3577ffb89db55264b6c0fe34b7387260959572069bd6b66994e8ba6"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/CoarseHeading",
+      "hash_string": "RIHS01_1f65fa36687fac8ecb5601ff006c2272abbc40e813eff158fb43d10e993db9c8"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/DDateTime",
+      "hash_string": "RIHS01_207d4a5ea789a3fcb50a91b1a6cf8be441b6fe071e1444330f1a850aa19330c8"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/DDay",
+      "hash_string": "RIHS01_07ee908cb8fa010165424f9479930c205f19fa7fa83d97fdc838a52f1febbaae"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/DHour",
+      "hash_string": "RIHS01_0b61b8a57f7cd5c1cc3fe550a519fdbf42dee0e908f0d85423464d2059ac758f"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/DMinute",
+      "hash_string": "RIHS01_362f1cf0cbb9ba3fdd53f8bae85869bb896398b8ebb9198a04a569b9dc963fec"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/DMonth",
+      "hash_string": "RIHS01_60f7dda895e806e6b5eb4d549dede7dfecdc5da38da59aa82740d41465acf410"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/DOffset",
+      "hash_string": "RIHS01_a9ed8e6b5e5773095ecb92eed7d03873fc10ea2d2625dc0a2391f13d0abf6284"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/DSecond",
+      "hash_string": "RIHS01_301d97443512b03bedf4a3194e904ab49fd62954e6c01a550f55b2c3d31512c0"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/DYear",
+      "hash_string": "RIHS01_a5ab56676ac6db81b2a4d56601da13aafdfd7933257822919669e3acfe9cd426"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/Elevation",
+      "hash_string": "RIHS01_19c1bd79d539cf3db4055fbfc7a02b316d6f68e16dbc723ede45f252ebf0ca68"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/ElevationConfidence",
+      "hash_string": "RIHS01_00a21cd6c76948cab724b36aa3b2dd8f5f5a6db4946d7998ac9d6e0033bc4d70"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/FullPositionVector",
+      "hash_string": "RIHS01_be5a5fa820ba216315131ff57dc0395d09db3d58c02f767819429d270cc80fea"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/GNSSStatus",
+      "hash_string": "RIHS01_4da663dd674c159db167f4ddf636b8246ade50e9d32f9c55e82a13f38dd9f199"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/Heading",
+      "hash_string": "RIHS01_3bbe411d07bf87093c834a2d5605f9dd824f49b6ff0d2c398b7f29ff6441235b"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/HeadingConfidence",
+      "hash_string": "RIHS01_d791eaa147accea9d08d54a357cddc0128de2e2bd04902d53f89ce79694ada27"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/Latitude",
+      "hash_string": "RIHS01_9804a0c29e8ebafa62a6724f39c212fb93ae8d51545f2e2c287e883a33e43bf3"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/Longitude",
+      "hash_string": "RIHS01_40b0e507bda24c74d89a7e0b3c76439bf1f8596b9b4513559f422849409f0b00"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/OffsetLLB18",
+      "hash_string": "RIHS01_6012a23c8ed5c0fb4baa9ed8171c07bc853b1b48d55890145e7d1211b527e3bb"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/PathHistoryPoint",
+      "hash_string": "RIHS01_f93f1096cc16632c87d4beae0e40bed1c5df6969847330490f9d00a1a0541574"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/PathHistoryPointList",
+      "hash_string": "RIHS01_13e5bf42055a3c1c6942bcb4241f04c6ad8fd73ad2aa21703e31a90ac5e266ea"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/PositionConfidence",
+      "hash_string": "RIHS01_6121fa3fed8e093bde3148a5b7d521790269794bb3cee693a0d8486b34db8b17"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/PositionConfidenceSet",
+      "hash_string": "RIHS01_8e1af9c00ff6512f59145f4ca5a4dbee90f54ad6a99de4bff6464aed5615d7f8"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/PositionalAccuracy",
+      "hash_string": "RIHS01_c981c5b31372abbaca5af5cdc2a22bc9fba17373ed39f68f9ec76cc3ba5dfedd"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/Speed",
+      "hash_string": "RIHS01_b8c8b73592e520478083567fe3432a050ec7f283f58d71c8d4093a2b415bb1ec"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/SpeedConfidence",
+      "hash_string": "RIHS01_601a6af851ec0e4dfc8b6a0c608f60b6be2dc57b587d3e7656b21c09d85920a0"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/SpeedandHeadingandThrottleConfidence",
+      "hash_string": "RIHS01_20000e4ad638db6bc21e53a22b774b8450c568022d3f0dc1ebf35446144f3771"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/ThrottleConfidence",
+      "hash_string": "RIHS01_eb4c0881a7d50a4ac8b47899a64b602419c571eeb795999ef8b3c06d751784e5"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/TimeConfidence",
+      "hash_string": "RIHS01_71ec329f3b01ec1e64af4981821049127769081bc1cb23b516bba83ab93f6607"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/TimeOffset",
+      "hash_string": "RIHS01_9c0d74c8b3ce4fa546073bc339a14ae86b35b0940b9b5b9f7b613cefb088b17c"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/TransmissionAndSpeed",
+      "hash_string": "RIHS01_82d2345ada0faa69aa92239bb048cbbe3c029e05ebb9caaef511cd7d9e953410"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/TransmissionState",
+      "hash_string": "RIHS01_50d7de5a1437c56a34763d70cee212be56fc621bb4344163a8345d806415535c"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/Velocity",
+      "hash_string": "RIHS01_05e51ea8348a162e6be6aaf0519ac6204100cfad68b5fbe8c307d5727a769d76"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/VertOffsetB12",
+      "hash_string": "RIHS01_bef5f60626d1526efc08ad6443b9caca3d7ec381e44040951dbbd03cb4e86d34"
+    }
+  ]
+}

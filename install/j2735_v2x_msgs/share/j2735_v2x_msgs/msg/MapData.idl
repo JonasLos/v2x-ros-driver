@@ -1,0 +1,75 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from j2735_v2x_msgs/msg/MapData.msg
+// generated code does not contain a copyright notice
+
+#include "j2735_v2x_msgs/msg/DataParameters.idl"
+#include "j2735_v2x_msgs/msg/IntersectionGeometry.idl"
+#include "j2735_v2x_msgs/msg/LayerType.idl"
+#include "j2735_v2x_msgs/msg/RestrictionClassList.idl"
+#include "j2735_v2x_msgs/msg/RoadSegmentList.idl"
+#include "std_msgs/msg/Header.idl"
+
+module j2735_v2x_msgs {
+  module msg {
+    @verbatim (language="comment", text=
+      "MapData.msg" "\n"
+      "" "\n"
+      "J2735 2016 message format." "\n"
+      "" "\n"
+      "@author Mae Fromm" "\n"
+      "@version 0.1" "\n"
+      "" "\n"
+      "Contains critical core elements deemed to be needed with every MapData Message" "\n"
+      "The MapData message is used to convey many types of geographic road information." "\n"
+      "At the current time its primary use is to convey one or more intersection lane geometry maps within a single message.")
+    struct MapData {
+      std_msgs::msg::Header header;
+
+      @verbatim (language="comment", text=
+        "MinuteOfTheYear OPTIONAL ::= INTEGER (0..527040)" "\n"
+        " -- The value 527040 shall be used for invalid")
+      uint32 time_stamp;
+
+      boolean time_stamp_exists;
+
+      @verbatim (language="comment", text=
+        "MsgCount ::= INTEGER (0..127)")
+      uint8 msg_issue_revision;
+
+      @verbatim (language="comment", text=
+        "LayerType OPTIONAL :: = ENUMERATED")
+      j2735_v2x_msgs::msg::LayerType layer_type;
+
+      @verbatim (language="comment", text=
+        "LayerID OPTIONAL ::= INTEGER (0..100)")
+      uint8 layer_id;
+
+      boolean layer_id_exists;
+
+      @verbatim (language="comment", text=
+        "IntersectionGeometryList OPTIONAL ::= SEQUENCE (SIZE(1..32)) OF IntersectionGeometry")
+      sequence<j2735_v2x_msgs::msg::IntersectionGeometry> intersections;
+
+      boolean intersections_exists;
+
+      @verbatim (language="comment", text=
+        "road_segments RoadSegmentList OPTIONAL," "\n"
+        "-- All roadway descriptions")
+      j2735_v2x_msgs::msg::RoadSegmentList road_segments;
+
+      boolean road_segments_exists;
+
+      @verbatim (language="comment", text=
+        "DataParameters OPTIONAL,")
+      j2735_v2x_msgs::msg::DataParameters data_parameters;
+
+      boolean data_parameters_exists;
+
+      @verbatim (language="comment", text=
+        "RestrictionClassList OPTIONAL,")
+      j2735_v2x_msgs::msg::RestrictionClassList restriction_list;
+
+      boolean restriction_list_exists;
+    };
+  };
+};

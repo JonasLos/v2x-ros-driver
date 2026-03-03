@@ -1,0 +1,105 @@
+{
+  "type_description_msg": {
+    "type_description": {
+      "type_name": "j2735_v2x_msgs/msg/WiperSet",
+      "fields": [
+        {
+          "name": "presence_vector",
+          "type": {
+            "type_id": 5,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": ""
+          },
+          "default_value": ""
+        },
+        {
+          "name": "status_front",
+          "type": {
+            "type_id": 1,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": "j2735_v2x_msgs/msg/WiperStatus"
+          },
+          "default_value": ""
+        },
+        {
+          "name": "rate_front",
+          "type": {
+            "type_id": 1,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": "j2735_v2x_msgs/msg/WiperRate"
+          },
+          "default_value": ""
+        },
+        {
+          "name": "status_rear",
+          "type": {
+            "type_id": 1,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": "j2735_v2x_msgs/msg/WiperStatus"
+          },
+          "default_value": ""
+        },
+        {
+          "name": "rate_rear",
+          "type": {
+            "type_id": 1,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": "j2735_v2x_msgs/msg/WiperRate"
+          },
+          "default_value": ""
+        }
+      ]
+    },
+    "referenced_type_descriptions": [
+      {
+        "type_name": "j2735_v2x_msgs/msg/WiperRate",
+        "fields": [
+          {
+            "name": "wiper_rate",
+            "type": {
+              "type_id": 3,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/WiperStatus",
+        "fields": [
+          {
+            "name": "wiper_status",
+            "type": {
+              "type_id": 3,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      }
+    ]
+  },
+  "type_hashes": [
+    {
+      "type_name": "j2735_v2x_msgs/msg/WiperSet",
+      "hash_string": "RIHS01_839531e9ad33a904a04e1d2334fda8b5ba9be4f1d5cd81d2537a571df592a73b"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/WiperRate",
+      "hash_string": "RIHS01_7a92198c1d7512d312fb932b07c09e5f5803b33e0e99e160cd8d7f531d1a9ffa"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/WiperStatus",
+      "hash_string": "RIHS01_d1a276b740aa002aaa4b1dbadfb669ab271df91c91c2e4b4a5cbee45ee640a0b"
+    }
+  ]
+}

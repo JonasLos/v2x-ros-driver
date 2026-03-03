@@ -1,0 +1,79 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from j2735_v2x_msgs/msg/MovementState.msg
+// generated code does not contain a copyright notice
+
+#include "j2735_v2x_msgs/msg/ManeuverAssistList.idl"
+#include "j2735_v2x_msgs/msg/MovementEventList.idl"
+
+module j2735_v2x_msgs {
+  module msg {
+    @verbatim (language="comment", text=
+      "MovementState.msg" "\n"
+      "" "\n"
+      "J2735 2016 message format." "\n"
+      "" "\n"
+      "@author Mae Fromm" "\n"
+      "@version 0.1" "\n"
+      "" "\n"
+      "The MovementState data frame is used to convey various information about the current or future movement state of" "\n"
+      "a designated collection of one or more lanes of a common type. This is referred to as the GroupID. Note that lane object" "\n"
+      "types supported include both motorized vehicle lanes as well as pedestrian lanes and dedicated rail and transit lanes. Of" "\n"
+      "the reported data elements, the time to change (the time remaining in the current state) is often of the most value. Lanes" "\n"
+      "with a common state (typically adjacent sets of lanes in an approach) in a signalized intersection will have individual lane" "\n"
+      "values such as total vehicle counts, summed. It is used in the SPAT message to convey every active movement in a" "\n"
+      "given intersection so that vehicles, when combined with certain map information, can determine the state of the signal" "\n"
+      "phases." "\n"
+      "" "\n"
+      "MovementState ::= SEQUENCE {" "\n"
+      "movementName DescriptiveName OPTIONAL," "\n"
+      "-- uniquely defines movement by name" "\n"
+      "-- human readable name for intersection" "\n"
+      "-- to be used only in debug mode" "\n"
+      "signalGroup SignalGroupID," "\n"
+      "-- the group id is used to map to lists" "\n"
+      "-- of lanes (and their descriptions)" "\n"
+      "-- which this MovementState data applies to" "\n"
+      "-- see comments in the Remarks for usage details" "\n"
+      "state-time-speed MovementEventList," "\n"
+      "-- Consisting of sets of movement data with:" "\n"
+      "-- a) SignalPhaseState" "\n"
+      "-- b) TimeChangeDetails, and" "\n"
+      "-- c) AdvisorySpeeds (optional )" "\n"
+      "-- Note one or more of the movement events may be for" "\n"
+      "-- a future time and that this allows conveying multiple" "\n"
+      "-- predictive phase and movement timing for various uses" "\n"
+      "-- for the current signal group" "\n"
+      "maneuverAssistList ManeuverAssistList OPTIONAL," "\n"
+      "-- This information may also be placed in the" "\n"
+      "-- IntersectionState when common information applies to" "\n"
+      "-- different lanes in the same way" "\n"
+      "regional SEQUENCE (SIZE(1..4)) OF RegionalExtension {{REGION.Reg-MovementState}} OPTIONAL," "\n"
+      "..." "\n"
+      "}")
+    struct MovementState {
+      @verbatim (language="comment", text=
+        "DescriptiveName OPTIONAL := IA5String (SIZE(1..63))" "\n"
+        "-- often for debug use only" "\n"
+        "-- but at times used to name ped crossings")
+      string movement_name;
+
+      boolean movement_name_exists;
+
+      @verbatim (language="comment", text=
+        "SignalGroupID ::= INTEGER (0..255)" "\n"
+        "-- The value 0 shall be used when the ID is" "\n"
+        "-- not available or known" "\n"
+        "-- the value 255 is reserved to indicate a" "\n"
+        "-- permanent green movement state")
+      uint8 signal_group;
+
+      @verbatim (language="comment", text=
+        "state-time-speed MovementEventList")
+      j2735_v2x_msgs::msg::MovementEventList state_time_speed;
+
+      j2735_v2x_msgs::msg::ManeuverAssistList maneuver_assist_list;
+
+      boolean maneuver_assist_list_exists;
+    };
+  };
+};

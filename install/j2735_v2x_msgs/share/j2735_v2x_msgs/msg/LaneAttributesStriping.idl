@@ -1,0 +1,42 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from j2735_v2x_msgs/msg/LaneAttributesStriping.msg
+// generated code does not contain a copyright notice
+
+
+module j2735_v2x_msgs {
+  module msg {
+    @verbatim (language="comment", text=
+      "LaneAttributesBarrier.msg" "\n"
+      "" "\n"
+      "J2735 2016 message format." "\n"
+      "" "\n"
+      "@author Mae Fromm" "\n"
+      "@version 0.1" "\n"
+      "" "\n"
+      "The LaneAttributes-Striping data element relates specific properties found" "\n"
+      "in various types of ground striping lane types." "\n"
+      "" "\n"
+      "LaneAttributes-Striping ::= BIT STRING {" "\n"
+      "-- With bits as defined:" "\n"
+      "stripeToConnectingLanesRevocableLane(0)," "\n"
+      "-- this lane may be activated or not activated based" "\n"
+      "-- on the current SPAT message contents" "\n"
+      "-- if not asserted, the lane is ALWAYS present" "\n"
+      "stripeDrawOnLeft(1)," "\n"
+      "stripeDrawOnRight(2)," "\n"
+      "-- which side of lane to mark" "\n"
+      "stripeToConnectingLanesLeft(3)," "\n"
+      "stripeToConnectingLanesRight(4)," "\n"
+      "stripeToConnectingLanesAhead(5)" "\n"
+      "-- the stripe type should be" "\n"
+      "-- presented to the user visually" "\n"
+      "-- to reflect stripes in the" "\n"
+      "-- intersection for the type of" "\n"
+      "-- movement indicated" "\n"
+      "-- Bits 6~15 reserved and set to zero" "\n"
+      "} (SIZE (16))")
+    struct LaneAttributesStriping {
+      uint16 lane_attributes_striping;
+    };
+  };
+};

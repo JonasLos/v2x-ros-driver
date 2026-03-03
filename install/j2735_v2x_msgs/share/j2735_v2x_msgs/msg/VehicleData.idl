@@ -1,0 +1,48 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from j2735_v2x_msgs/msg/VehicleData.msg
+// generated code does not contain a copyright notice
+
+#include "j2735_v2x_msgs/msg/BumperHeights.idl"
+#include "j2735_v2x_msgs/msg/TrailerWeight.idl"
+#include "j2735_v2x_msgs/msg/VehicleHeight.idl"
+#include "j2735_v2x_msgs/msg/VehicleMass.idl"
+
+module j2735_v2x_msgs {
+  module msg {
+    module VehicleData_Constants {
+      const uint16 HAS_HEIGHT = 1;
+      const uint16 HAS_BUMPERS = 2;
+      const uint16 HAS_MASS = 4;
+      const uint16 HAS_TRAILER_WEIGHT = 8;
+    };
+    @verbatim (language="comment", text=
+      "VehicleData.msg" "\n"
+      "" "\n"
+      "J2735 2016 message format.")
+    struct VehicleData {
+      @verbatim (language="comment", text=
+        "VehicleData ::= SEQUENCE {" "\n"
+        "   -- Values for width and length are sent in BSM part I" "\n"
+        "   height        VehicleHeight   OPTIONAL," "\n"
+        "   bumpers       BumperHeights   OPTIONAL," "\n"
+        "   mass          VehicleMass     OPTIONAL," "\n"
+        "   trailerWeight TrailerWeight   OPTIONAL," "\n"
+        "   ..." "\n"
+        "   }" "\n"
+        "A BIT STRING defining the presence of optional fields." "\n"
+        "Compare with bitwise-and" "\n"
+        "if (presence_vector & HAS_PATH_HISTORY) etc." "\n"
+        "Create with bitwise-or" "\n"
+        "presence_vector = presence_vector | HAS_PATH_HISTORY")
+      uint16 presence_vector;
+
+      j2735_v2x_msgs::msg::VehicleHeight height;
+
+      j2735_v2x_msgs::msg::BumperHeights bumpers;
+
+      j2735_v2x_msgs::msg::VehicleMass mass;
+
+      j2735_v2x_msgs::msg::TrailerWeight trailer_weight;
+    };
+  };
+};

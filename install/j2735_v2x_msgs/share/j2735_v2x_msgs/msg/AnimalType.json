@@ -1,0 +1,26 @@
+{
+  "type_description_msg": {
+    "type_description": {
+      "type_name": "j2735_v2x_msgs/msg/AnimalType",
+      "fields": [
+        {
+          "name": "type",
+          "type": {
+            "type_id": 3,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": ""
+          },
+          "default_value": ""
+        }
+      ]
+    },
+    "referenced_type_descriptions": []
+  },
+  "type_hashes": [
+    {
+      "type_name": "j2735_v2x_msgs/msg/AnimalType",
+      "hash_string": "RIHS01_77d2a3e190ee9af72c34bb5baeb3d63813da5fc1186d5e284db54bcbee041d0d"
+    }
+  ]
+}

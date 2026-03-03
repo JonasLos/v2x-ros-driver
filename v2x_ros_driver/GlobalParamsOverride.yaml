@@ -1,0 +1,12 @@
+v2x_ros_driver_node:
+  ros__parameters:
+    v2x_radio_address: "192.168.0.54"
+    v2x_radio_listening_port: 1516
+    listening_port: 5398
+
+hardware_interface:
+  v2x_ros_driver_node:
+    ros__parameters:
+      v2x_radio_address: "192.168.0.54"
+      v2x_radio_listening_port: 1516
+      listening_port: 5398

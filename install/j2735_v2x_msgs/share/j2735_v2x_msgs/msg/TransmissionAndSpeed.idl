@@ -1,0 +1,28 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from j2735_v2x_msgs/msg/TransmissionAndSpeed.msg
+// generated code does not contain a copyright notice
+
+#include "j2735_v2x_msgs/msg/TransmissionState.idl"
+#include "j2735_v2x_msgs/msg/Velocity.idl"
+
+module j2735_v2x_msgs {
+  module msg {
+    @verbatim (language="comment", text=
+      "TransmissionAndSpeed.msg" "\n"
+      "" "\n"
+      "J2735 2016 message format." "\n"
+      "" "\n"
+      "Parsed description of TransmissionAndSpeed from the SAE J2735 2016 specification." "\n"
+      "For further usage details consult the specification." "\n"
+      "" "\n"
+      "TransmissionAndSpeed ::= SEQUENCE {" "\n"
+      "   transmisson   TransmissionState," "\n"
+      "   speed         Velocity" "\n"
+      "   }")
+    struct TransmissionAndSpeed {
+      j2735_v2x_msgs::msg::TransmissionState transmission;
+
+      j2735_v2x_msgs::msg::Velocity speed;
+    };
+  };
+};

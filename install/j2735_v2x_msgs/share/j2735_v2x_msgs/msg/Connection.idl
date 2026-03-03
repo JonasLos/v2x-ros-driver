@@ -1,0 +1,79 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from j2735_v2x_msgs/msg/Connection.msg
+// generated code does not contain a copyright notice
+
+#include "j2735_v2x_msgs/msg/ConnectingLane.idl"
+#include "j2735_v2x_msgs/msg/IntersectionReferenceID.idl"
+
+module j2735_v2x_msgs {
+  module msg {
+    @verbatim (language="comment", text=
+      "Connection.msg" "\n"
+      "" "\n"
+      "J2735 2016 message format." "\n"
+      "" "\n"
+      "@author Mae Fromm" "\n"
+      "@version 0.1" "\n"
+      "" "\n"
+      "The Connection data structure is used in the ConnectsToList data frame to provide data about how the stop line at" "\n"
+      "the end of a single lane connects to another lane beyond its stop point. The ConnectingLane entry ties an outbound" "\n"
+      "(egress) lane by its index to a valid single maneuver required to reach that outbound lane. The SignalGroupID maps this" "\n"
+      "to a single SPAT index. (Note that more than one entry can exist for any given lane to handle admissive and protected" "\n"
+      "conditions)." "\n"
+      "" "\n"
+      "Connection ::= SEQUENCE {" "\n"
+      "-- The subject lane connecting to this lane is:" "\n"
+      "connectingLane ConnectingLane," "\n"
+      "-- The index of the connecting lane and also" "\n"
+      "-- the maneuver from the current lane to it" "\n"
+      "remoteIntersection IntersectionReferenceID OPTIONAL," "\n"
+      "-- This entry is only used when the" "\n"
+      "-- indicated connecting lane belongs" "\n"
+      "-- to another intersection layout. This" "\n"
+      "-- provides a means to create meshes of lanes" "\n"
+      "-- SPAT mapping details at the stop line are:" "\n"
+      "signalGroup SignalGroupID OPTIONAL," "\n"
+      "-- The matching signal group send by" "\n"
+      "-- the SPAT message for this lane/maneuver." "\n"
+      "-- Shall be present unless the connectingLane" "\n"
+      "-- has no signal group (is un-signalized)" "\n"
+      "userClass RestrictionClassID OPTIONAL," "\n"
+      "-- The Restriction Class of users this applies to" "\n"
+      "-- The use of some lane/maneuver and SignalGroupID" "\n"
+      "-- pairings are restricted to selected users." "\n"
+      "-- When absent, the SignalGroupID applies to all" "\n"
+      "-- Movement assist details are given by:" "\n"
+      "connectionID LaneConnectionID OPTIONAL" "\n"
+      "-- An optional connection index used to" "\n"
+      "-- relate this lane connection to any dynamic" "\n"
+      "-- clearance data in the SPAT. Note that" "\n"
+      "-- the index may be shared with other" "\n"
+      "-- connections if the clearance data is common" "\n"
+      "}")
+    struct Connection {
+      j2735_v2x_msgs::msg::ConnectingLane connecting_lane;
+
+      j2735_v2x_msgs::msg::IntersectionReferenceID remote_intersection;
+
+      boolean remote_intersection_exists;
+
+      @verbatim (language="comment", text=
+        "SignalGroupID ::= INTEGER (0..255)")
+      uint8 signal_group;
+
+      boolean signal_group_exists;
+
+      @verbatim (language="comment", text=
+        "RestrictionClassID ::= INTEGER (0..255)")
+      uint8 user_class;
+
+      boolean user_class_exists;
+
+      @verbatim (language="comment", text=
+        "LaneConnectionID ::= INTEGER (0..255)")
+      uint8 connection_id;
+
+      boolean connection_id_exists;
+    };
+  };
+};

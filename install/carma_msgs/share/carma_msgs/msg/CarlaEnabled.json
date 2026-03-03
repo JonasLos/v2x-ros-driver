@@ -1,0 +1,26 @@
+{
+  "type_description_msg": {
+    "type_description": {
+      "type_name": "carma_msgs/msg/CarlaEnabled",
+      "fields": [
+        {
+          "name": "carla_enabled",
+          "type": {
+            "type_id": 15,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": ""
+          },
+          "default_value": ""
+        }
+      ]
+    },
+    "referenced_type_descriptions": []
+  },
+  "type_hashes": [
+    {
+      "type_name": "carma_msgs/msg/CarlaEnabled",
+      "hash_string": "RIHS01_f4c2cfaee9dcfa925c61a177ae64a498a968a7a4906dbf23ca0cb4c969219ded"
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "type_description_msg": {
+    "type_description": {
+      "type_name": "j2735_v2x_msgs/msg/SpeedConfidence",
+      "fields": [
+        {
+          "name": "speed_confidence",
+          "type": {
+            "type_id": 3,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": ""
+          },
+          "default_value": ""
+        }
+      ]
+    },
+    "referenced_type_descriptions": []
+  },
+  "type_hashes": [
+    {
+      "type_name": "j2735_v2x_msgs/msg/SpeedConfidence",
+      "hash_string": "RIHS01_601a6af851ec0e4dfc8b6a0c608f60b6be2dc57b587d3e7656b21c09d85920a0"
+    }
+  ]
+}

@@ -1,0 +1,75 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from j2735_v2x_msgs/msg/NodeAttributeXY.msg
+// generated code does not contain a copyright notice
+
+
+module j2735_v2x_msgs {
+  module msg {
+    module NodeAttributeXY_Constants {
+      @verbatim (language="comment", text=
+        "enumeration values for status:")
+      const uint8 RESERVED = 0;
+      const uint8 STOPLINE = 1;
+      const uint8 ROUNDEDCAPSTYLEA = 2;
+      const uint8 ROUNDEDCAPSTYLEB = 3;
+      const uint8 MERGEPOINT = 4;
+      const uint8 DIVERGEPOINT = 5;
+      const uint8 DOWNSTREAMSTOPLINE = 6;
+      const uint8 DOWNSTREAMSTARTNODE = 7;
+      const uint8 CLOSEDTOTRAFFIC = 8;
+      const uint8 SAFEISLAND = 9;
+      const uint8 CURBPRESENTATSTEPOFF = 10;
+      const uint8 HYDRANTPRESENT = 11;
+    };
+    @verbatim (language="comment", text=
+      "NodeAttributeXY.msg" "\n"
+      "" "\n"
+      "J2735 2016 message format." "\n"
+      "" "\n"
+      "@author Mae Fromm" "\n"
+      "@version 0.1" "\n"
+      "" "\n"
+      "The DE_NodeAttributeXY data element is an enumerated list of attributes which can pertain to the current node" "\n"
+      "point." "\n"
+      "" "\n"
+      "NodeAttributeXY ::= ENUMERATED {" "\n"
+      "-- Various values which pertain only to the current node point" "\n"
+      "" "\n"
+      "-- General Items" "\n"
+      "reserved," "\n"
+      "stopLine,  -- point where a mid-path stop line exists" "\n"
+      "   -- See also 'do not block' for segments" "\n"
+      "-- Path finish details" "\n"
+      "roundedCapStyleA,  -- Used to control final path rounded end shape" "\n"
+      "      -- with edge of curve at final point in a circle" "\n"
+      "roundedCapStyleB, -- Used to control final path rounded end shape" "\n"
+      "   -- with edge of curve extending 50% of width past" "\n"
+      "   -- final point in a circle" "\n"
+      "" "\n"
+      "-- Topography Points (items with no concept of a distance along the path)" "\n"
+      "mergePoint,  -- Japan merge with 1 or more lanes" "\n"
+      "divergePoint,  -- Japan diverge with 1 or more lanes" "\n"
+      "downstreamStopLine, -- Japan style downstream intersection" "\n"
+      "   -- (a 2nd intersection) stop line" "\n"
+      "downstreamStartNode,  -- Japan style downstream intersection" "\n"
+      "   -- (a 2nd intersection) start node" "\n"
+      "" "\n"
+      "-- Pedestrian Support Attributes" "\n"
+      "closedToTraffic, -- where a pedestrian may NOT go" "\n"
+      "   -- to be used during construction events" "\n"
+      "safeIsland,  -- a pedestrian safe stopping point" "\n"
+      "   -- also called a traffic island" "\n"
+      "   -- This usage described a point feature on a path," "\n"
+      "   -- other entries can describe a path" "\n"
+      "curbPresentAtStepOff,  -- the sidewalk to street curb is NOT" "\n"
+      "   -- angled where it meets the edge of the" "\n"
+      "   -- roadway (user must step up/down)" "\n"
+      "-- Lane geometry details (see standard for defined shapes)" "\n"
+      "hydrantPresent,  -- Or other services access" "\n"
+      "..." "\n"
+      "}")
+    struct NodeAttributeXY {
+      uint8 node_attribute_xy;
+    };
+  };
+};

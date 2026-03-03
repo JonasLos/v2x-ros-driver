@@ -1,0 +1,223 @@
+{
+  "type_description_msg": {
+    "type_description": {
+      "type_name": "j2735_v2x_msgs/msg/ConnectsToList",
+      "fields": [
+        {
+          "name": "connect_to_list",
+          "type": {
+            "type_id": 145,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": "j2735_v2x_msgs/msg/Connection"
+          },
+          "default_value": ""
+        }
+      ]
+    },
+    "referenced_type_descriptions": [
+      {
+        "type_name": "j2735_v2x_msgs/msg/AllowedManeuvers",
+        "fields": [
+          {
+            "name": "allowed_maneuvers",
+            "type": {
+              "type_id": 5,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/ConnectingLane",
+        "fields": [
+          {
+            "name": "lane",
+            "type": {
+              "type_id": 5,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "maneuver",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "j2735_v2x_msgs/msg/AllowedManeuvers"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "maneuver_exists",
+            "type": {
+              "type_id": 15,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/Connection",
+        "fields": [
+          {
+            "name": "connecting_lane",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "j2735_v2x_msgs/msg/ConnectingLane"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "remote_intersection",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "j2735_v2x_msgs/msg/IntersectionReferenceID"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "remote_intersection_exists",
+            "type": {
+              "type_id": 15,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "signal_group",
+            "type": {
+              "type_id": 3,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "signal_group_exists",
+            "type": {
+              "type_id": 15,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "user_class",
+            "type": {
+              "type_id": 3,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "user_class_exists",
+            "type": {
+              "type_id": 15,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "connection_id",
+            "type": {
+              "type_id": 3,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "connection_id_exists",
+            "type": {
+              "type_id": 15,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/IntersectionReferenceID",
+        "fields": [
+          {
+            "name": "region",
+            "type": {
+              "type_id": 5,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "region_exists",
+            "type": {
+              "type_id": 15,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          },
+          {
+            "name": "id",
+            "type": {
+              "type_id": 5,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      }
+    ]
+  },
+  "type_hashes": [
+    {
+      "type_name": "j2735_v2x_msgs/msg/ConnectsToList",
+      "hash_string": "RIHS01_5c5bb0d43af5b7ff0e572a59dc04626a55aede11231befb06abdf8d59294e8ff"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/AllowedManeuvers",
+      "hash_string": "RIHS01_8810467e1bf6406f244a8fcf3c7dfb073feb1834f784dab5703705144dcf627e"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/ConnectingLane",
+      "hash_string": "RIHS01_a8e3c47bb0ff570d4821015c86a0df539a4c8ef59c0d44b7dc48c0d04b6751d0"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/Connection",
+      "hash_string": "RIHS01_9b2f8f7b08615313d4a29cdc904cf84517f90774479585d51e221be530c3e4ee"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/IntersectionReferenceID",
+      "hash_string": "RIHS01_074320644aefab7cf7faba08c788de34cf446180665760477b2f740880c35529"
+    }
+  ]
+}

@@ -1,0 +1,172 @@
+{
+  "type_description_msg": {
+    "type_description": {
+      "type_name": "j2735_v2x_msgs/msg/RTCMPackage",
+      "fields": [
+        {
+          "name": "presence_vector",
+          "type": {
+            "type_id": 5,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": ""
+          },
+          "default_value": ""
+        },
+        {
+          "name": "rtcm_header",
+          "type": {
+            "type_id": 1,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": "j2735_v2x_msgs/msg/RTCMHeader"
+          },
+          "default_value": ""
+        },
+        {
+          "name": "messages",
+          "type": {
+            "type_id": 147,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": ""
+          },
+          "default_value": ""
+        }
+      ]
+    },
+    "referenced_type_descriptions": [
+      {
+        "type_name": "j2735_v2x_msgs/msg/GNSSStatus",
+        "fields": [
+          {
+            "name": "statuses",
+            "type": {
+              "type_id": 3,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/OffsetB09",
+        "fields": [
+          {
+            "name": "offset",
+            "type": {
+              "type_id": 4,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/OffsetB10",
+        "fields": [
+          {
+            "name": "offset",
+            "type": {
+              "type_id": 4,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/OffsetB12",
+        "fields": [
+          {
+            "name": "offset",
+            "type": {
+              "type_id": 4,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/RTCMHeader",
+        "fields": [
+          {
+            "name": "status",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "j2735_v2x_msgs/msg/GNSSStatus"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "ant_offset_x",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "j2735_v2x_msgs/msg/OffsetB12"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "ant_offset_y",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "j2735_v2x_msgs/msg/OffsetB09"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "ant_offset_z",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "j2735_v2x_msgs/msg/OffsetB10"
+            },
+            "default_value": ""
+          }
+        ]
+      }
+    ]
+  },
+  "type_hashes": [
+    {
+      "type_name": "j2735_v2x_msgs/msg/RTCMPackage",
+      "hash_string": "RIHS01_4305d7e71a8bea428aeac745f8d3fa771ae0bb23afa1109807e88fc6ea3bbb63"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/GNSSStatus",
+      "hash_string": "RIHS01_4da663dd674c159db167f4ddf636b8246ade50e9d32f9c55e82a13f38dd9f199"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/OffsetB09",
+      "hash_string": "RIHS01_6c439838ccb3b4b5e08d1cd3879b90dc6abc112efcdd17dacf3a924378752723"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/OffsetB10",
+      "hash_string": "RIHS01_f1545e45221bbbd668d64b1a04b55a7f750c803b46c35f0c4a71b2a5ad8812c2"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/OffsetB12",
+      "hash_string": "RIHS01_6842cd20a91846ecb701bc093adc8ffab92b5872b98e3738d84106c485171d76"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/RTCMHeader",
+      "hash_string": "RIHS01_85ebbb0f1543b6c1dfa6c075394b22f45ae53c2306efc6025e3a934ee034e55b"
+    }
+  ]
+}

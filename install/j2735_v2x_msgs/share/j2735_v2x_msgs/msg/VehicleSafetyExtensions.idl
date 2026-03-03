@@ -1,0 +1,47 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from j2735_v2x_msgs/msg/VehicleSafetyExtensions.msg
+// generated code does not contain a copyright notice
+
+#include "j2735_v2x_msgs/msg/ExteriorLights.idl"
+#include "j2735_v2x_msgs/msg/PathHistory.idl"
+#include "j2735_v2x_msgs/msg/PathPrediction.idl"
+#include "j2735_v2x_msgs/msg/VehicleEventFlags.idl"
+
+module j2735_v2x_msgs {
+  module msg {
+    module VehicleSafetyExtensions_Constants {
+      const uint16 HAS_EVENTS = 1;
+      const uint16 HAS_PATH_HISTORY = 2;
+      const uint16 HAS_PATH_PREDICTION = 4;
+      const uint16 HAS_LIGHTS = 8;
+    };
+    @verbatim (language="comment", text=
+      "VehicleSafetyExtensions.msg" "\n"
+      "" "\n"
+      "J2735 2016 message format.")
+    struct VehicleSafetyExtensions {
+      @verbatim (language="comment", text=
+        "VehicleSafetyExtensions ::= SEQUENCE {" "\n"
+        "   events             VehicleEventFlags OPTIONAL," "\n"
+        "   pathHistory        PathHistory       OPTIONAL," "\n"
+        "   pathPrediction     PathPrediction    OPTIONAL," "\n"
+        "   lights             ExteriorLights    OPTIONAL," "\n"
+        "   ..." "\n"
+        "   }" "\n"
+        "A BIT STRING defining the presence of optional feilds." "\n"
+        "Compare with bitwise-and" "\n"
+        "if (presence_vector & HAS_EVENTS) etc." "\n"
+        "Create with bitwise-or" "\n"
+        "presence_vector = presence_vector | HAS_EVENTS")
+      uint16 presence_vector;
+
+      j2735_v2x_msgs::msg::VehicleEventFlags events;
+
+      j2735_v2x_msgs::msg::PathHistory path_history;
+
+      j2735_v2x_msgs::msg::PathPrediction path_prediction;
+
+      j2735_v2x_msgs::msg::ExteriorLights lights;
+    };
+  };
+};

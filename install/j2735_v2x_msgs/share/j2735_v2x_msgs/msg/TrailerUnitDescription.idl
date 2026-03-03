@@ -1,0 +1,93 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from j2735_v2x_msgs/msg/TrailerUnitDescription.msg
+// generated code does not contain a copyright notice
+
+#include "j2735_v2x_msgs/msg/BumperHeights.idl"
+#include "j2735_v2x_msgs/msg/IsDolly.idl"
+#include "j2735_v2x_msgs/msg/NodeXY24b.idl"
+#include "j2735_v2x_msgs/msg/OffsetB12.idl"
+#include "j2735_v2x_msgs/msg/PivotPointDescription.idl"
+#include "j2735_v2x_msgs/msg/TrailerHistoryPointList.idl"
+#include "j2735_v2x_msgs/msg/TrailerMass.idl"
+#include "j2735_v2x_msgs/msg/VehicleHeight.idl"
+#include "j2735_v2x_msgs/msg/VehicleLength.idl"
+#include "j2735_v2x_msgs/msg/VehicleWidth.idl"
+#include "j2735_v2x_msgs/msg/VertOffsetB07.idl"
+
+module j2735_v2x_msgs {
+  module msg {
+    module TrailerUnitDescription_Constants {
+      const uint32 HAS_HEIGHT = 1;
+      const uint32 HAS_MASS = 2;
+      const uint32 HAS_BUMPER_HEIGHTS = 4;
+      const uint32 HAS_CENTER_OF_GRAVITY = 8;
+      const uint32 HAS_REAR_PIVOT = 16;
+      const uint32 HAS_REAR_WHEEL_OFFSET = 32;
+      const uint32 HAS_ELEVATION_OFFSET = 64;
+      const uint32 HAS_CRUMB_DATA = 128;
+    };
+    @verbatim (language="comment", text=
+      "TrailerUnitDescription.msg" "\n"
+      "" "\n"
+      "J2735 2016 message format.")
+    struct TrailerUnitDescription {
+      @verbatim (language="comment", text=
+        "TrailerUnitDescription ::= SEQUENCE {" "\n"
+        "   isDolly          IsDolly, -- if false this is a trailer" "\n"
+        "   width            VehicleWidth," "\n"
+        "   length           VehicleLength," "\n"
+        "   height           VehicleHeight OPTIONAL," "\n"
+        "   mass             TrailerMass   OPTIONAL," "\n"
+        "   bumperHeights    BumperHeights OPTIONAL," "\n"
+        "   centerOfGravity  VehicleHeight OPTIONAL," "\n"
+        "   -- The front pivot point of the unit" "\n"
+        "   frontPivot       PivotPointDescription," "\n"
+        "   -- The rear pivot point connecting to the next element," "\n"
+        "   -- if present and used (implies another unit is connected)" "\n"
+        "   rearPivot        PivotPointDescription OPTIONAL," "\n"
+        "   -- Rear wheel pivot point center-line offset" "\n"
+        "   -- measured from the rear of the above length" "\n"
+        "   rearWheelOffset  Offset-B12 OPTIONAL," "\n"
+        "                    -- the effective center-line of the wheel set" "\n"
+        "   -- Current Position relative to the hauling Vehicle" "\n"
+        "   positionOffset   Node-XY-24b," "\n"
+        "   elevationOffset  VertOffset-B07 OPTIONAL," "\n"
+        "   -- Past Position history relative to the hauling Vehicle" "\n"
+        "   crumbData       TrailerHistoryPointList OPTIONAL," "\n"
+        "   ..." "\n"
+        "   }" "\n"
+        "A BIT STRING defining the presence of optional fields." "\n"
+        "Compare with bitwise-and" "\n"
+        "if (presence_vector & HAS_HEIGHT) etc." "\n"
+        "Create with bitwise-or" "\n"
+        "presence_vector = presence_vector | HAS_HEIGHT")
+      uint32 presence_vector;
+
+      j2735_v2x_msgs::msg::IsDolly is_dolly;
+
+      j2735_v2x_msgs::msg::VehicleWidth width;
+
+      j2735_v2x_msgs::msg::VehicleLength length;
+
+      j2735_v2x_msgs::msg::VehicleHeight height;
+
+      j2735_v2x_msgs::msg::TrailerMass mass;
+
+      j2735_v2x_msgs::msg::BumperHeights bumper_heights;
+
+      j2735_v2x_msgs::msg::VehicleHeight center_of_gravity;
+
+      j2735_v2x_msgs::msg::PivotPointDescription front_pivot;
+
+      j2735_v2x_msgs::msg::PivotPointDescription rear_pivot;
+
+      j2735_v2x_msgs::msg::OffsetB12 rear_wheel_offset;
+
+      j2735_v2x_msgs::msg::NodeXY24b position_offset;
+
+      j2735_v2x_msgs::msg::VertOffsetB07 elevation_offset;
+
+      j2735_v2x_msgs::msg::TrailerHistoryPointList crumb_data;
+    };
+  };
+};

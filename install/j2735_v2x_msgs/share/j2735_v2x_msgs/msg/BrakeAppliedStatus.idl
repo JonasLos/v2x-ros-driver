@@ -1,0 +1,35 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from j2735_v2x_msgs/msg/BrakeAppliedStatus.msg
+// generated code does not contain a copyright notice
+
+
+module j2735_v2x_msgs {
+  module msg {
+    module BrakeAppliedStatus_Constants {
+      const uint8 UNAVAILABLE = 0;
+      const uint8 LEFT_FRONT = 1;
+      const uint8 LEFT_REAR = 2;
+      const uint8 RIGHT_FRONT = 3;
+      const uint8 RIGHT_REAR = 4;
+    };
+    @verbatim (language="comment", text=
+      "BrakeAppliedStatus.msg" "\n"
+      "" "\n"
+      "J2735 2016 message format." "\n"
+      "" "\n"
+      "@author Mae Fromm" "\n"
+      "@version 0.1" "\n"
+      "")
+    struct BrakeAppliedStatus {
+      @verbatim (language="comment", text=
+        "BrakeAppliedStatus ::= BIT STRING {" "\n"
+        "   unavailable (0),  -- When set, the brake applied status is unavailable" "\n"
+        "   leftFront   (1),  -- Left Front Active" "\n"
+        "   leftRear    (2),  -- Left Rear Active" "\n"
+        "   rightFront  (3),  -- Right Front Active" "\n"
+        "   rightRear   (4)   -- Right Rear Active" "\n"
+        "   } (SIZE (5))")
+      uint8 brake_applied_status;
+    };
+  };
+};

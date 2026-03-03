@@ -1,0 +1,48 @@
+// generated from rosidl_adapter/resource/srv.idl.em
+// with input from carma_driver_msgs/srv/SetLightBarIndicator.srv
+// generated code does not contain a copyright notice
+
+#include "carma_msgs/msg/LightBarCDAType.idl"
+#include "carma_msgs/msg/LightBarIndicator.idl"
+
+module carma_driver_msgs {
+  module srv {
+    module SetLightBarIndicator_Request_Constants {
+      const uint8 OFF = 0;
+      const uint8 ON = 1;
+    };
+    @verbatim (language="comment", text=
+      "SetLightBarIndicator.srv" "\n"
+      "" "\n"
+      "Provided by the LightBarManager node. Plugins and component" "\n"
+      "uses this service to set the lightbar indicator ON or OFF" "\n"
+      "" "\n"
+      "@author Misheel Bayartsengel" "\n"
+      "@version 0.1" "\n"
+      "" "\n"
+      "Request - Indicator, its state, and the requester name")
+    struct SetLightBarIndicator_Request {
+      uint8 state;
+
+      string requester_name;
+
+      carma_msgs::msg::LightBarIndicator indicator;
+
+      carma_msgs::msg::LightBarCDAType cda_type;
+    };
+    module SetLightBarIndicator_Response_Constants {
+      const uint8 SUCCESS = 0;
+      @verbatim (language="comment", text=
+        "if the requester is no longer controlling the indicator")
+      const uint8 PERMISSION_DENIED = 1;
+      @verbatim (language="comment", text=
+        "any other reason the request failed, including hardware issue")
+      const uint8 ERROR = 2;
+    };
+    @verbatim (language="comment", text=
+      "Response - success status")
+    struct SetLightBarIndicator_Response {
+      uint8 status_code;
+    };
+  };
+};

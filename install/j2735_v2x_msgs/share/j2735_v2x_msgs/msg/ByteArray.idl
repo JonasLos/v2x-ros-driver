@@ -1,0 +1,33 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from j2735_v2x_msgs/msg/ByteArray.msg
+// generated code does not contain a copyright notice
+
+#include "std_msgs/msg/Header.idl"
+
+module j2735_v2x_msgs {
+  module msg {
+    @verbatim (language="comment", text=
+      "ByteArray.msg" "\n"
+      "" "\n"
+      "J2735 2016 message format." "\n"
+      "" "\n"
+      "@author Mae Fromm" "\n"
+      "@version 0.1" "\n"
+      "" "\n"
+      "Raw binary blobs from Drivers.Comms package and then parse the raw data according to the header. " "\n"
+      "Currently all messages are DSRC message. " "\n"
+      "" "\n"
+      "NOTE: Initial version only considers Part I. Part II will be defined for later use. ")
+    struct ByteArray {
+      std_msgs::msg::Header header;
+
+      @verbatim (language="comment", text=
+        "Need to know the type before parsing. MessageTypes are MAP, SPAT, TIM, BSM, Mobility.")
+      string message_type;
+
+      @verbatim (language="comment", text=
+        "The DSRC message content")
+      sequence<uint8> content;
+    };
+  };
+};

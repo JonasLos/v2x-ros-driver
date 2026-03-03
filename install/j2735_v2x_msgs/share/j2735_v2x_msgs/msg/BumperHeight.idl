@@ -1,0 +1,23 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from j2735_v2x_msgs/msg/BumperHeight.msg
+// generated code does not contain a copyright notice
+
+
+module j2735_v2x_msgs {
+  module msg {
+    module BumperHeight_Constants {
+      const uint8 BUMPER_HEIGHT_MIN = 0;
+      const uint8 BUMPER_HEIGHT_MAX = 127;
+    };
+    @verbatim (language="comment", text=
+      "BumperHeight.msg" "\n"
+      "" "\n"
+      "J2735 2016 message format.")
+    struct BumperHeight {
+      @verbatim (language="comment", text=
+        "BumperHeight ::= INTEGER (0..127)" "\n"
+        "   -- in units of 0.01 meters from ground surface.")
+      uint8 bumper_height;
+    };
+  };
+};

@@ -1,0 +1,46 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from j2735_v2x_msgs/msg/WiperSet.msg
+// generated code does not contain a copyright notice
+
+#include "j2735_v2x_msgs/msg/WiperRate.idl"
+#include "j2735_v2x_msgs/msg/WiperStatus.idl"
+
+module j2735_v2x_msgs {
+  module msg {
+    module WiperSet_Constants {
+      const uint16 HAS_STATUS_REAR = 1;
+      const uint16 HAS_RATE_REAR = 2;
+    };
+    @verbatim (language="comment", text=
+      "WiperSet.msg" "\n"
+      "" "\n"
+      "J2735 2016 message format.")
+    struct WiperSet {
+      @verbatim (language="comment", text=
+        "WiperSet ::= SEQUENCE {" "\n"
+        "   statusFront    WiperStatus," "\n"
+        "   rateFront      WiperRate," "\n"
+        "   statusRear     WiperStatus      OPTIONAL," "\n"
+        "   rateRear       WiperRate        OPTIONAL" "\n"
+        "   }" "\n"
+        "A BIT STRING defining the presence of optional feilds." "\n"
+        "Compare with bitwise-and" "\n"
+        "if (presence_vector & HAS_STATUS_REAR) etc." "\n"
+        "Create with bitwise-or" "\n"
+        "presence_vector = presence_vector | HAS_STATUS_REAR")
+      uint16 presence_vector;
+
+      j2735_v2x_msgs::msg::WiperStatus status_front;
+
+      j2735_v2x_msgs::msg::WiperRate rate_front;
+
+      @verbatim (language="comment", text=
+        "OPTIONAL FIELDS" "\n"
+        "All fields below this section are optional." "\n"
+        "The presence of a given field can be idenfied by checking the presence_vector")
+      j2735_v2x_msgs::msg::WiperStatus status_rear;
+
+      j2735_v2x_msgs::msg::WiperRate rate_rear;
+    };
+  };
+};

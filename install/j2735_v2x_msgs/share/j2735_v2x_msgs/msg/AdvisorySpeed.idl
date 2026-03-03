@@ -1,0 +1,84 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from j2735_v2x_msgs/msg/AdvisorySpeed.msg
+// generated code does not contain a copyright notice
+
+#include "j2735_v2x_msgs/msg/AdvisorySpeedType.idl"
+#include "j2735_v2x_msgs/msg/SpeedConfidence.idl"
+
+module j2735_v2x_msgs {
+  module msg {
+    module AdvisorySpeed_Constants {
+      const float SPEED_UNAVAILABLE = 500.0;
+      const uint16 DISTANCE_UNKNOWN = 0;
+    };
+    @verbatim (language="comment", text=
+      "AdvisorySpeed.msg" "\n"
+      "" "\n"
+      "J2735 2016 message format." "\n"
+      "" "\n"
+      "@author Mae Fromm" "\n"
+      "@version 0.1" "\n"
+      "" "\n"
+      "The DF_AdvisorySpeed data frame is used to convey a recommended traveling approach speed to an intersection" "\n"
+      "from the message issuer to various travelers and vehicle types. Besides support for various eco-driving applications, this" "\n"
+      "allows transmitting recommended speeds for specialty vehicles such as transit buses." "\n"
+      "AdvisorySpeed ::= SEQUENCE {" "\n"
+      "type AdvisorySpeedType," "\n"
+      "-- the type of advisory which this is." "\n"
+      "speed SpeedAdvice OPTIONAL," "\n"
+      "-- See Section 11 for converting and translating speed" "\n"
+      "-- expressed in mph into units of m/s" "\n"
+      "-- This element is optional ONLY when superceded" "\n"
+      "-- by the presence of a regional speed element found in" "\n"
+      "-- Reg-AdvisorySpeed entry" "\n"
+      "confidence SpeedConfidence OPTIONAL," "\n"
+      "-- A confidence value for the above speed" "\n"
+      "distance ZoneLength OPTIONAL," "\n"
+      "-- Unit = 1 meter," "\n"
+      "-- The distance indicates the region for which the advised speed" "\n"
+      "-- is recommended, it is specified upstream from the stop bar" "\n"
+      "-- along the connected egressing lane" "\n"
+      "class RestrictionClassID OPTIONAL," "\n"
+      "-- the vehicle types to which it applies" "\n"
+      "-- when absent, the AdvisorySpeed applies to" "\n"
+      "-- all motor vehicle types" "\n"
+      "regional SEQUENCE (SIZE(1..4)) OF RegionalExtension {{REGION.Reg-AdvisorySpeed}} OPTIONAL," "\n"
+      "..." "\n"
+      "}")
+    struct AdvisorySpeed {
+      j2735_v2x_msgs::msg::AdvisorySpeedType type;
+
+      @verbatim (language="comment", text=
+        " SpeedAdvice ::= INTEGER (0..500) OPTIONAL" "\n"
+        " This data element represents the recommended velocity of an object, typically a vehicle speed along a roadway," "\n"
+        " expressed in unsigned units of 0.1 meters per second." "\n"
+        "-- LSB units are 0.1 m/s^2" "\n"
+        "-- the value 499 shall be used for values at or greater than 49.9 m/s" "\n"
+        "-- the value 500 shall be used to indicate that speed is unavailable")
+      float speed;
+
+      boolean speed_exists;
+
+      @verbatim (language="comment", text=
+        "SpeedConfidence is an enum already with 0 as unavailable.")
+      j2735_v2x_msgs::msg::SpeedConfidence confidence;
+
+      @verbatim (language="comment", text=
+        "ZoneLength ::= INTEGER (0..10000)" "\n"
+        "-- Unit = 1 meter, 0 = unknown," "\n"
+        "-- The value 10000 to be used for Distances >=10000 m" "\n"
+        "-- (e.g. from known point to another point along a" "\n"
+        "-- known path, often against traffic flow direction" "\n"
+        "-- when used for measuring queues)")
+      uint16 distance;
+
+      boolean distance_exists;
+
+      @verbatim (language="comment", text=
+        "RestrictionClassID ::= INTEGER (0..255)")
+      uint8 restriction_class_id;
+
+      boolean restriction_class_id_exists;
+    };
+  };
+};

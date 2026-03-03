@@ -1,0 +1,78 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from j2735_v2x_msgs/msg/NodeAttributeSetXY.msg
+// generated code does not contain a copyright notice
+
+#include "j2735_v2x_msgs/msg/LaneDataAttributeList.idl"
+#include "j2735_v2x_msgs/msg/NodeAttributeXYList.idl"
+#include "j2735_v2x_msgs/msg/SegmentAttributeXYList.idl"
+
+module j2735_v2x_msgs {
+  module msg {
+    @verbatim (language="comment", text=
+      "NodeAttributeSetXY.msg" "\n"
+      "" "\n"
+      "J2735 2016 message format." "\n"
+      "" "\n"
+      "@author Mae Fromm" "\n"
+      "@version 0.1" "\n"
+      "" "\n"
+      "The DF_NodeAttributeSetXY is a data frame used to convey one or more changes in the attribute set which occur" "\n"
+      "at the node point at which it is used. Some of these attributes persist until the end of the lane or until changed again or" "\n"
+      "turned off." "\n"
+      "" "\n"
+      "NodeAttributeSetXY ::= SEQUENCE {" "\n"
+      "localNode NodeAttributeXYList OPTIONAL," "\n"
+      "-- Attribute states which pertain to this node point" "\n"
+      "disabled SegmentAttributeXYList OPTIONAL," "\n"
+      "-- Attribute states which are disabled at this node point" "\n"
+      "enabled SegmentAttributeXYList OPTIONAL," "\n"
+      "-- Attribute states which are enabled at this node point" "\n"
+      "-- and which remain enabled until disabled or the lane ends" "\n"
+      "data LaneDataAttributeList OPTIONAL," "\n"
+      "-- Attributes which require an additional data values" "\n"
+      "-- some of these are local to the node point, while others" "\n"
+      "-- persist with the provided values until changed" "\n"
+      "-- and this is indicated in each entry" "\n"
+      "dWidth Offset-B10 OPTIONAL," "\n"
+      "-- A value added to the current lane width" "\n"
+      "-- at this node and from this node onwards, in 1cm steps" "\n"
+      "-- lane width between nodes are a linear taper between pts" "\n"
+      "-- the value of zero shall not be sent here" "\n"
+      "dElevation Offset-B10 OPTIONAL," "\n"
+      "-- A value added to the current Elevation" "\n"
+      "-- at this node from this node onwards, in 10cm steps" "\n"
+      "-- elevations between nodes are a linear taper between pts" "\n"
+      "-- the value of zero shall not be sent here" "\n"
+      "regional SEQUENCE (SIZE(1..4)) OF RegionalExtension {{REGION.Reg-NodeAttributeSetXY}}OPTIONAL," "\n"
+      "..." "\n"
+      "}")
+    struct NodeAttributeSetXY {
+      j2735_v2x_msgs::msg::NodeAttributeXYList local_node;
+
+      boolean local_node_exists;
+
+      j2735_v2x_msgs::msg::SegmentAttributeXYList disabled;
+
+      boolean disabled_exists;
+
+      j2735_v2x_msgs::msg::SegmentAttributeXYList enabled;
+
+      boolean enabled_exists;
+
+      j2735_v2x_msgs::msg::LaneDataAttributeList data;
+
+      boolean data_exists;
+
+      @verbatim (language="comment", text=
+        "Offset-B10 ::= INTEGER (-512..511)" "\n"
+        "-- a range of +- 5.11 meters")
+      float d_width;
+
+      boolean d_width_exists;
+
+      float d_elevation;
+
+      boolean d_elevation_exists;
+    };
+  };
+};

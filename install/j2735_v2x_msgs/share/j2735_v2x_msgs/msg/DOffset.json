@@ -1,0 +1,26 @@
+{
+  "type_description_msg": {
+    "type_description": {
+      "type_name": "j2735_v2x_msgs/msg/DOffset",
+      "fields": [
+        {
+          "name": "offset_minute",
+          "type": {
+            "type_id": 4,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": ""
+          },
+          "default_value": ""
+        }
+      ]
+    },
+    "referenced_type_descriptions": []
+  },
+  "type_hashes": [
+    {
+      "type_name": "j2735_v2x_msgs/msg/DOffset",
+      "hash_string": "RIHS01_a9ed8e6b5e5773095ecb92eed7d03873fc10ea2d2625dc0a2391f13d0abf6284"
+    }
+  ]
+}

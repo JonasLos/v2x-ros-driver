@@ -1,0 +1,20 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from carma_driver_msgs/msg/HeadingStamped.msg
+// generated code does not contain a copyright notice
+
+#include "std_msgs/msg/Header.idl"
+
+module carma_driver_msgs {
+  module msg {
+    @verbatim (language="comment", text=
+      "HeadingStamped.msg" "\n"
+      "Orientation of the vehicle in global frame")
+    struct HeadingStamped {
+      std_msgs::msg::Header header;
+
+      @verbatim (language="comment", text=
+        "Heading of the vehicle east of north")
+      float heading;
+    };
+  };
+};

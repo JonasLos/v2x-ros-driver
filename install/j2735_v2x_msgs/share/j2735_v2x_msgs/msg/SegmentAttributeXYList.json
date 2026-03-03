@@ -1,0 +1,46 @@
+{
+  "type_description_msg": {
+    "type_description": {
+      "type_name": "j2735_v2x_msgs/msg/SegmentAttributeXYList",
+      "fields": [
+        {
+          "name": "segment_attribute_xy",
+          "type": {
+            "type_id": 145,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": "j2735_v2x_msgs/msg/SegmentAttributeXY"
+          },
+          "default_value": ""
+        }
+      ]
+    },
+    "referenced_type_descriptions": [
+      {
+        "type_name": "j2735_v2x_msgs/msg/SegmentAttributeXY",
+        "fields": [
+          {
+            "name": "segment_attribute_xy",
+            "type": {
+              "type_id": 3,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      }
+    ]
+  },
+  "type_hashes": [
+    {
+      "type_name": "j2735_v2x_msgs/msg/SegmentAttributeXYList",
+      "hash_string": "RIHS01_3334c583c960b206383d8215d4edf8a2978a67a2a67fb8928603245b7c57413f"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/SegmentAttributeXY",
+      "hash_string": "RIHS01_de72c9ca8e75aae97d26c13f63ba1be6d961ee853abda569bc4e94b3386e885e"
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "type_description_msg": {
+    "type_description": {
+      "type_name": "j2735_v2x_msgs/msg/TractionControlStatus",
+      "fields": [
+        {
+          "name": "traction_control_status",
+          "type": {
+            "type_id": 3,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": ""
+          },
+          "default_value": ""
+        }
+      ]
+    },
+    "referenced_type_descriptions": []
+  },
+  "type_hashes": [
+    {
+      "type_name": "j2735_v2x_msgs/msg/TractionControlStatus",
+      "hash_string": "RIHS01_8a7e7f5e52c7e46b206f54bccfc2777b4f5f986a7632c50929904a788a0d4d38"
+    }
+  ]
+}

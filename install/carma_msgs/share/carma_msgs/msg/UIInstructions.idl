@@ -1,0 +1,44 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from carma_msgs/msg/UIInstructions.msg
+// generated code does not contain a copyright notice
+
+#include "builtin_interfaces/msg/Time.idl"
+
+module carma_msgs {
+  module msg {
+    module UIInstructions_Constants {
+      @verbatim (language="comment", text=
+        "Notification of status or state change")
+      const uint8 INFO = 0;
+      @verbatim (language="comment", text=
+        "A command requiring driver acknowledgement")
+      const uint8 ACK_REQUIRED = 1;
+      @verbatim (language="comment", text=
+        "A command that does not require driver acknowledgement")
+      const uint8 NO_ACK_REQUIRED = 2;
+    };
+    @verbatim (language="comment", text=
+      "UIInstructions.msg" "\n"
+      "" "\n"
+      "Describes simple instructions for the CARMA UI to preform" "\n"
+      "" "\n"
+      "@version 0.1")
+    struct UIInstructions {
+      @verbatim (language="comment", text=
+        "Time stamp")
+      builtin_interfaces::msg::Time stamp;
+
+      @verbatim (language="comment", text=
+        "The message to send")
+      string msg;
+
+      @verbatim (language="comment", text=
+        "Enum identifying the contents of this message as informational or requireing acknowledgement")
+      uint8 type;
+
+      @verbatim (language="comment", text=
+        "Name of a simple service to be called when a acknowledgement is required (service must be std_msgs/Bool)")
+      string response_service;
+    };
+  };
+};

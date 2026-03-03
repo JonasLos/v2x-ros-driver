@@ -1,0 +1,24 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from j2735_v2x_msgs/msg/SegmentAttributeXYList.msg
+// generated code does not contain a copyright notice
+
+#include "j2735_v2x_msgs/msg/SegmentAttributeXY.idl"
+
+module j2735_v2x_msgs {
+  module msg {
+    @verbatim (language="comment", text=
+      " NodeAttributeXYList.msg" "\n"
+      "" "\n"
+      " J2735 2016 message format." "\n"
+      "" "\n"
+      " @author Mae Fromm" "\n"
+      " @version 0.1" "\n"
+      "" "\n"
+      "The DF_SegmentAttributeXYList data frame consists of a list of SegmentAttributeXY entries.")
+    struct SegmentAttributeXYList {
+      @verbatim (language="comment", text=
+        "SegmentAttributeXYList ::= SEQUENCE (SIZE(1..8)) OF SegmentAttributeXY")
+      sequence<j2735_v2x_msgs::msg::SegmentAttributeXY> segment_attribute_xy;
+    };
+  };
+};

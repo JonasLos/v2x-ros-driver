@@ -1,0 +1,40 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from j2735_v2x_msgs/msg/IntersectionReferenceID.msg
+// generated code does not contain a copyright notice
+
+
+module j2735_v2x_msgs {
+  module msg {
+    module IntersectionReferenceID_Constants {
+      const uint16 REGION_UNAVAILABLE = 0;
+    };
+    @verbatim (language="comment", text=
+      "IntersectionReferenceID.msg" "\n"
+      "" "\n"
+      "J2735 2016 message format." "\n"
+      "" "\n"
+      "@author Mae Fromm" "\n"
+      "@version 0.1" "\n"
+      "" "\n"
+      "The IntersectionReferenceID data frame conveys the combination of an optional RoadRegulatorID and of an" "\n"
+      "IntersectionID that is unique within that region. When the RoadRegulatorID is present the IntersectionReferenceID is" "\n"
+      "guaranteed to be globally unique.")
+    struct IntersectionReferenceID {
+      @verbatim (language="comment", text=
+        "region RoadRegulatorID OPTIONAL ::= INTEGER (0..65535)" "\n"
+        "-- a globally unique regional assignment value" "\n"
+        "-- typical assigned to a regional DOT authority" "\n"
+        "-- the value zero shall be used for testing needs" "\n"
+        "0 is a J2735 value for testing needs, and carma can use it to indicate optional field was not set or unavailable.")
+      uint16 region;
+
+      boolean region_exists;
+
+      @verbatim (language="comment", text=
+        "id IntersectionID ::= INTEGER (0..65535)" "\n"
+        "-- a unique mapping to the intersection" "\n"
+        "-- in question within the above region of use")
+      uint16 id;
+    };
+  };
+};

@@ -1,0 +1,75 @@
+{
+  "type_description_msg": {
+    "type_description": {
+      "type_name": "j2735_v2x_msgs/msg/TransmissionAndSpeed",
+      "fields": [
+        {
+          "name": "transmission",
+          "type": {
+            "type_id": 1,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": "j2735_v2x_msgs/msg/TransmissionState"
+          },
+          "default_value": ""
+        },
+        {
+          "name": "speed",
+          "type": {
+            "type_id": 1,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": "j2735_v2x_msgs/msg/Velocity"
+          },
+          "default_value": ""
+        }
+      ]
+    },
+    "referenced_type_descriptions": [
+      {
+        "type_name": "j2735_v2x_msgs/msg/TransmissionState",
+        "fields": [
+          {
+            "name": "transmission_state",
+            "type": {
+              "type_id": 3,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/Velocity",
+        "fields": [
+          {
+            "name": "velocity",
+            "type": {
+              "type_id": 5,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      }
+    ]
+  },
+  "type_hashes": [
+    {
+      "type_name": "j2735_v2x_msgs/msg/TransmissionAndSpeed",
+      "hash_string": "RIHS01_82d2345ada0faa69aa92239bb048cbbe3c029e05ebb9caaef511cd7d9e953410"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/TransmissionState",
+      "hash_string": "RIHS01_50d7de5a1437c56a34763d70cee212be56fc621bb4344163a8345d806415535c"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/Velocity",
+      "hash_string": "RIHS01_05e51ea8348a162e6be6aaf0519ac6204100cfad68b5fbe8c307d5727a769d76"
+    }
+  ]
+}

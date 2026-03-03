@@ -1,0 +1,75 @@
+{
+  "type_description_msg": {
+    "type_description": {
+      "type_name": "j2735_v2x_msgs/msg/PositionConfidenceSet",
+      "fields": [
+        {
+          "name": "pos",
+          "type": {
+            "type_id": 1,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": "j2735_v2x_msgs/msg/PositionConfidence"
+          },
+          "default_value": ""
+        },
+        {
+          "name": "elevation",
+          "type": {
+            "type_id": 1,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": "j2735_v2x_msgs/msg/ElevationConfidence"
+          },
+          "default_value": ""
+        }
+      ]
+    },
+    "referenced_type_descriptions": [
+      {
+        "type_name": "j2735_v2x_msgs/msg/ElevationConfidence",
+        "fields": [
+          {
+            "name": "confidence",
+            "type": {
+              "type_id": 3,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/PositionConfidence",
+        "fields": [
+          {
+            "name": "confidence",
+            "type": {
+              "type_id": 3,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      }
+    ]
+  },
+  "type_hashes": [
+    {
+      "type_name": "j2735_v2x_msgs/msg/PositionConfidenceSet",
+      "hash_string": "RIHS01_8e1af9c00ff6512f59145f4ca5a4dbee90f54ad6a99de4bff6464aed5615d7f8"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/ElevationConfidence",
+      "hash_string": "RIHS01_00a21cd6c76948cab724b36aa3b2dd8f5f5a6db4946d7998ac9d6e0033bc4d70"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/PositionConfidence",
+      "hash_string": "RIHS01_6121fa3fed8e093bde3148a5b7d521790269794bb3cee693a0d8486b34db8b17"
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from j2735_v2x_msgs/msg/PrivilegedEventFlags.msg
+// generated code does not contain a copyright notice
+
+
+module j2735_v2x_msgs {
+  module msg {
+    module PrivilegedEventFlags_Constants {
+      @verbatim (language="comment", text=
+        "Bit flags")
+      const uint16 PE_UNAVAILABLE = 1;
+      const uint16 PE_EMERGENCY_RESPONSE = 2;
+      const uint16 PE_EMERGENCY_LIGHTS_ACTIVE = 4;
+      const uint16 PE_EMERGENCY_SOUND_ACTIVE = 8;
+      const uint16 PE_NON_EMERGENCY_LIGHTS_ACTIVE = 16;
+      const uint16 PE_NON_EMERGENCY_SOUND_ACTIVE = 32;
+    };
+    @verbatim (language="comment", text=
+      "PrivilegedEventFlags.msg" "\n"
+      "" "\n"
+      "J2735 2016 message format.")
+    struct PrivilegedEventFlags {
+      @verbatim (language="comment", text=
+        "PrivilegedEventFlags ::= BIT STRING {" "\n"
+        "   -- These values require a suitable SSP to be sent" "\n"
+        "   peUnavailable                (0), -- Not Equipped or unavailable" "\n"
+        "   peEmergencyResponse          (1)," "\n"
+        "      -- The vehicle is a properly authorized public safety vehicle," "\n"
+        "      -- is engaged in a service call, and is currently moving" "\n"
+        "      -- or is within the roadway.  Note that lights and sirens" "\n"
+        "      -- may not be evident during any given response call" "\n"
+        "" "\n"
+        "   -- Emergency and Non Emergency Lights related" "\n"
+        "   peEmergencyLightsActive      (2)," "\n"
+        "   peEmergencySoundActive       (3)," "\n"
+        "   peNonEmergencyLightsActive   (4)," "\n"
+        "   peNonEmergencySoundActive    (5)" "\n"
+        "" "\n"
+        "   -- this list is likely to grow with further peer review" "\n"
+        "   } (SIZE (16))")
+      uint16 privileged_event_flags;
+    };
+  };
+};

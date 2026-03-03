@@ -1,0 +1,60 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from j2735_v2x_msgs/msg/IntersectionStatusObject.msg
+// generated code does not contain a copyright notice
+
+
+module j2735_v2x_msgs {
+  module msg {
+    @verbatim (language="comment", text=
+      "IntersectionStatusObject.msg" "\n"
+      "" "\n"
+      "J2735 2016 message format." "\n"
+      "" "\n"
+      "@author Mae Fromm" "\n"
+      "@version 0.1" "\n"
+      "" "\n"
+      "The Intersection Status Object contains Advanced Traffic Controller (ATC) status information that may be sent to" "\n"
+      "local OBUs as part of the SPAT process.")
+    struct IntersectionStatusObject {
+      @verbatim (language="comment", text=
+        "IntersectionStatusObject ::= BIT STRING {" "\n"
+        "manualControlIsEnabled (0)," "\n"
+        "-- Timing reported is per programmed values, etc. but person" "\n"
+        "-- at cabinet can manually request that certain intervals are" "\n"
+        "-- terminated early (e.g. green)." "\n"
+        "stopTimeIsActivated (1)," "\n"
+        "-- And all counting/timing has stopped." "\n"
+        "failureFlash (2)," "\n"
+        "-- Above to be used for any detected hardware failures," "\n"
+        "-- e.g. conflict monitor as well as for police flash" "\n"
+        "preemptIsActive (3)," "\n"
+        "signalPriorityIsActive (4)," "\n"
+        "-- Additional states" "\n"
+        "fixedTimeOperation (5)," "\n"
+        "-- Schedule of signals is based on time only" "\n"
+        "-- (i.e. the state can be calculated)" "\n"
+        "trafficDependentOperation (6)," "\n"
+        "-- Operation is based on different levels of traffic parameters" "\n"
+        "-- (requests, duration of gaps or more complex parameters)" "\n"
+        "standbyOperation (7)," "\n"
+        "-- Controller: partially switched off or partially amber flashing" "\n"
+        "failureMode (8)," "\n"
+        "-- Controller has a problem or failure in operation" "\n"
+        "off (9)," "\n"
+        "-- Controller is switched off" "\n"
+        "-- Related to MAP and SPAT bindings" "\n"
+        "recentMAPmessageUpdate (10)," "\n"
+        "-- Map revision with content changes" "\n"
+        "recentChangeInMAPassignedLanesIDsUsed (11)," "\n"
+        "-- Change in MAP's assigned lanes used (lane changes)" "\n"
+        "-- Changes in the active lane list description" "\n"
+        "noValidMAPisAvailableAtThisTime (12)," "\n"
+        "-- MAP (and various lanes indexes) not available" "\n"
+        "noValidSPATisAvailableAtThisTime (13)" "\n"
+        "-- SPAT system is not working at this time" "\n"
+        "-- Bits 14,15 reserved at this time and shall be zero" "\n"
+        "} (SIZE(16))")
+      uint16 intersection_status_object;
+    };
+  };
+};

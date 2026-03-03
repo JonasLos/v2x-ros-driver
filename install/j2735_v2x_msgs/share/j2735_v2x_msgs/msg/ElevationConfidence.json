@@ -1,0 +1,26 @@
+{
+  "type_description_msg": {
+    "type_description": {
+      "type_name": "j2735_v2x_msgs/msg/ElevationConfidence",
+      "fields": [
+        {
+          "name": "confidence",
+          "type": {
+            "type_id": 3,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": ""
+          },
+          "default_value": ""
+        }
+      ]
+    },
+    "referenced_type_descriptions": []
+  },
+  "type_hashes": [
+    {
+      "type_name": "j2735_v2x_msgs/msg/ElevationConfidence",
+      "hash_string": "RIHS01_00a21cd6c76948cab724b36aa3b2dd8f5f5a6db4946d7998ac9d6e0033bc4d70"
+    }
+  ]
+}

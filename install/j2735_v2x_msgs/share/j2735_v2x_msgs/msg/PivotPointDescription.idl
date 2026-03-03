@@ -1,0 +1,37 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from j2735_v2x_msgs/msg/PivotPointDescription.msg
+// generated code does not contain a copyright notice
+
+#include "j2735_v2x_msgs/msg/Angle.idl"
+#include "j2735_v2x_msgs/msg/OffsetB11.idl"
+#include "j2735_v2x_msgs/msg/PivotingAllowed.idl"
+
+module j2735_v2x_msgs {
+  module msg {
+    @verbatim (language="comment", text=
+      "PivotPointDescription.msg" "\n"
+      "" "\n"
+      "J2735 2016 message format.")
+    struct PivotPointDescription {
+      @verbatim (language="comment", text=
+        "pivotOffset  Offset-B11," "\n"
+        "             -- This gives a +- 10m range from the edge of the outline" "\n"
+        "             -- measured from the edge of the length of this unit" "\n"
+        "             -- a negative value is offset to inside the units" "\n"
+        "             -- a positive value is offset beyond the unit")
+      j2735_v2x_msgs::msg::OffsetB11 pivot_offset;
+
+      @verbatim (language="comment", text=
+        "pivotAngle   Angle," "\n"
+        "             -- Measured between the center-line of this unit" "\n"
+        "             -- and the unit ahead which is pulling it." "\n"
+        "             -- This value is required to project the units relative position")
+      j2735_v2x_msgs::msg::Angle pivot_angle;
+
+      @verbatim (language="comment", text=
+        "pivots       PivotingAllowed," "\n"
+        "             -- true if this unit can rotate about the pivot connection point")
+      j2735_v2x_msgs::msg::PivotingAllowed pivots;
+    };
+  };
+};

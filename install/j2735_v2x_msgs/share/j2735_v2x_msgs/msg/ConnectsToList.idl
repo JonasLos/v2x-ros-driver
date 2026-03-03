@@ -1,0 +1,26 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from j2735_v2x_msgs/msg/ConnectsToList.msg
+// generated code does not contain a copyright notice
+
+#include "j2735_v2x_msgs/msg/Connection.idl"
+
+module j2735_v2x_msgs {
+  module msg {
+    @verbatim (language="comment", text=
+      "ConnectsToList.msg" "\n"
+      "" "\n"
+      "J2735 2016 message format." "\n"
+      "" "\n"
+      "@author Mae Fromm" "\n"
+      "@version 0.1" "\n"
+      "" "\n"
+      "The ConnectsToList data structure is used in the generic lane descriptions to provide a sequence of other defined" "\n"
+      "lanes to which each lane connects beyond its stop point. See the Connection data frame entry for details. Note that this" "\n"
+      "data frame is not used in some lane object types." "\n"
+      "" "\n"
+      "ConnectsToList ::= SEQUENCE (SIZE(1..16)) OF Connection")
+    struct ConnectsToList {
+      sequence<j2735_v2x_msgs::msg::Connection> connect_to_list;
+    };
+  };
+};

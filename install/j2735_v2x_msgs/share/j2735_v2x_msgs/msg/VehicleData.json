@@ -1,0 +1,172 @@
+{
+  "type_description_msg": {
+    "type_description": {
+      "type_name": "j2735_v2x_msgs/msg/VehicleData",
+      "fields": [
+        {
+          "name": "presence_vector",
+          "type": {
+            "type_id": 5,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": ""
+          },
+          "default_value": ""
+        },
+        {
+          "name": "height",
+          "type": {
+            "type_id": 1,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": "j2735_v2x_msgs/msg/VehicleHeight"
+          },
+          "default_value": ""
+        },
+        {
+          "name": "bumpers",
+          "type": {
+            "type_id": 1,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": "j2735_v2x_msgs/msg/BumperHeights"
+          },
+          "default_value": ""
+        },
+        {
+          "name": "mass",
+          "type": {
+            "type_id": 1,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": "j2735_v2x_msgs/msg/VehicleMass"
+          },
+          "default_value": ""
+        },
+        {
+          "name": "trailer_weight",
+          "type": {
+            "type_id": 1,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": "j2735_v2x_msgs/msg/TrailerWeight"
+          },
+          "default_value": ""
+        }
+      ]
+    },
+    "referenced_type_descriptions": [
+      {
+        "type_name": "j2735_v2x_msgs/msg/BumperHeight",
+        "fields": [
+          {
+            "name": "bumper_height",
+            "type": {
+              "type_id": 3,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/BumperHeights",
+        "fields": [
+          {
+            "name": "front",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "j2735_v2x_msgs/msg/BumperHeight"
+            },
+            "default_value": ""
+          },
+          {
+            "name": "rear",
+            "type": {
+              "type_id": 1,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": "j2735_v2x_msgs/msg/BumperHeight"
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/TrailerWeight",
+        "fields": [
+          {
+            "name": "trailer_weight",
+            "type": {
+              "type_id": 5,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/VehicleHeight",
+        "fields": [
+          {
+            "name": "vehicle_height",
+            "type": {
+              "type_id": 3,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/VehicleMass",
+        "fields": [
+          {
+            "name": "vehicle_mass",
+            "type": {
+              "type_id": 3,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      }
+    ]
+  },
+  "type_hashes": [
+    {
+      "type_name": "j2735_v2x_msgs/msg/VehicleData",
+      "hash_string": "RIHS01_a3f11d0a68f66e813142f43ce4eaba06ec22e6c5731a08f81475e1c2dd17e21d"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/BumperHeight",
+      "hash_string": "RIHS01_fc35af40a11aac0748b8e434af9b5378e594c81c2843231009ba6a42f87ba22d"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/BumperHeights",
+      "hash_string": "RIHS01_822c64571ce9bed017cd5a53f8c0687e05d9a970182eede486795a61fb360416"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/TrailerWeight",
+      "hash_string": "RIHS01_2f7c4ec4eb12cd2a3ea77d46ecacd929bf184c95d28f2c7e286ef2fdca00b455"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/VehicleHeight",
+      "hash_string": "RIHS01_103f7b692ae814bbf17113518800d69cc78ffa1a9d5efa515626ea2d1d70e5b4"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/VehicleMass",
+      "hash_string": "RIHS01_282c24d088a1785c1c3971225808a58978f242a74d7ba32e167a72d585a1905b"
+    }
+  ]
+}

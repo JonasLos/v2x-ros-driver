@@ -1,0 +1,24 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from j2735_v2x_msgs/msg/NodeSetXY.msg
+// generated code does not contain a copyright notice
+
+#include "j2735_v2x_msgs/msg/NodeXY.idl"
+
+module j2735_v2x_msgs {
+  module msg {
+    @verbatim (language="comment", text=
+      "NodeListXY.msg" "\n"
+      "" "\n"
+      "J2735 2016 message format." "\n"
+      "" "\n"
+      "@author Mae Fromm" "\n"
+      "@version 0.1" "\n"
+      "" "\n"
+      "The NodeSetXY data frame consists of a list of Node entries using XY offsets." "\n"
+      "" "\n"
+      "NodeSetXY ::= SEQUENCE (SIZE(2..63)) OF NodeXY")
+    struct NodeSetXY {
+      sequence<j2735_v2x_msgs::msg::NodeXY> node_set_xy;
+    };
+  };
+};

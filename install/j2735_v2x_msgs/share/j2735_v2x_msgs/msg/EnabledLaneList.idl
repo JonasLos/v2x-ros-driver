@@ -1,0 +1,33 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from j2735_v2x_msgs/msg/EnabledLaneList.msg
+// generated code does not contain a copyright notice
+
+
+module j2735_v2x_msgs {
+  module msg {
+    @verbatim (language="comment", text=
+      " EnabledLaneList.msg" "\n"
+      "" "\n"
+      " J2735 2016 message format." "\n"
+      "" "\n"
+      " @author Mae Fromm" "\n"
+      " @version 0.1" "\n"
+      "" "\n"
+      " The Enabled Lane List data frame is a sequence of lane IDs for lane objects that are activated in the current map" "\n"
+      " configuration. These lanes, unlike most lanes, have their RevocableLane bit set to one (asserted). Such lanes are not" "\n"
+      " considered to be part of the current map unless they are in the Enabled Lane List. This concept is used to describe all the" "\n"
+      " possible regulatory states for a given physical lane." "\n"
+      "" "\n"
+      " EnabledLaneList ::= SEQUENCE (SIZE(1..16)) OF LaneID" "\n"
+      "-- The unique ID numbers for each" "\n"
+      "-- lane object which is 'active'" "\n"
+      "-- as part of the dynamic map contents.")
+    struct EnabledLaneList {
+      @verbatim (language="comment", text=
+        "LaneID ::= INTEGER (0..255)" "\n"
+        "-- the value 0 shall be used when the lane ID is not available or not known" "\n"
+        "-- the value 255 is reserved for future use")
+      sequence<uint16> lane_id_list;
+    };
+  };
+};

@@ -1,0 +1,124 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from j2735_v2x_msgs/msg/PSM.msg
+// generated code does not contain a copyright notice
+
+#include "j2735_v2x_msgs/msg/AccelerationSet4Way.idl"
+#include "j2735_v2x_msgs/msg/AnimalType.idl"
+#include "j2735_v2x_msgs/msg/Attachment.idl"
+#include "j2735_v2x_msgs/msg/AttachmentRadius.idl"
+#include "j2735_v2x_msgs/msg/DSecond.idl"
+#include "j2735_v2x_msgs/msg/Heading.idl"
+#include "j2735_v2x_msgs/msg/MsgCount.idl"
+#include "j2735_v2x_msgs/msg/NumberOfParticipantsInCluster.idl"
+#include "j2735_v2x_msgs/msg/PathHistory.idl"
+#include "j2735_v2x_msgs/msg/PathPrediction.idl"
+#include "j2735_v2x_msgs/msg/PersonalAssistive.idl"
+#include "j2735_v2x_msgs/msg/PersonalClusterRadius.idl"
+#include "j2735_v2x_msgs/msg/PersonalCrossingInProgress.idl"
+#include "j2735_v2x_msgs/msg/PersonalCrossingRequest.idl"
+#include "j2735_v2x_msgs/msg/PersonalDeviceUsageState.idl"
+#include "j2735_v2x_msgs/msg/PersonalDeviceUserType.idl"
+#include "j2735_v2x_msgs/msg/Position3D.idl"
+#include "j2735_v2x_msgs/msg/PositionalAccuracy.idl"
+#include "j2735_v2x_msgs/msg/PropelledInformation.idl"
+#include "j2735_v2x_msgs/msg/PublicSafetyAndRoadWorkerActivity.idl"
+#include "j2735_v2x_msgs/msg/PublicSafetyDirectingTrafficSubType.idl"
+#include "j2735_v2x_msgs/msg/PublicSafetyEventResponderWorkerType.idl"
+#include "j2735_v2x_msgs/msg/TemporaryID.idl"
+#include "j2735_v2x_msgs/msg/UserSizeAndBehaviour.idl"
+#include "j2735_v2x_msgs/msg/Velocity.idl"
+
+module j2735_v2x_msgs {
+  module msg {
+    module PSM_Constants {
+      const uint32 HAS_ACCEL_SET = 1;
+      const uint32 HAS_PATH_HISTORY = 2;
+      const uint32 HAS_PATH_PREDICTION = 4;
+      const uint32 HAS_PROPULSION = 8;
+      const uint32 HAS_USE_STATE = 16;
+      const uint32 HAS_CROSS_REQUEST = 32;
+      const uint32 HAS_CROSS_STATE = 64;
+      const uint32 HAS_CLUSTER_SIZE = 128;
+      const uint32 HAS_CLUSTER_RADIUS = 256;
+      const uint32 HAS_EVENT_RESPONDER_TYPE = 512;
+      const uint32 HAS_ACTIVITY_TYPE = 1024;
+      const uint32 HAS_ACTIVITY_SUB_TYPE = 2048;
+      const uint32 HAS_ASSIST_TYPE = 4096;
+      const uint32 HAS_SIZING = 8192;
+      const uint32 HAS_ATTACHMENT = 16384;
+      const uint32 HAS_ATTACHMENT_RADIUS = 32768;
+      const uint32 HAS_ANIMAL_TYPE = 65536;
+      const uint32 HAS_REGIONAL_EXTENSION = 131072;
+    };
+    @verbatim (language="comment", text=
+      "PSM.msg" "\n"
+      "" "\n"
+      "J2735 2016 message format." "\n"
+      "" "\n"
+      "Parsed description of Personal Safety Message (PSM) from the SAE J2735 2016 specification." "\n"
+      "For further usage details consult the specification.")
+    struct PSM {
+      @verbatim (language="comment", text=
+        "A BIT STRING defining the presence of optional feilds." "\n"
+        "Compare with bitwise-and" "\n"
+        "if (presence_vector & HAS_PATH_HISTORY) etc." "\n"
+        "Create with bitwise-or" "\n"
+        "presence_vector = presence_vector | HAS_PATH_HISTORY")
+      uint32 presence_vector;
+
+      j2735_v2x_msgs::msg::PersonalDeviceUserType basic_type;
+
+      j2735_v2x_msgs::msg::DSecond sec_mark;
+
+      j2735_v2x_msgs::msg::MsgCount msg_cnt;
+
+      j2735_v2x_msgs::msg::TemporaryID id;
+
+      j2735_v2x_msgs::msg::Position3D position;
+
+      j2735_v2x_msgs::msg::PositionalAccuracy accuracy;
+
+      j2735_v2x_msgs::msg::Velocity speed;
+
+      j2735_v2x_msgs::msg::Heading heading;
+
+      @verbatim (language="comment", text=
+        "OPTIONAL FIELDS" "\n"
+        "All fields below this section are optional." "\n"
+        "The presence of a given field can be idenfied by checking the precense_vector")
+      j2735_v2x_msgs::msg::AccelerationSet4Way accel_set;
+
+      j2735_v2x_msgs::msg::PathHistory path_history;
+
+      j2735_v2x_msgs::msg::PathPrediction path_prediction;
+
+      j2735_v2x_msgs::msg::PropelledInformation propulsion;
+
+      j2735_v2x_msgs::msg::PersonalDeviceUsageState use_state;
+
+      j2735_v2x_msgs::msg::PersonalCrossingRequest cross_request;
+
+      j2735_v2x_msgs::msg::PersonalCrossingInProgress cross_state;
+
+      j2735_v2x_msgs::msg::NumberOfParticipantsInCluster cluster_size;
+
+      j2735_v2x_msgs::msg::PersonalClusterRadius cluster_radius;
+
+      j2735_v2x_msgs::msg::PublicSafetyEventResponderWorkerType event_responder_type;
+
+      j2735_v2x_msgs::msg::PublicSafetyAndRoadWorkerActivity activity_type;
+
+      j2735_v2x_msgs::msg::PublicSafetyDirectingTrafficSubType activity_sub_type;
+
+      j2735_v2x_msgs::msg::PersonalAssistive assist_type;
+
+      j2735_v2x_msgs::msg::UserSizeAndBehaviour sizing;
+
+      j2735_v2x_msgs::msg::Attachment attachment;
+
+      j2735_v2x_msgs::msg::AttachmentRadius attachment_radius;
+
+      j2735_v2x_msgs::msg::AnimalType animal_type;
+    };
+  };
+};

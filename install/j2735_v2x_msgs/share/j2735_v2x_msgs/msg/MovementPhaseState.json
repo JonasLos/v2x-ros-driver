@@ -1,0 +1,26 @@
+{
+  "type_description_msg": {
+    "type_description": {
+      "type_name": "j2735_v2x_msgs/msg/MovementPhaseState",
+      "fields": [
+        {
+          "name": "movement_phase_state",
+          "type": {
+            "type_id": 3,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": ""
+          },
+          "default_value": ""
+        }
+      ]
+    },
+    "referenced_type_descriptions": []
+  },
+  "type_hashes": [
+    {
+      "type_name": "j2735_v2x_msgs/msg/MovementPhaseState",
+      "hash_string": "RIHS01_f8ed247c592a8ab602d3a85edc8911182c51901ed13241fc6f2a5ad80cd70383"
+    }
+  ]
+}

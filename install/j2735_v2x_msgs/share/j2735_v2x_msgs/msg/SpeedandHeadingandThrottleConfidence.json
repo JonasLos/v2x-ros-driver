@@ -1,0 +1,104 @@
+{
+  "type_description_msg": {
+    "type_description": {
+      "type_name": "j2735_v2x_msgs/msg/SpeedandHeadingandThrottleConfidence",
+      "fields": [
+        {
+          "name": "heading",
+          "type": {
+            "type_id": 1,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": "j2735_v2x_msgs/msg/HeadingConfidence"
+          },
+          "default_value": ""
+        },
+        {
+          "name": "speed",
+          "type": {
+            "type_id": 1,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": "j2735_v2x_msgs/msg/SpeedConfidence"
+          },
+          "default_value": ""
+        },
+        {
+          "name": "throttle",
+          "type": {
+            "type_id": 1,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": "j2735_v2x_msgs/msg/ThrottleConfidence"
+          },
+          "default_value": ""
+        }
+      ]
+    },
+    "referenced_type_descriptions": [
+      {
+        "type_name": "j2735_v2x_msgs/msg/HeadingConfidence",
+        "fields": [
+          {
+            "name": "confidence",
+            "type": {
+              "type_id": 3,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/SpeedConfidence",
+        "fields": [
+          {
+            "name": "speed_confidence",
+            "type": {
+              "type_id": 3,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      },
+      {
+        "type_name": "j2735_v2x_msgs/msg/ThrottleConfidence",
+        "fields": [
+          {
+            "name": "confidence",
+            "type": {
+              "type_id": 3,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      }
+    ]
+  },
+  "type_hashes": [
+    {
+      "type_name": "j2735_v2x_msgs/msg/SpeedandHeadingandThrottleConfidence",
+      "hash_string": "RIHS01_20000e4ad638db6bc21e53a22b774b8450c568022d3f0dc1ebf35446144f3771"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/HeadingConfidence",
+      "hash_string": "RIHS01_d791eaa147accea9d08d54a357cddc0128de2e2bd04902d53f89ce79694ada27"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/SpeedConfidence",
+      "hash_string": "RIHS01_601a6af851ec0e4dfc8b6a0c608f60b6be2dc57b587d3e7656b21c09d85920a0"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/ThrottleConfidence",
+      "hash_string": "RIHS01_eb4c0881a7d50a4ac8b47899a64b602419c571eeb795999ef8b3c06d751784e5"
+    }
+  ]
+}

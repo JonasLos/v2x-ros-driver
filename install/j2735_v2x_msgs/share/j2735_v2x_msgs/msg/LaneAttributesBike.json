@@ -1,0 +1,26 @@
+{
+  "type_description_msg": {
+    "type_description": {
+      "type_name": "j2735_v2x_msgs/msg/LaneAttributesBike",
+      "fields": [
+        {
+          "name": "lane_attributes_bike",
+          "type": {
+            "type_id": 5,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": ""
+          },
+          "default_value": ""
+        }
+      ]
+    },
+    "referenced_type_descriptions": []
+  },
+  "type_hashes": [
+    {
+      "type_name": "j2735_v2x_msgs/msg/LaneAttributesBike",
+      "hash_string": "RIHS01_b2b4a37cdc2ca5f494edfb6ad0367d3c2a67c8cdbb20c42695984bf682e6dd76"
+    }
+  ]
+}

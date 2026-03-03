@@ -1,0 +1,52 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from j2735_v2x_msgs/msg/SpeedLimitType.msg
+// generated code does not contain a copyright notice
+
+
+module j2735_v2x_msgs {
+  module msg {
+    module SpeedLimitType_Constants {
+      const uint8 UNKNOWN = 0;
+      const uint8 MAXSPEEDINSCHOOLZONE = 1;
+      const uint8 MAXSPEEDINSCHOOLZONEWHENCHILDRENAREPRESENT = 2;
+      const uint8 MAXSPEEDINCONSTRUCTIONZONE = 3;
+      const uint8 VEHICLEMINSPEED = 4;
+      const uint8 VEHICLEMAXSPEED = 5;
+      const uint8 VEHICLENIGHTMAXSPEED = 6;
+      const uint8 TRUCKMINSPEED = 7;
+      const uint8 TRUCKMAXSPEED = 8;
+      const uint8 TRUCKNIGHTMAXSPEED = 9;
+      const uint8 VEHICLESWITHTRAILERSMINSPEED = 10;
+      const uint8 VEHICLESWITHTRAILERSMAXSPEED = 11;
+      const uint8 VEHICLESWITHTRAILERSNIGHTMAXSPEED = 12;
+    };
+    @verbatim (language="comment", text=
+      "SpeedLimitType.msg" "\n"
+      "" "\n"
+      "The SpeedLimitType data element relates the type of speed limit to which a given speed refers." "\n"
+      "" "\n"
+      "SpeedLimitType ::= ENUMERATED {" "\n"
+      "" "\n"
+      "unknown, -- Speed limit type not available" "\n"
+      "maxSpeedInSchoolZone, -- Only sent when the limit is active" "\n"
+      "maxSpeedInSchoolZoneWhenChildrenArePresent, -- Sent at any time" "\n"
+      "maxSpeedInConstructionZone, -- Used for work zones, incident zones, etc. where a reduced speed is present" "\n"
+      "" "\n"
+      "vehicleMinSpeed," "\n"
+      "vehicleMaxSpeed, -- Regulatory speed limit for general traffic" "\n"
+      "vehicleNightMaxSpeed," "\n"
+      "" "\n"
+      "truckMinSpeed," "\n"
+      "truckMaxSpeed," "\n"
+      "truckNightMaxSpeed," "\n"
+      "" "\n"
+      "vehiclesWithTrailersMinSpeed," "\n"
+      "vehiclesWithTrailersMaxSpeed," "\n"
+      "vehiclesWithTrailersNightMaxSpeed," "\n"
+      "..." "\n"
+      "}")
+    struct SpeedLimitType {
+      uint8 speed_limit_type;
+    };
+  };
+};

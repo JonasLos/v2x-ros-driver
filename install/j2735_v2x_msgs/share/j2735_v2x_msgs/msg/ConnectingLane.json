@@ -1,0 +1,66 @@
+{
+  "type_description_msg": {
+    "type_description": {
+      "type_name": "j2735_v2x_msgs/msg/ConnectingLane",
+      "fields": [
+        {
+          "name": "lane",
+          "type": {
+            "type_id": 5,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": ""
+          },
+          "default_value": ""
+        },
+        {
+          "name": "maneuver",
+          "type": {
+            "type_id": 1,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": "j2735_v2x_msgs/msg/AllowedManeuvers"
+          },
+          "default_value": ""
+        },
+        {
+          "name": "maneuver_exists",
+          "type": {
+            "type_id": 15,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": ""
+          },
+          "default_value": ""
+        }
+      ]
+    },
+    "referenced_type_descriptions": [
+      {
+        "type_name": "j2735_v2x_msgs/msg/AllowedManeuvers",
+        "fields": [
+          {
+            "name": "allowed_maneuvers",
+            "type": {
+              "type_id": 5,
+              "capacity": 0,
+              "string_capacity": 0,
+              "nested_type_name": ""
+            },
+            "default_value": ""
+          }
+        ]
+      }
+    ]
+  },
+  "type_hashes": [
+    {
+      "type_name": "j2735_v2x_msgs/msg/ConnectingLane",
+      "hash_string": "RIHS01_a8e3c47bb0ff570d4821015c86a0df539a4c8ef59c0d44b7dc48c0d04b6751d0"
+    },
+    {
+      "type_name": "j2735_v2x_msgs/msg/AllowedManeuvers",
+      "hash_string": "RIHS01_8810467e1bf6406f244a8fcf3c7dfb073feb1834f784dab5703705144dcf627e"
+    }
+  ]
+}

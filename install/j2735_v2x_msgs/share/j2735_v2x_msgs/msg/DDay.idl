@@ -1,0 +1,25 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from j2735_v2x_msgs/msg/DDay.msg
+// generated code does not contain a copyright notice
+
+
+module j2735_v2x_msgs {
+  module msg {
+    module DDay_Constants {
+      const uint8 UNAVAILABLE = 0;
+      const uint8 MAX = 31;
+    };
+    @verbatim (language="comment", text=
+      "DDay.msg" "\n"
+      "" "\n"
+      "J2735 2016 message format." "\n"
+      "" "\n"
+      "Parsed description of DDay from the SAE J2735 2016 specification." "\n"
+      "For further usage details consult the specification." "\n"
+      "" "\n"
+      "DDay ::= INTEGER (0..31)  -- units of days")
+    struct DDay {
+      uint8 day;
+    };
+  };
+};

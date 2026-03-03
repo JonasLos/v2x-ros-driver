@@ -1,0 +1,33 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from j2735_v2x_msgs/msg/BrakeBoostApplied.msg
+// generated code does not contain a copyright notice
+
+
+module j2735_v2x_msgs {
+  module msg {
+    module BrakeBoostApplied_Constants {
+      @verbatim (language="comment", text=
+        "enumeration values for status:")
+      const uint8 UNAVAILABLE = 0;
+      const uint8 OFF = 1;
+      const uint8 ON = 2;
+    };
+    @verbatim (language="comment", text=
+      "BrakeBoostApplied.msg" "\n"
+      "" "\n"
+      "J2735 2016 message format." "\n"
+      "" "\n"
+      "@author Mae Fromm" "\n"
+      "@version 0.1")
+    struct BrakeBoostApplied {
+      @verbatim (language="comment", text=
+        "BrakeBoostApplied ::= ENUMERATED {" "\n"
+        "   unavailable   (0), -- Vehicle not equipped with brake boost" "\n"
+        "                      -- or brake boost data is unavailable" "\n"
+        "   off           (1), -- Vehicle's brake boost is off" "\n"
+        "   on            (2)  -- Vehicle's brake boost is on (applied)" "\n"
+        "   }")
+      uint8 brake_boost_applied;
+    };
+  };
+};

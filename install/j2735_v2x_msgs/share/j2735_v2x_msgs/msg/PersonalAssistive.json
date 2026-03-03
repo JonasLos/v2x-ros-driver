@@ -1,0 +1,26 @@
+{
+  "type_description_msg": {
+    "type_description": {
+      "type_name": "j2735_v2x_msgs/msg/PersonalAssistive",
+      "fields": [
+        {
+          "name": "types",
+          "type": {
+            "type_id": 3,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": ""
+          },
+          "default_value": ""
+        }
+      ]
+    },
+    "referenced_type_descriptions": []
+  },
+  "type_hashes": [
+    {
+      "type_name": "j2735_v2x_msgs/msg/PersonalAssistive",
+      "hash_string": "RIHS01_827dbd5bbe0663a9e125b558da7febb9ee0ad42d0216201b6b27c0210211791c"
+    }
+  ]
+}

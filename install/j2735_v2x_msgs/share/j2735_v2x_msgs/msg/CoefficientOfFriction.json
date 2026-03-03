@@ -1,0 +1,26 @@
+{
+  "type_description_msg": {
+    "type_description": {
+      "type_name": "j2735_v2x_msgs/msg/CoefficientOfFriction",
+      "fields": [
+        {
+          "name": "coefficient",
+          "type": {
+            "type_id": 3,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": ""
+          },
+          "default_value": ""
+        }
+      ]
+    },
+    "referenced_type_descriptions": []
+  },
+  "type_hashes": [
+    {
+      "type_name": "j2735_v2x_msgs/msg/CoefficientOfFriction",
+      "hash_string": "RIHS01_17b903580f274bb4c0de44f70f128b55b7f89374e23151614ef5f754e37c81c6"
+    }
+  ]
+}

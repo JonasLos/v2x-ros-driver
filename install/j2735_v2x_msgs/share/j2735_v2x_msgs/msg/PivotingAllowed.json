@@ -1,0 +1,26 @@
+{
+  "type_description_msg": {
+    "type_description": {
+      "type_name": "j2735_v2x_msgs/msg/PivotingAllowed",
+      "fields": [
+        {
+          "name": "pivoting_allowed",
+          "type": {
+            "type_id": 15,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": ""
+          },
+          "default_value": ""
+        }
+      ]
+    },
+    "referenced_type_descriptions": []
+  },
+  "type_hashes": [
+    {
+      "type_name": "j2735_v2x_msgs/msg/PivotingAllowed",
+      "hash_string": "RIHS01_0cfccada2061899a96b90cd93378224eb7679dfbe4ca712ed35a3a244f516ded"
+    }
+  ]
+}

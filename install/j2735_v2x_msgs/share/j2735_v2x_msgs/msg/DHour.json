@@ -1,0 +1,26 @@
+{
+  "type_description_msg": {
+    "type_description": {
+      "type_name": "j2735_v2x_msgs/msg/DHour",
+      "fields": [
+        {
+          "name": "hour",
+          "type": {
+            "type_id": 3,
+            "capacity": 0,
+            "string_capacity": 0,
+            "nested_type_name": ""
+          },
+          "default_value": ""
+        }
+      ]
+    },
+    "referenced_type_descriptions": []
+  },
+  "type_hashes": [
+    {
+      "type_name": "j2735_v2x_msgs/msg/DHour",
+      "hash_string": "RIHS01_0b61b8a57f7cd5c1cc3fe550a519fdbf42dee0e908f0d85423464d2059ac758f"
+    }
+  ]
+}

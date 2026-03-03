@@ -1,0 +1,92 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from j2735_v2x_msgs/msg/BrakeSystemStatus.msg
+// generated code does not contain a copyright notice
+
+#include "j2735_v2x_msgs/msg/AntiLockBrakeStatus.idl"
+#include "j2735_v2x_msgs/msg/AuxiliaryBrakeStatus.idl"
+#include "j2735_v2x_msgs/msg/BrakeAppliedStatus.idl"
+#include "j2735_v2x_msgs/msg/BrakeBoostApplied.idl"
+#include "j2735_v2x_msgs/msg/StabilityControlStatus.idl"
+#include "j2735_v2x_msgs/msg/TractionControlStatus.idl"
+
+module j2735_v2x_msgs {
+  module msg {
+    @verbatim (language="comment", text=
+      "BrakeSystemStatus.msg" "\n"
+      "" "\n"
+      "J2735 2016 message format." "\n"
+      "" "\n"
+      "@author Mae Fromm" "\n"
+      "@version 0.1" "\n"
+      "" "\n"
+      "Conveys a variety of information about the current brake and system control activity of the vehicle.")
+    struct BrakeSystemStatus {
+      @verbatim (language="comment", text=
+        "BrakeSystemStatus ::= SEQUENCE {" "\n"
+        "   wheelBrakes        BrakeAppliedStatus," "\n"
+        "   traction           TractionControlStatus," "\n"
+        "   abs                AntiLockBrakeStatus," "\n"
+        "   scs                StabilityControlStatus," "\n"
+        "   brakeBoost         BrakeBoostApplied," "\n"
+        "   auxBrakes          AuxiliaryBrakeStatus" "\n"
+        "   }" "\n"
+        "BrakeAppliedStatus ::= BIT STRING {" "\n"
+        "   unavailable (0),  -- When set, the brake applied status is unavailable" "\n"
+        "   leftFront   (1),  -- Left Front Active" "\n"
+        "   leftRear    (2),  -- Left Rear Active" "\n"
+        "   rightFront  (3),  -- Right Front Active" "\n"
+        "   rightRear   (4)   -- Right Rear Active" "\n"
+        "   } (SIZE (5))")
+      j2735_v2x_msgs::msg::BrakeAppliedStatus wheel_brakes;
+
+      @verbatim (language="comment", text=
+        "TractionControlStatus ::= ENUMERATED {" "\n"
+        "   unavailable (0), -- B'00  Not Equipped with traction control" "\n"
+        "                    --       or traction control status is unavailable" "\n"
+        "   off         (1), -- B'01  traction control is Off" "\n"
+        "   on          (2), -- B'10  traction control is On (but not Engaged)" "\n"
+        "   engaged     (3)  -- B'11  traction control is Engaged" "\n"
+        "   }")
+      j2735_v2x_msgs::msg::TractionControlStatus traction;
+
+      @verbatim (language="comment", text=
+        "AntiLockBrakeStatus ::= ENUMERATED {" "\n"
+        "   unavailable (0), -- B'00  Vehicle Not Equipped with ABS Brakes" "\n"
+        "                    --       or ABS Brakes status is unavailable" "\n"
+        "   off         (1), -- B'01  Vehicle's ABS are Off" "\n"
+        "   on          (2), -- B'10  Vehicle's ABS are On ( but not Engaged )" "\n"
+        "   engaged     (3)  -- B'11  Vehicle's ABS control is Engaged on any wheel" "\n"
+        "   }")
+      j2735_v2x_msgs::msg::AntiLockBrakeStatus abs;
+
+      @verbatim (language="comment", text=
+        "StabilityControlStatus ::= ENUMERATED {" "\n"
+        "   unavailable (0), -- B'00  Not Equipped with SC" "\n"
+        "                    --       or SC status is unavailable" "\n"
+        "   off         (1), -- B'01  Off" "\n"
+        "   on          (2), -- B'10  On or active (but not engaged)" "\n"
+        "   engaged     (3)  -- B'11  stability control is Engaged" "\n"
+        "   }")
+      j2735_v2x_msgs::msg::StabilityControlStatus scs;
+
+      @verbatim (language="comment", text=
+        "BrakeBoostApplied ::= ENUMERATED {" "\n"
+        "   unavailable   (0), -- Vehicle not equipped with brake boost" "\n"
+        "                      -- or brake boost data is unavailable" "\n"
+        "   off           (1), -- Vehicle's brake boost is off" "\n"
+        "   on            (2)  -- Vehicle's brake boost is on (applied)" "\n"
+        "   }")
+      j2735_v2x_msgs::msg::BrakeBoostApplied brake_boost;
+
+      @verbatim (language="comment", text=
+        "AuxiliaryBrakeStatus ::= ENUMERATED {" "\n"
+        "   unavailable (0), -- B'00  Vehicle Not Equipped with Aux Brakes" "\n"
+        "                    --       or Aux Brakes status is unavailable" "\n"
+        "   off         (1), -- B'01  Vehicle's Aux Brakes are Off" "\n"
+        "   on          (2), -- B'10  Vehicle's Aux Brakes are On ( Engaged )" "\n"
+        "   reserved    (3)  -- B'11" "\n"
+        "   }")
+      j2735_v2x_msgs::msg::AuxiliaryBrakeStatus aux_brakes;
+    };
+  };
+};

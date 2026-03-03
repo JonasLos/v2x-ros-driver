@@ -8,6 +8,11 @@ V2X-ROS-Driver is the driver for use with V2X radios and had been tested with th
 
 For more information regarding the recommended setup/configuration for an OBU, please refer to this [documentation](/docs/).
 
+Runtime usage and expected behavior are documented in:
+
+- [Driver package README](v2x_ros_driver/README.md)
+- [Scripts README](scripts/README.md)
+
 # CARMA Platform
 The driver was initially developed for CARMA Platform. The primary CARMA Platform repository can be found [here](https://github.com/usdot-fhwa-stol/carma-platform) and is part of the [USDOT FHWA STOL](https://github.com/usdot-fhwa-stol/)
 github organization. Documentation on how the CARMA Platform functions, how it will evolve over time, and how you can contribute can be found at the above links as well

@@ -128,8 +128,51 @@ Current decoder output behavior:
 
 - prints only structured decodes (`value` object/array)
 - ignores undecodable candidates and noisy wrapper-only candidates
+- supports mixed framing including `00 <msg_id> <len> <payload>` (important for SPAT/SRM-style streams)
 
-## Troubleshooting checklist
+## Rosbag decode and plotting workflow
+
+Use scripts in `scripts/` to decode and visualize recorded `/comms/inbound_binary_msg` data.
+
+1. Decode bag records to JSONL + summary:
+
+```bash
+python3 scripts/decode_inbound_mcap.py \
+	--bag /path/to/rosbag2_xxx/rosbag2_xxx_0.mcap \
+	--out-jsonl /tmp/inbound_decoded.jsonl \
+	--out-summary /tmp/inbound_decoded_summary.json
+```
+
+2. Plot decoded BSM trajectories (lat/lon):
+
+```bash
+python3 scripts/plot_inbound_latlon.py \
+	--input /tmp/inbound_decoded.jsonl \
+	--output /tmp/inbound_latlon_map.png
+```
+
+3. Plot decoded SPAT signal states over time:
+
+```bash
+python3 scripts/plot_spat_signals.py \
+	--input /tmp/inbound_decoded.jsonl \
+	--output /tmp/spat_signal_timeline.png
+```
+
+4. Plot decoded SDSM and map-like geometry:
+
+```bash
+python3 scripts/plot_sdsm_maplike.py \
+	--input /tmp/inbound_decoded.jsonl \
+	--sdsm-out /tmp/sdsm_positions.png \
+	--map-out /tmp/maplike_srm_lanes_georef.png
+```
+
+Notes:
+
+- In analyzed C2P captures, true decoded MAP (`messageId=31`) may be absent even when driver-level labels show `MAP`.
+- Some records labeled `MAP` by driver metadata may decode as other J2735 payloads (for example SRM/SDSM).
+- The map-like plot is georeferenced from intersection `refPoint` and local lane-node deltas.
 
 ## Known Commsignia C2P caveats
 
@@ -151,6 +194,8 @@ Current decoder output behavior:
 4. If UDP is present but structured decodes are sparse:
 	- Extend capture window (30-120s)
 	- Expect mixed traffic; this can be normal for C2P wrapper-heavy streams
+
+## Troubleshooting checklist
 
 1. Confirm OBU can reach host (`ping` and correct host IP configured on OBU).
 2. Confirm `listening_port` matches selected OBU stream mode (`5398` IFM, `7943` C2P).

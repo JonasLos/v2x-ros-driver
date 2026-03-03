@@ -64,3 +64,70 @@ python3 scripts/check_v2x_reception.py --duration 20 --expected-listening-port 7
 	- `result: OK` (messages present and optional expected port matches)
 	- `result: NO_MESSAGES`
 	- `result: PARAM_MISMATCH`
+
+## `decode_inbound_mcap.py`
+
+Decodes all `/comms/inbound_binary_msg` entries from a rosbag2 mcap into:
+
+- per-message JSONL records
+- summary JSON with counts by decoded J2735 message ID/type
+
+### Usage
+
+```bash
+python3 scripts/decode_inbound_mcap.py \
+	--bag /path/to/rosbag2_xxx/rosbag2_xxx_0.mcap \
+	--out-jsonl /tmp/inbound_decoded.jsonl \
+	--out-summary /tmp/inbound_decoded_summary.json
+```
+
+### Expected output
+
+- Printed summary JSON (decode rate + message counts)
+- JSONL file containing raw metadata and decoded payloads when available
+
+## `plot_inbound_latlon.py`
+
+Plots decoded BSM lat/lon tracks from JSONL output.
+
+### Usage
+
+```bash
+python3 scripts/plot_inbound_latlon.py \
+	--input /tmp/inbound_decoded.jsonl \
+	--output /tmp/inbound_latlon_map.png
+```
+
+## `plot_spat_signals.py`
+
+Plots decoded SPAT signal states over time, grouped by signal group.
+
+### Usage
+
+```bash
+python3 scripts/plot_spat_signals.py \
+	--input /tmp/inbound_decoded.jsonl \
+	--output /tmp/spat_signal_timeline.png
+```
+
+## `plot_sdsm_maplike.py`
+
+Produces:
+
+- SDSM object position plot (lat/lon)
+- map-like lane geometry plot from decoded SRM intersection/lane fields
+
+### Usage
+
+```bash
+python3 scripts/plot_sdsm_maplike.py \
+	--input /tmp/inbound_decoded.jsonl \
+	--sdsm-out /tmp/sdsm_positions.png \
+	--map-out /tmp/maplike_srm_lanes_georef.png \
+	--node-unit-m 0.01
+```
+
+### Notes
+
+- The map-like geometry plot is georeferenced using intersection `refPoint`.
+- If decoded MAP (`messageId=31`) is absent, map-like visuals may still come from decoded SRM/SDSM content in mixed streams.

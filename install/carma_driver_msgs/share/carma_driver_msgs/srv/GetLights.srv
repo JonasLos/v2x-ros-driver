@@ -1,7 +1,0 @@
-# GetLights.srv
-
-# Request - no arguments
-
----
-
-carma_driver_msgs/LightBarStatus status

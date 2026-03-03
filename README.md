@@ -15,6 +15,8 @@ Runtime usage and expected behavior are documented in:
 - [Driver package README](v2x_ros_driver/README.md)
 - [Scripts README](scripts/README.md)
 
+This includes rosbag decode utilities and plotting workflows for BSM/SPAT/SDSM and map-like lane geometry.
+
 # CARMA Platform
 The driver was initially developed for CARMA Platform. The primary CARMA Platform repository can be found [here](https://github.com/usdot-fhwa-stol/carma-platform) and is part of the [USDOT FHWA STOL](https://github.com/usdot-fhwa-stol/)
 github organization. Documentation on how the CARMA Platform functions, how it will evolve over time, and how you can contribute can be found at the above links as well

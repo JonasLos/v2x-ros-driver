@@ -1,4 +1,0 @@
-# generated from rosidl_cmake/cmake/rosidl_cmake-extras.cmake.in
-
-set(carma_driver_msgs_IDL_FILES "msg/ByteArray.idl;msg/DriverStatus.idl;msg/HeadingStamped.idl;msg/LightBarStatus.idl;msg/RobotEnabled.idl;msg/TrailerAngle.idl;msg/TurnSignal.idl;srv/GetDriverApi.idl;srv/GetDriverStatus.idl;srv/GetDriversWithCapabilities.idl;srv/GetLights.idl;srv/SendMessage.idl;srv/SetEnableRobotic.idl;srv/SetLightBarIndicator.idl;srv/SetLights.idl")
-set(carma_driver_msgs_INTERFACE_FILES "msg/ByteArray.msg;msg/DriverStatus.msg;msg/HeadingStamped.msg;msg/LightBarStatus.msg;msg/RobotEnabled.msg;msg/TrailerAngle.msg;msg/TurnSignal.msg;srv/GetDriverApi.srv;srv/GetDriverStatus.srv;srv/GetDriversWithCapabilities.srv;srv/GetLights.srv;srv/SendMessage.srv;srv/SetEnableRobotic.srv;srv/SetLightBarIndicator.srv;srv/SetLights.srv")

@@ -214,3 +214,21 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# ROS 2 / colcon artifacts
+/install/
+/log/
+/test_results/
+
+# Rosbag and recording artifacts
+*.mcap
+*.db3
+rosbag2_*/
+
+# Merge/editor leftovers
+*.orig
+*.rej
+.DS_Store
+
+# Local editor settings
+.vscode/

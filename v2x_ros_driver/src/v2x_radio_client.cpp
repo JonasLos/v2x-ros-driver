@@ -76,7 +76,7 @@ bool V2XRadioClient::connect(const std::string &remote_address,
     try
     {
         remote_udp_ep_ = boost::asio::ip::udp::endpoint(boost::asio::ip::address::from_string(remote_address),remote_port);
-    }catch(std::exception e)
+    }catch(const std::exception& e)
     {
         ec = boost::asio::error::invalid_argument;
         throw e;
@@ -94,12 +94,12 @@ bool V2XRadioClient::connect(const std::string &remote_address,
             udp_listener_.reset(nullptr);
         }
         udp_listener_.reset(new cav::UDPListener(*io_,local_port));
-    }catch(boost::system::system_error e)
+    }catch(const boost::system::system_error& e)
     {
         ec = e.code();
         return false;
     }
-    catch(std::exception e)
+    catch(const std::exception& e)
     {
         RCLCPP_ERROR_STREAM(logger_, "V2XRadioClient::connect threw exception : " << e.what());
         return false;
@@ -235,7 +235,7 @@ bool V2XRadioClient::isValidMsgSize(const std::vector<uint8_t> &msg_vec, size_t 
         // Because we need to merge two bytes, we cast the values to an unsigned 16-bit integer.
         // First byte is shifted to the left 8 bits (0x0001 is now 0x0100), followed by a bitwise OR (|) with msg_vec[3], combining 0x0100 and 0x0009 to create 0x0109.
         auto msg_size = (static_cast<uint16_t>(msg_vec[2] & 0x7F) << 8) | msg_vec[3];
-        if (msg_size == long_vec.size())
+        if (static_cast<size_t>(msg_size) == long_vec.size())
             {
                 return true;
             }
@@ -427,7 +427,7 @@ bool V2XRadioClient::sendV2xMessage(const std::shared_ptr<std::vector<uint8_t>> 
                                  {
                                      udp_out_socket_->send_to(boost::asio::buffer(*message), remote_udp_ep_);
                                  }
-                                 catch(boost::system::system_error error_code)
+                                 catch(const boost::system::system_error& error_code)
                                  {
                                      onError(error_code.code());
                                  }

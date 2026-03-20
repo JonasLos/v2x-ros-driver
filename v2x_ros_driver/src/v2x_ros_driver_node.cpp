@@ -250,6 +250,7 @@ void Node::sendMessageFromQueue() {
 void Node::sendMessageSrv(const std::shared_ptr<rmw_request_id_t> header,
                                   const std::shared_ptr<carma_driver_msgs::srv::SendMessage::Request> req,
                                   const std::shared_ptr<carma_driver_msgs::srv::SendMessage::Response> res) {
+    (void)header; // Unused parameter
 
     if(!v2x_radio_client_.connected())
     {
@@ -304,7 +305,7 @@ void Node::pre_spin()
                 {
                     RCLCPP_WARN_STREAM(this->get_logger(),"Failed to connect, err: " << ec.message());
                 }
-            }catch(std::exception e)
+            }catch(const std::exception& e)
             {
                 RCLCPP_ERROR_STREAM(this->get_logger(),"Exception connecting to v2x radio: " << e.what() << " error_code: " << ec.message());
                 RCLCPP_ERROR_STREAM(this->get_logger(),"Config:\n\tv2x_radio_address:" << config_.v2x_radio_address

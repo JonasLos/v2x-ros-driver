@@ -1,0 +1,6 @@
+[submodule "src/CARMAMsgs"]
+	path = src/CARMAMsgs
+	url = https://github.com/usdot-fhwa-stol/carma-msgs.git
+[submodule "src/CARMAUtils"]
+	path = src/CARMAUtils
+	url = https://github.com/usdot-fhwa-stol/carma-utils.git

@@ -71,21 +71,18 @@ TEST(V2XRadioClient,testValidateMsgId)
 
     //read list of valid msg_id from correct wave.json file
     v2x_radio_client_.set_wave_file_path(package_share_directory + "/etc/wave.json");
-    ASSERT_TRUE(v2x_radio_client_.IsValidMsgID(std::to_string(msg_id)));
-    msg_id = 31;
-    ASSERT_TRUE(v2x_radio_client_.IsValidMsgID(std::to_string(msg_id)));
-    msg_id = 18;
-    ASSERT_TRUE(v2x_radio_client_.IsValidMsgID(std::to_string(msg_id)));
-    msg_id = 19;
-    ASSERT_TRUE(v2x_radio_client_.IsValidMsgID(std::to_string(msg_id)));
-    msg_id = 240;
-    ASSERT_TRUE(v2x_radio_client_.IsValidMsgID(std::to_string(msg_id)));
-    msg_id = 241;
-    ASSERT_TRUE(v2x_radio_client_.IsValidMsgID(std::to_string(msg_id)));
-    msg_id = 242;
-    ASSERT_TRUE(v2x_radio_client_.IsValidMsgID(std::to_string(msg_id)));
-    msg_id = 243;
-    ASSERT_TRUE(v2x_radio_client_.IsValidMsgID(std::to_string(msg_id)));
+    const std::vector<uint16_t> valid_msg_ids = {
+        18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33,
+        34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47,
+        240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252,
+        253, 254, 255
+    };
+
+    for (const auto id : valid_msg_ids)
+    {
+        ASSERT_TRUE(v2x_radio_client_.IsValidMsgID(std::to_string(id)));
+    }
+
     msg_id = 896; //invalid msg_id
     ASSERT_FALSE(v2x_radio_client_.IsValidMsgID(std::to_string(msg_id)));
 }

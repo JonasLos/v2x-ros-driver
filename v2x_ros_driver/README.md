@@ -73,6 +73,96 @@ In mixed C2P streams, you may see a mix of payload sizes:
 
 Both can be expected depending on OBU stream composition.
 
+## Supported messages
+
+The driver currently recognizes and labels the following DSRCmsgID values from
+`etc/wave.json`.
+
+### J2735 UPER message set
+
+| DSRCmsgID | Name | Basic information |
+| --- | --- | --- |
+| 18 | MAP | MapData geometry and lane topology for intersections/segments. |
+| 19 | SPAT | Signal phase and timing states for one or more intersections. |
+| 20 | BSM | BasicSafetyMessage vehicle kinematics and status heartbeat. |
+| 21 | CommonSafetyRequest | Request-style safety coordination/control message. |
+| 22 | EmergencyVehicleAlert | Emergency vehicle alert/prioritization signaling. |
+| 23 | IntersectionCollision | Intersection collision warning information. |
+| 24 | NMEACorrections | Encapsulated NMEA GNSS correction payloads. |
+| 25 | ProbeDataManagement | Probe data collection policy/control message. |
+| 26 | ProbeVehicleData | Probe vehicle report payload. |
+| 27 | RoadSideAlert | Roadside hazard/event alert message. |
+| 28 | RTCMCorrections | Encapsulated RTCM correction payloads. |
+| 29 | SignalRequestMessage | Priority/preemption request toward infrastructure. |
+| 30 | SignalStatusMessage | Status/outcome for pending signal requests. |
+| 31 | TIM | Traveler information/advisory and geofenced notices. |
+| 32 | PSM | PersonalSafetyMessage for vulnerable road users/devices. |
+| 33 | RoadSafetyMessage | Road safety message profile (RSM). |
+| 34 | RoadWeatherMessage | Road weather condition message profile (RWM). |
+| 35 | ProbeDataConfigMessage | Probe data configuration instruction message. |
+| 36 | ProbeDataReportMessage | Probe data reporting payload message. |
+| 37 | TollAdvertisementMessage | Toll system advertisement/instruction message. |
+| 38 | TollUsageMessage | Toll usage transaction/report message. |
+| 39 | TollUsageAckMessage | Toll usage acknowledgement message. |
+| 40 | CooperativeControlMessage | Cooperative control/coordination message. |
+| 41 | SensorDataSharingMessage | Shared detected object/sensor observations (SDSM). |
+| 42 | ManeuverSharingAndCoordinatingMessage | Maneuver sharing and coordination dialog (MSCM). |
+| 43 | RoadGeometryAndAttributes | Road geometry and attributes payload (RGA). |
+| 44 | PersonalSafetyMessage2 | Newer personal safety message profile (PSM2). |
+| 45 | TrafficSignalPhaseAndTiming | Traffic signal phase/timing profile variant. |
+| 46 | SignalControlAndPrioritizationRequest | Signal control/prioritization request (SCPR). |
+| 47 | SignalControlAndPrioritizationStatus | Signal control/prioritization status (SCPS). |
+
+### CARMA/local relayed message IDs
+
+These IDs are in the local/test range but are intentionally mapped for
+CARMA platform message flows.
+
+| DSRCmsgID | Name | Basic information |
+| --- | --- | --- |
+| 240 | MobilityRequest | CARMA cooperative mobility request message. |
+| 241 | MobilityResponse | CARMA cooperative mobility response message. |
+| 242 | MobilityPath | CARMA planned path broadcast/update. |
+| 243 | MobilityOperation | CARMA operational intent/status payload. |
+| 244 | TrafficControlRequest | CARMA traffic control request. |
+| 245 | TrafficControlMessage | CARMA traffic control message payload. |
+| 246 | EmergencyVehicleResponse | CARMA emergency vehicle response/status. |
+| 247 | EmergencyVehicleAck | CARMA emergency vehicle acknowledgement. |
+
+### Remaining local/test IDs
+
+| DSRCmsgID | Name | Basic information |
+| --- | --- | --- |
+| 248 | TestMessage08 | Local/test message slot from J2735 test range. |
+| 249 | TestMessage09 | Local/test message slot from J2735 test range. |
+| 250 | TestMessage10 | Local/test message slot from J2735 test range. |
+| 251 | TestMessage11 | Local/test message slot from J2735 test range. |
+| 252 | TestMessage12 | Local/test message slot from J2735 test range. |
+| 253 | TestMessage13 | Local/test message slot from J2735 test range. |
+| 254 | TestMessage14 | Local/test message slot from J2735 test range. |
+| 255 | TestMessage15 | Local/test message slot from J2735 test range. |
+
+Notes:
+
+- Message labels published on `/comms/inbound_binary_msg` come from the `name`
+	field in `etc/wave.json`.
+- Unknown IDs that are not in `etc/wave.json` are published as `message_type:
+	Unknown`.
+
+### Quick reference by use case
+
+This compact view groups supported message IDs by practical operational area.
+
+| Use case | Messages (DSRCmsgID: Name) |
+| --- | --- |
+| Intersection geometry and signal operations | 18: MAP, 19: SPAT, 29: SignalRequestMessage, 30: SignalStatusMessage, 45: TrafficSignalPhaseAndTiming, 46: SignalControlAndPrioritizationRequest, 47: SignalControlAndPrioritizationStatus |
+| Vehicle and vulnerable-road-user safety | 20: BSM, 22: EmergencyVehicleAlert, 23: IntersectionCollision, 27: RoadSideAlert, 32: PSM, 33: RoadSafetyMessage, 34: RoadWeatherMessage, 41: SensorDataSharingMessage, 44: PersonalSafetyMessage2 |
+| Traveler, tolling, and advisories | 31: TIM, 37: TollAdvertisementMessage, 38: TollUsageMessage, 39: TollUsageAckMessage |
+| Probe and telemetry collection/reporting | 24: NMEACorrections, 25: ProbeDataManagement, 26: ProbeVehicleData, 28: RTCMCorrections, 35: ProbeDataConfigMessage, 36: ProbeDataReportMessage |
+| Cooperative planning and control | 21: CommonSafetyRequest, 40: CooperativeControlMessage, 42: ManeuverSharingAndCoordinatingMessage, 43: RoadGeometryAndAttributes |
+| CARMA relayed/local operational set | 240: MobilityRequest, 241: MobilityResponse, 242: MobilityPath, 243: MobilityOperation, 244: TrafficControlRequest, 245: TrafficControlMessage, 246: EmergencyVehicleResponse, 247: EmergencyVehicleAck |
+| Local test range | 248: TestMessage08, 249: TestMessage09, 250: TestMessage10, 251: TestMessage11, 252: TestMessage12, 253: TestMessage13, 254: TestMessage14, 255: TestMessage15 |
+
 ### Driver logs
 
 Expected at startup:

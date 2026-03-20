@@ -42,6 +42,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <algorithm>
 
 #include "v2x_ros_driver/v2x_radio_client.h"
 namespace V2XDriverApplication
@@ -289,8 +290,15 @@ bool V2XRadioClient::isPossiblePSID(const std::string &msg_id)
 
 bool V2XRadioClient::isValidMsgAssumingBSMPSID(size_t start_index, const std::vector<uint8_t> &entry)
 {
+    if (entry.size() < 2 || start_index >= entry.size() - 1)
+    {
+        return false;
+    }
+
+    const size_t element_scan_limit = std::min(entry.size() - 1, start_index + 6);
+
     // Valid element id will exist, at max, 5 bytes after a PSID
-    for (auto i = start_index; i < start_index + 6; i++)
+    for (size_t i = start_index; i < element_scan_limit; i++)
     {
         // Generate a 16-bit element id from two bytes, e.g. [03 128 ...] = 0x0380
         auto element_id = (static_cast<uint16_t>(entry[i]) << 8) | static_cast<uint16_t>(entry[i+1]);
@@ -298,8 +306,9 @@ bool V2XRadioClient::isValidMsgAssumingBSMPSID(size_t start_index, const std::ve
         if (element_id == 896)
         {
             auto element_id_index = i;
+            const size_t msgid_scan_limit = std::min(entry.size() - 1, element_id_index + 6);
             // Valid DSRCmsgID will exist, at max, 5 bytes after the element id
-            for (auto j = element_id_index; j < element_id_index + 6; j++)
+            for (size_t j = element_id_index; j < msgid_scan_limit; j++)
             {
                 // Generate a 16-bit message id from two bytes, e.g. [0 20 ...] = 0x0014
                 auto possible_msg_id = (static_cast<uint16_t>(entry[j]) << 8) | static_cast<uint16_t>(entry[j+1]);

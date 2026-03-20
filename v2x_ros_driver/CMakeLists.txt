@@ -12,6 +12,7 @@ ament_auto_find_build_dependencies()
 # Name build targets
 set(node_exec v2x_ros_driver_node_exec)
 set(node_lib v2x_ros_driver_node)
+set(visualizer_exec v2x_map_spat_visualizer_exec)
 
 # Includes
 include_directories(
@@ -29,6 +30,10 @@ ament_auto_add_library(${node_lib} SHARED
 
 ament_auto_add_executable(${node_exec}
         src/main.cpp
+)
+
+ament_auto_add_executable(${visualizer_exec}
+        src/v2x_map_spat_visualizer.cpp
 )
 
 # Register component
@@ -56,6 +61,11 @@ if(BUILD_TESTING)
 endif()
 
 # Install
+install(PROGRAMS
+        scripts/v2x_inbound_marker_visualizer.py
+        DESTINATION lib/${PROJECT_NAME}
+)
+
 ament_auto_package(
         INSTALL_TO_SHARE config etc launch
 )

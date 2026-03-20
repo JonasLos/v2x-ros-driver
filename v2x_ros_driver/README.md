@@ -40,6 +40,77 @@ ros2 node list | grep v2x_ros_driver_node
 ros2 topic echo /comms/inbound_binary_msg
 ```
 
+## Bird's-eye MAP/SPAT visualization
+
+There are two visualization modes:
+
+1. Decoder-backed mode (default): decodes J2735 directly from `/comms/inbound_binary_msg` and renders markers.
+2. Pre-decoded mode (optional): consumes external decoded MAP/SPAT/BSM topics.
+
+Decoder-backed mode behavior:
+
+- uses a global georeference anchor so intersections are placed by real relative position and do not overlap
+- initializes anchor at the center of the first MAP message intersections (map-centered start)
+- republishes markers only when decoded MAP/SPAT/BSM state changes
+- when BSM ID `e153df70` is available, it can be used as preferred dynamic anchor reference (OBU vehicle GPS)
+
+Output topic:
+
+- `/v2x/map_spat_markers` (`visualization_msgs/msg/MarkerArray`)
+- `/v2x/bsm_markers` (`visualization_msgs/msg/MarkerArray`)
+
+Direct decoder run command (from inbound binary topic):
+
+Decoder dependency prerequisite:
+
+```bash
+pip3 install pycrate --upgrade
+pip3 install j2735_202409*.whl
+```
+
+```bash
+source /opt/ros/jazzy/setup.bash
+source /home/jonaslo96/ros2_drivers/v2x-ros-driver/install/setup.bash
+ros2 run v2x_ros_driver v2x_inbound_marker_visualizer.py --ros-args \
+	-p inbound_topic:=/comms/inbound_binary_msg \
+	-p marker_topic:=/v2x/map_spat_markers \
+	-p bsm_marker_topic:=/v2x/bsm_markers \
+	-p prefer_obu_bsm_anchor:=true \
+	-p obu_reference_bsm_id:=e153df70 \
+	-p frame_id:=map
+```
+
+Launch decoder-backed mode:
+
+```bash
+ros2 launch v2x_ros_driver v2x_ros_driver.launch.py \
+	enable_inbound_binary_visualizer:=True \
+	inbound_binary_topic:=/comms/inbound_binary_msg \
+	enable_map_spat_visualizer:=False \
+	marker_topic:=/v2x/map_spat_markers \
+	bsm_marker_topic:=/v2x/bsm_markers
+```
+
+Optional pre-decoded mode launch:
+
+```bash
+ros2 launch v2x_ros_driver v2x_ros_driver.launch.py \
+	enable_inbound_binary_visualizer:=False \
+	enable_map_spat_visualizer:=True \
+	map_topic:=/message/incoming_map \
+	spat_topic:=/message/incoming_spat \
+	bsm_topic:=/message/incoming_bsm \
+	marker_topic:=/v2x/map_spat_markers
+```
+
+RViz setup:
+
+1. Add a `MarkerArray` display and set topic to `/v2x/map_spat_markers`.
+2. Add a second `MarkerArray` display and set topic to `/v2x/bsm_markers`.
+3. Set fixed frame to `map` (or override visualizer `frame_id` parameter to match your frame).
+4. Verify live updates as SPAT changes: lanes switch color (green/yellow/red) and labels update continuously.
+5. Verify BSM updates: cyan vehicle markers and labels appear/move on `/v2x/bsm_markers`.
+
 ## IFM vs C2P mode selection
 
 Use the override file that matches your OBU stream mode:

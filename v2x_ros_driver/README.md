@@ -53,28 +53,42 @@ Decoder-backed mode behavior:
 - initializes anchor at the center of the first MAP message intersections (map-centered start)
 - republishes markers only when decoded MAP/SPAT/BSM state changes
 - when BSM ID `e153df70` is available, it can be used as preferred dynamic anchor reference (OBU vehicle GPS)
+- logs live receive/decode counters to the terminal
+- supports screen-space RViz text overlays when `rviz_2d_overlay_msgs` and `rviz_2d_overlay_plugins` are installed
 
 Output topic:
 
 - `/v2x/map_spat_markers` (`visualization_msgs/msg/MarkerArray`)
 - `/v2x/bsm_markers` (`visualization_msgs/msg/MarkerArray`)
+- `/v2x/map_spat_overlay_text` (`rviz_2d_overlay_msgs/msg/OverlayText`, optional)
+- `/v2x/bsm_overlay_text` (`rviz_2d_overlay_msgs/msg/OverlayText`, optional)
 
 Direct decoder run command (from inbound binary topic):
 
 Decoder dependency prerequisite:
 
 ```bash
-pip3 install pycrate --upgrade
+python3 -m venv /home/jonaslo96/ros2_drivers/.venv
+source /home/jonaslo96/ros2_drivers/.venv/bin/activate
+pip3 install --upgrade pip pycrate
 pip3 install j2735_202409*.whl
 ```
 
+Optional RViz overlay prerequisite on ROS 2 Jazzy:
+
 ```bash
+sudo apt-get install -y ros-jazzy-rviz-2d-overlay-msgs ros-jazzy-rviz-2d-overlay-plugins
+```
+
+```bash
+source /home/jonaslo96/ros2_drivers/.venv/bin/activate
 source /opt/ros/jazzy/setup.bash
 source /home/jonaslo96/ros2_drivers/v2x-ros-driver/install/setup.bash
 ros2 run v2x_ros_driver v2x_inbound_marker_visualizer.py --ros-args \
 	-p inbound_topic:=/comms/inbound_binary_msg \
 	-p marker_topic:=/v2x/map_spat_markers \
 	-p bsm_marker_topic:=/v2x/bsm_markers \
+	-p enable_text_overlay:=true \
 	-p prefer_obu_bsm_anchor:=true \
 	-p obu_reference_bsm_id:=e153df70 \
 	-p frame_id:=map
@@ -108,8 +122,16 @@ RViz setup:
 1. Add a `MarkerArray` display and set topic to `/v2x/map_spat_markers`.
 2. Add a second `MarkerArray` display and set topic to `/v2x/bsm_markers`.
 3. Set fixed frame to `map` (or override visualizer `frame_id` parameter to match your frame).
-4. Verify live updates as SPAT changes: lanes switch color (green/yellow/red) and labels update continuously.
-5. Verify BSM updates: cyan vehicle markers and labels appear/move on `/v2x/bsm_markers`.
+4. Optional: add two `OverlayText` displays from `rviz_2d_overlay_plugins` for `/v2x/map_spat_overlay_text` and `/v2x/bsm_overlay_text`.
+5. Check the terminal running `v2x_inbound_marker_visualizer.py` for periodic counter logs (`encoded`, `decoded`, `not_decoded`, `bsm_tracked`).
+6. Verify live updates as SPAT changes: lanes switch color (green/yellow/red) and labels update continuously.
+7. Verify BSM updates: cyan vehicle markers and labels appear/move on `/v2x/bsm_markers`.
+
+Notes:
+
+- The visualizer auto-detects `j2735_202409` from the active Python environment and also falls back to a nearby workspace `.venv` when available.
+- On ROS 2 Jazzy, `jsk_rviz_plugins` is typically not packaged; use `rviz_2d_overlay_msgs` and `rviz_2d_overlay_plugins` instead.
+- If overlay packages are unavailable, map/SPAT/BSM markers still render normally and only the counter overlay is skipped.
 
 ## IFM vs C2P mode selection
 

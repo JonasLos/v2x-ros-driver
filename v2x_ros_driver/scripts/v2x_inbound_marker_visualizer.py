@@ -2,8 +2,11 @@
 
 import contextlib
 import io
+import importlib
 import json
 import math
+import sys
+from pathlib import Path
 from dataclasses import dataclass
 from typing import Dict, List, Optional, Tuple
 
@@ -13,8 +16,51 @@ from geometry_msgs.msg import Point
 from rclpy.node import Node
 from visualization_msgs.msg import Marker, MarkerArray
 
+OVERLAY_MSG_SOURCE = "none"
+try:
+    from jsk_rviz_plugins.msg import OverlayText  # type: ignore
+
+    OVERLAY_MSG_SOURCE = "jsk_rviz_plugins"
+except ImportError:
+    try:
+        from rviz_2d_overlay_msgs.msg import OverlayText  # type: ignore
+
+        OVERLAY_MSG_SOURCE = "rviz_2d_overlay_msgs"
+    except ImportError:
+        OverlayText = None
+
 
 VALID_IDS = {0x12, 0x13, 0x14, 0x1D, 0x1E, 0x1F, 0x20, 0x29}
+
+
+def _try_load_j2735_decoder_module():
+    try:
+        return importlib.import_module("j2735_202409")
+    except ImportError:
+        pass
+
+    # Fall back to a nearby workspace virtualenv so ros2 run can work
+    # even when the shell did not activate the expected .venv.
+    current = Path(__file__).resolve()
+    roots = [current.parent]
+    roots.extend(current.parents)
+    for root in roots:
+        venv_lib = root / ".venv" / "lib"
+        if not venv_lib.is_dir():
+            continue
+        for py_dir in sorted(venv_lib.glob("python*")):
+            site_packages = py_dir / "site-packages"
+            if not site_packages.is_dir():
+                continue
+            site_packages_str = str(site_packages)
+            if site_packages_str not in sys.path:
+                sys.path.insert(0, site_packages_str)
+            try:
+                return importlib.import_module("j2735_202409")
+            except ImportError:
+                continue
+
+    raise ImportError("No module named 'j2735_202409'")
 
 
 @dataclass
@@ -112,7 +158,9 @@ class V2XInboundMarkerVisualizer(Node):
         self.lane_line_width = float(self.declare_parameter("lane_line_width", 0.6).value)
         self.bsm_point_size = float(self.declare_parameter("bsm_point_size", 1.2).value)
         self.marker_lifetime_sec = float(self.declare_parameter("marker_lifetime_sec", 1.5).value)
+        self.enable_text_overlay = bool(self.declare_parameter("enable_text_overlay", True).value)
         self.enable_deep_scan = bool(self.declare_parameter("enable_deep_scan", True).value)
+        self.counter_log_period_sec = float(self.declare_parameter("counter_log_period_sec", 2.0).value)
         self.node_unit_m = float(self.declare_parameter("map_node_unit_m", 0.01).value)
         self.prefer_obu_bsm_anchor = bool(self.declare_parameter("prefer_obu_bsm_anchor", True).value)
         self.obu_reference_bsm_id = normalize_bsm_id(
@@ -120,10 +168,11 @@ class V2XInboundMarkerVisualizer(Node):
         )
 
         try:
-            import j2735_202409  # pylint: disable=import-outside-toplevel
+            j2735_202409 = _try_load_j2735_decoder_module()
         except ImportError as exc:
             raise RuntimeError(
                 "Missing Python decoder dependency 'j2735_202409'. Install with: "
+                "activate /home/jonaslo96/ros2_drivers/.venv (or your project venv) and install the wheel: "
                 "pip3 install pycrate --upgrade && pip3 install j2735_202409*.whl"
             ) from exc
 
@@ -132,6 +181,10 @@ class V2XInboundMarkerVisualizer(Node):
         self._map_raw: Dict[str, dict] = {}
         self._spat_state: Dict[str, Dict[int, int]] = {}
         self._bsm_tracks: Dict[str, BsmTrackPoint] = {}
+        self._encoded_rx_count = 0
+        self._decoded_rx_count = 0
+        self._undecoded_rx_count = 0
+        self._last_counter_log_ns = 0
         self._anchor_lat_deg: Optional[float] = None
         self._anchor_lon_deg: Optional[float] = None
         self._anchor_source: str = "unknown"
@@ -142,6 +195,19 @@ class V2XInboundMarkerVisualizer(Node):
         self._pub_map_spat = self.create_publisher(MarkerArray, self.marker_topic, 10)
         self._pub_bsm = self.create_publisher(MarkerArray, self.bsm_marker_topic, 10)
 
+        self._overlay_pub_map_spat = None
+        self._overlay_pub_bsm = None
+        if self.enable_text_overlay and OverlayText is not None:
+            self._overlay_pub_map_spat = self.create_publisher(OverlayText, "/v2x/map_spat_overlay_text", 10)
+            self._overlay_pub_bsm = self.create_publisher(OverlayText, "/v2x/bsm_overlay_text", 10)
+            self.get_logger().info(f"OverlayText enabled via {OVERLAY_MSG_SOURCE}")
+        elif self.enable_text_overlay and OverlayText is None:
+            self.get_logger().warning(
+                "OverlayText support requested but no overlay message package is installed "
+                "(expected one of: jsk_rviz_plugins, rviz_2d_overlay_msgs). "
+                "Counters will be shown in terminal logs only."
+            )
+
         period = max(0.1, 1.0 / max(0.1, self.publish_rate_hz))
         self._timer = self.create_timer(period, self._publish_markers)
 
@@ -150,6 +216,48 @@ class V2XInboundMarkerVisualizer(Node):
             f"map_spat_marker_topic={self.marker_topic}, bsm_marker_topic={self.bsm_marker_topic}, "
             f"obu_reference_bsm_id={self.obu_reference_bsm_id}"
         )
+
+    def _publish_overlay_text(self, text: str, is_map_spat: bool) -> None:
+        if OverlayText is None:
+            return
+        pub = self._overlay_pub_map_spat if is_map_spat else self._overlay_pub_bsm
+        if pub is None:
+            return
+
+        msg = OverlayText()
+        msg.action = OverlayText.ADD
+        msg.width = 800
+        msg.height = 80
+
+        # jsk_rviz_plugins uses left/top, while rviz_2d_overlay_msgs
+        # uses alignment + horizontal_distance/vertical_distance.
+        if hasattr(msg, "left") and hasattr(msg, "top"):
+            msg.left = 10
+            msg.top = 10 if is_map_spat else 95
+        else:
+            msg.horizontal_alignment = OverlayText.LEFT
+            msg.vertical_alignment = OverlayText.TOP
+            msg.horizontal_distance = 10
+            msg.vertical_distance = 10 if is_map_spat else 95
+
+        msg.text_size = 14.0
+        msg.line_width = 2
+        msg.font = "DejaVu Sans Mono"
+
+        # Foreground text color
+        msg.fg_color.r = 1.0 if is_map_spat else 0.7
+        msg.fg_color.g = 1.0 if is_map_spat else 0.95
+        msg.fg_color.b = 0.2 if is_map_spat else 1.0
+        msg.fg_color.a = 1.0
+
+        # Semi-transparent dark background
+        msg.bg_color.r = 0.0
+        msg.bg_color.g = 0.0
+        msg.bg_color.b = 0.0
+        msg.bg_color.a = 0.45
+
+        msg.text = text
+        pub.publish(msg)
 
     def _decode_payload(self, payload: bytes) -> Optional[dict]:
         for candidate, _ in extract_framed_candidates(payload):
@@ -161,6 +269,19 @@ class V2XInboundMarkerVisualizer(Node):
             return deep_scan_for_decode(payload, self._message_frame)
 
         return None
+
+    def _log_counters_if_due(self) -> None:
+        period_sec = max(0.2, self.counter_log_period_sec)
+        now_ns = self.get_clock().now().nanoseconds
+        if self._last_counter_log_ns == 0 or (now_ns - self._last_counter_log_ns) >= int(period_sec * 1e9):
+            self._last_counter_log_ns = now_ns
+            self.get_logger().info(
+                "RX counters: "
+                f"encoded={self._encoded_rx_count}, "
+                f"decoded={self._decoded_rx_count}, "
+                f"not_decoded={self._undecoded_rx_count}, "
+                f"bsm_tracked={len(self._bsm_tracks)}"
+            )
 
     def _intersection_key(self, inter_id: dict) -> str:
         region = inter_id.get("region", 0) if isinstance(inter_id, dict) else 0
@@ -469,9 +590,17 @@ class V2XInboundMarkerVisualizer(Node):
         if not payload:
             return
 
+        self._encoded_rx_count += 1
+        self._dirty_map_spat = True
+        self._dirty_bsm = True
+
         decoded = self._decode_payload(payload)
         if decoded is None:
+            self._undecoded_rx_count += 1
+            self._log_counters_if_due()
             return
+
+        self._decoded_rx_count += 1
 
         message_id = decoded.get("messageId")
         if message_id == 18:
@@ -480,6 +609,8 @@ class V2XInboundMarkerVisualizer(Node):
             self._on_spat(decoded)
         elif message_id == 20:
             self._on_bsm(decoded)
+
+        self._log_counters_if_due()
 
     def _phase_color(self, phase: int) -> Tuple[float, float, float, float]:
         if phase in (5, 6):
@@ -578,6 +709,13 @@ class V2XInboundMarkerVisualizer(Node):
                 label_marker.text = f"Lane {lane['lane_id']} | {signal_part} | {self._phase_name(phase)}"
                 marker_array.markers.append(label_marker)
 
+            overlay_text = (
+                f"RX encoded: {self._encoded_rx_count} | "
+                f"decoded: {self._decoded_rx_count} | "
+                f"not decoded: {self._undecoded_rx_count}"
+            )
+            self._publish_overlay_text(overlay_text, is_map_spat=True)
+
         self._pub_map_spat.publish(marker_array)
         self._dirty_map_spat = False
 
@@ -644,6 +782,13 @@ class V2XInboundMarkerVisualizer(Node):
                 lbl.text = f"BSM {short_id}"
             marker_array.markers.append(lbl)
 
+        overlay_text = (
+            f"BSM tracked: {len(self._bsm_tracks)} | "
+            f"RX encoded: {self._encoded_rx_count} | "
+            f"not decoded: {self._undecoded_rx_count}"
+        )
+        self._publish_overlay_text(overlay_text, is_map_spat=False)
+
         self._pub_bsm.publish(marker_array)
         self._dirty_bsm = False
 
@@ -659,7 +804,8 @@ def main() -> None:
         rclpy.spin(node)
     finally:
         node.destroy_node()
-        rclpy.shutdown()
+        if rclpy.ok():
+            rclpy.shutdown()
 
 
 if __name__ == "__main__":

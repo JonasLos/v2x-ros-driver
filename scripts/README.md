@@ -2,6 +2,48 @@
 
 This directory contains runtime diagnostics and decode helpers for `v2x_ros_driver`.
 
+## Visualizer runtime prerequisites
+
+The inbound binary visualizer installed by `v2x_ros_driver` depends on:
+
+- `pycrate>=0.7.11`
+- `j2735_202409` wheel in the Python environment used to launch `ros2 run`
+- optional RViz overlay packages on ROS 2 Jazzy:
+	- `ros-jazzy-rviz-2d-overlay-msgs`
+	- `ros-jazzy-rviz-2d-overlay-plugins`
+
+Suggested setup:
+
+```bash
+python3 -m venv /home/jonaslo96/ros2_drivers/.venv
+source /home/jonaslo96/ros2_drivers/.venv/bin/activate
+pip3 install --upgrade pip pycrate
+pip3 install j2735_202409*.whl
+sudo apt-get install -y ros-jazzy-rviz-2d-overlay-msgs ros-jazzy-rviz-2d-overlay-plugins
+```
+
+Run:
+
+```bash
+source /home/jonaslo96/ros2_drivers/.venv/bin/activate
+source /opt/ros/jazzy/setup.bash
+source /home/jonaslo96/ros2_drivers/v2x-ros-driver/install/setup.bash
+ros2 run v2x_ros_driver v2x_inbound_marker_visualizer.py --ros-args \
+	-p enable_text_overlay:=true \
+	-p inbound_topic:=/comms/inbound_binary_msg \
+	-p marker_topic:=/v2x/map_spat_markers \
+	-p bsm_marker_topic:=/v2x/bsm_markers \
+	-p prefer_obu_bsm_anchor:=true \
+	-p obu_reference_bsm_id:=e153df70 \
+	-p frame_id:=map
+```
+
+Behavior:
+
+- lane and BSM visualization remains on `MarkerArray` topics
+- receive/decode counters are printed in terminal logs
+- counter overlays are published only when overlay packages are installed
+
 ## `v2x_decoder_forwarder.py`
 
 Receives UDP V2X traffic, attempts J2735 decode, and forwards structured JSON via UDP.

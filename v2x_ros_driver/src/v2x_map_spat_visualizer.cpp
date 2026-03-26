@@ -263,12 +263,6 @@ private:
     visualization_msgs::msg::MarkerArray marker_array;
     int32_t marker_id = 0;
 
-    visualization_msgs::msg::Marker clear_marker;
-    clear_marker.header.stamp = now();
-    clear_marker.header.frame_id = frame_id_;
-    clear_marker.action = visualization_msgs::msg::Marker::DELETEALL;
-    marker_array.markers.push_back(clear_marker);
-
     for (const auto & map_entry : maps_)
     {
       const auto & intersection_id = map_entry.first;

@@ -166,6 +166,7 @@ class V2XInboundMarkerVisualizer(Node):
         self.obu_reference_bsm_id = normalize_bsm_id(
             self.declare_parameter("obu_reference_bsm_id", "e153df70").value
         )
+        self._logged_map_schema = False
 
         try:
             j2735_202409 = _try_load_j2735_decoder_module()
@@ -314,6 +315,8 @@ class V2XInboundMarkerVisualizer(Node):
                 continue
             ref_lat_raw = ref.get("lat")
             ref_lon_raw = ref.get("long")
+            if not isinstance(ref_lon_raw, int):
+                ref_lon_raw = ref.get("lon")
             if not isinstance(ref_lat_raw, int) or not isinstance(ref_lon_raw, int):
                 continue
             refs.append((ref_lat_raw * 1e-7, ref_lon_raw * 1e-7))
@@ -360,6 +363,8 @@ class V2XInboundMarkerVisualizer(Node):
             return None
         ref_lat_raw = ref.get("lat")
         ref_lon_raw = ref.get("long")
+        if not isinstance(ref_lon_raw, int):
+            ref_lon_raw = ref.get("lon")
         if not isinstance(ref_lat_raw, int) or not isinstance(ref_lon_raw, int):
             return None
 
@@ -440,6 +445,8 @@ class V2XInboundMarkerVisualizer(Node):
                 ll = delta["node-LatLon"]
                 lat_raw = ll.get("lat")
                 lon_raw = ll.get("long")
+                if not isinstance(lon_raw, int):
+                    lon_raw = ll.get("lon")
                 if isinstance(lat_raw, int) and isinstance(lon_raw, int):
                     node_lat = lat_raw * 1e-7
                     node_lon = lon_raw * 1e-7
@@ -451,6 +458,7 @@ class V2XInboundMarkerVisualizer(Node):
                             self._anchor_lon_deg,
                         )
             else:
+                applied_delta = False
                 for key in ("node-XY1", "node-XY2", "node-XY3", "node-XY4", "node-XY5", "node-XY6"):
                     if key in delta and isinstance(delta[key], dict):
                         x_val = delta[key].get("x")
@@ -458,9 +466,26 @@ class V2XInboundMarkerVisualizer(Node):
                         if isinstance(x_val, int) and isinstance(y_val, int):
                             current_x += x_val * self.node_unit_m
                             current_y += y_val * self.node_unit_m
+                            applied_delta = True
                             break
 
-            points.append((current_x, current_y))
+                # Some decoders expose node XY deltas under different keys; accept any child dict
+                # that carries integer x/y so lane geometry is still reconstructed.
+                if not applied_delta:
+                    for value in delta.values():
+                        if not isinstance(value, dict):
+                            continue
+                        x_val = value.get("x")
+                        y_val = value.get("y")
+                        if isinstance(x_val, int) and isinstance(y_val, int):
+                            current_x += x_val * self.node_unit_m
+                            current_y += y_val * self.node_unit_m
+                            applied_delta = True
+                            break
+
+            pt = (current_x, current_y)
+            if not points or abs(points[-1][0] - pt[0]) > 1e-6 or abs(points[-1][1] - pt[1]) > 1e-6:
+                points.append(pt)
 
         return points
 
@@ -471,6 +496,24 @@ class V2XInboundMarkerVisualizer(Node):
         intersections = value.get("intersections")
         if not isinstance(intersections, list):
             return
+
+        if not self._logged_map_schema and intersections:
+            try:
+                first_inter = intersections[0] if isinstance(intersections[0], dict) else {}
+                lane_set = first_inter.get("laneSet", []) if isinstance(first_inter, dict) else []
+                first_lane = lane_set[0] if isinstance(lane_set, list) and lane_set else {}
+                node_list = first_lane.get("nodeList", {}) if isinstance(first_lane, dict) else {}
+                nodes = node_list.get("nodes", []) if isinstance(node_list, dict) else []
+                first_node = nodes[0] if isinstance(nodes, list) and nodes else {}
+                first_delta = first_node.get("delta", {}) if isinstance(first_node, dict) else {}
+                self.get_logger().info(
+                    f"MAP schema probe: laneSet_type={type(lane_set).__name__}, "
+                    f"nodeList_keys={list(node_list.keys()) if isinstance(node_list, dict) else []}, "
+                    f"first_delta={first_delta}"
+                )
+            except Exception as exc:
+                self.get_logger().warn(f"MAP schema probe failed: {exc}")
+            self._logged_map_schema = True
 
         self._ensure_anchor_from_intersections(intersections)
         if self._anchor_lat_deg is None or self._anchor_lon_deg is None:
@@ -556,6 +599,8 @@ class V2XInboundMarkerVisualizer(Node):
 
         lat_raw = core.get("lat")
         lon_raw = core.get("long")
+        if not isinstance(lon_raw, int):
+            lon_raw = core.get("lon")
         if not isinstance(lat_raw, int) or not isinstance(lon_raw, int):
             return
 

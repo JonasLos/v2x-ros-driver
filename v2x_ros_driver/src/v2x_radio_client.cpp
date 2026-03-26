@@ -144,6 +144,8 @@ void V2XRadioClient::process(const std::shared_ptr<const std::vector<uint8_t>> &
 {
     auto &entry = *data;
 
+    RCLCPP_DEBUG_STREAM(logger_, "Received UDP datagram of " << entry.size() << " bytes.");
+
     // Check if data is empty or smaller than the minimum required bytes
     if (entry.empty() || entry.size() < 3)
     {
@@ -160,6 +162,8 @@ void V2XRadioClient::process(const std::shared_ptr<const std::vector<uint8_t>> &
         auto msg_id = (static_cast<uint16_t>(entry[i]) << 8) | static_cast<uint16_t>(entry[i + 1]);
         if (!IsValidMsgID(std::to_string(msg_id))) { continue; }
         saw_valid_msg_id = true;
+
+        RCLCPP_DEBUG_STREAM(logger_, "Found valid MessageID candidate " << msg_id << " at byte offset " << i << ".");
 
         if ((i + short_frame_) >= entry.size()) {
             continue;
@@ -208,6 +212,7 @@ void V2XRadioClient::process(const std::shared_ptr<const std::vector<uint8_t>> &
                              !isValidMsgAssumingBSMPSID(start_index, entry);
 
         if (shouldProcess) {
+            RCLCPP_DEBUG_STREAM(logger_, "Publishing extracted message with MessageID " << msg_id << " and length " << extracted_msg.size() << " bytes.");
             onMessageReceived(extracted_msg, msg_id);
             break;
         } else {

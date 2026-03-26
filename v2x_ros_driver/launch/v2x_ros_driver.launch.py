@@ -88,6 +88,11 @@ def generate_launch_description():
         name='marker_topic', default_value='/v2x/map_spat_markers',
         description='Output marker array topic for RViz bird\'s-eye visualization')
 
+    inbound_marker_topic = LaunchConfiguration('inbound_marker_topic')
+    declare_inbound_marker_topic_arg = DeclareLaunchArgument(
+        name='inbound_marker_topic', default_value='/v2x/inbound_map_spat_markers',
+        description='Output marker array topic for decoder-backed MAP/SPAT visualization')
+
     bsm_marker_topic = LaunchConfiguration('bsm_marker_topic')
     declare_bsm_marker_topic_arg = DeclareLaunchArgument(
         name='bsm_marker_topic', default_value='/v2x/bsm_markers',
@@ -124,8 +129,8 @@ def generate_launch_description():
                         {'--log-level' : log_level }
                     ],
                     remappings=[
-                        ("inbound_binary_msg", "comms/inbound_binary_msg"),
-                        ("outbound_binary_msg", "comms/outbound_binary_msg"),
+                        ("inbound_binary_msg", "/comms/inbound_binary_msg"),
+                        ("outbound_binary_msg", "/comms/outbound_binary_msg"),
                     ],
                     parameters=[
                       param_file_path,
@@ -196,7 +201,7 @@ def generate_launch_description():
         parameters=[
             {
                 'inbound_topic': inbound_binary_topic,
-                'marker_topic': marker_topic,
+                'marker_topic': inbound_marker_topic,
                 'bsm_marker_topic': bsm_marker_topic,
                 'frame_id': 'map',
                 'enable_deep_scan': True,
@@ -217,6 +222,7 @@ def generate_launch_description():
         declare_spat_topic_arg,
         declare_bsm_topic_arg,
         declare_marker_topic_arg,
+        declare_inbound_marker_topic_arg,
         declare_bsm_marker_topic_arg,
         container,
         activate_node_group_action,

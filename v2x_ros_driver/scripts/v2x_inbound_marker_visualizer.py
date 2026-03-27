@@ -153,6 +153,7 @@ class V2XInboundMarkerVisualizer(Node):
         self.inbound_topic = self.declare_parameter("inbound_topic", "/comms/inbound_binary_msg").value
         self.marker_topic = self.declare_parameter("marker_topic", "/v2x/map_spat_markers").value
         self.bsm_marker_topic = self.declare_parameter("bsm_marker_topic", "/v2x/bsm_markers").value
+        self.psm_marker_topic = self.declare_parameter("psm_marker_topic", "/v2x/psm_markers").value
         self.frame_id = self.declare_parameter("frame_id", "map").value
         self.publish_rate_hz = float(self.declare_parameter("publish_rate_hz", 10.0).value)
         self.lane_line_width = float(self.declare_parameter("lane_line_width", 0.6).value)
@@ -182,6 +183,7 @@ class V2XInboundMarkerVisualizer(Node):
         self._map_raw: Dict[str, dict] = {}
         self._spat_state: Dict[str, Dict[int, int]] = {}
         self._bsm_tracks: Dict[str, BsmTrackPoint] = {}
+        self._psm_tracks: Dict[str, BsmTrackPoint] = {}  # Reuse BsmTrackPoint for PSM too
         self._encoded_rx_count = 0
         self._decoded_rx_count = 0
         self._undecoded_rx_count = 0
@@ -191,10 +193,12 @@ class V2XInboundMarkerVisualizer(Node):
         self._anchor_source: str = "unknown"
         self._dirty_map_spat = True
         self._dirty_bsm = True
+        self._dirty_psm = True
 
         self._sub = self.create_subscription(ByteArray, self.inbound_topic, self._on_inbound, 200)
         self._pub_map_spat = self.create_publisher(MarkerArray, self.marker_topic, 10)
         self._pub_bsm = self.create_publisher(MarkerArray, self.bsm_marker_topic, 10)
+        self._pub_psm = self.create_publisher(MarkerArray, self.psm_marker_topic, 10)
 
         self._overlay_pub_map_spat = None
         self._overlay_pub_bsm = None
@@ -215,6 +219,7 @@ class V2XInboundMarkerVisualizer(Node):
         self.get_logger().info(
             f"Inbound marker visualizer started: inbound_topic={self.inbound_topic}, "
             f"map_spat_marker_topic={self.marker_topic}, bsm_marker_topic={self.bsm_marker_topic}, "
+            f"psm_marker_topic={self.psm_marker_topic}, "
             f"obu_reference_bsm_id={self.obu_reference_bsm_id}"
         )
 
@@ -630,6 +635,49 @@ class V2XInboundMarkerVisualizer(Node):
             self._bsm_tracks[vehicle_id] = new_point
             self._dirty_bsm = True
 
+    def _on_psm(self, decoded: dict) -> None:
+        """Process Personal Safety Message (pedestrians, cyclists, etc.)"""
+        if self._anchor_lat_deg is None or self._anchor_lon_deg is None:
+            return
+
+        value = decoded.get("value")
+        if not isinstance(value, dict):
+            return
+        
+        # PSM structure: value contains the PSM data
+        psm_data = value
+        
+        # Extract position
+        lat_raw = psm_data.get("lat")
+        lon_raw = psm_data.get("long")
+        if not isinstance(lon_raw, int):
+            lon_raw = psm_data.get("lon")
+        if not isinstance(lat_raw, int) or not isinstance(lon_raw, int):
+            return
+        
+        psm_lat = lat_raw * 1e-7
+        psm_lon = lon_raw * 1e-7
+        
+        # Extract speed (vulnerable users may have different scale than vehicles)
+        speed_raw = psm_data.get("speed")
+        speed_mps = speed_raw * 0.02 if isinstance(speed_raw, int) and speed_raw != 8191 else -1.0
+        
+        # Extract user type for identification
+        user_type = psm_data.get("basicType", "unknown")
+        psm_id = f"{user_type}_{psm_lat:.4f}_{psm_lon:.4f}"  # Create ID from position + type
+        
+        # Update track
+        new_point = BsmTrackPoint(lat_deg=psm_lat, lon_deg=psm_lon, speed_mps=speed_mps)
+        previous = self._psm_tracks.get(psm_id)
+        
+        if previous is None or (
+            abs(previous.lat_deg - new_point.lat_deg) > 1e-6
+            or abs(previous.lon_deg - new_point.lon_deg) > 1e-6
+            or abs(previous.speed_mps - new_point.speed_mps) > 0.1
+        ):
+            self._psm_tracks[psm_id] = new_point
+            self._dirty_psm = True
+
     def _on_inbound(self, msg: ByteArray) -> None:
         payload = bytes(msg.content)
         if not payload:
@@ -654,6 +702,8 @@ class V2XInboundMarkerVisualizer(Node):
             self._on_spat(decoded)
         elif message_id == 20:
             self._on_bsm(decoded)
+        elif message_id == 32:
+            self._on_psm(decoded)
 
         self._log_counters_if_due()
 
@@ -837,9 +887,90 @@ class V2XInboundMarkerVisualizer(Node):
         self._pub_bsm.publish(marker_array)
         self._dirty_bsm = False
 
+    def _publish_psm_markers(self) -> None:
+        """Publish Personal Safety Message markers (pedestrians, cyclists)"""
+        if not self._dirty_psm:
+            return
+
+        marker_array = MarkerArray()
+        marker_id = 0
+
+        clear = Marker()
+        clear.header.stamp = self.get_clock().now().to_msg()
+        clear.header.frame_id = self.frame_id
+        clear.action = Marker.DELETEALL
+        marker_array.markers.append(clear)
+
+        for psm_id, track in self._psm_tracks.items():
+            if self._anchor_lat_deg is None or self._anchor_lon_deg is None:
+                continue
+            x, y = latlon_to_local_xy(track.lat_deg, track.lon_deg, self._anchor_lat_deg, self._anchor_lon_deg)
+
+            # Extract user type from ID
+            user_type = psm_id.split("_")[0] if "_" in psm_id else "unknown"
+            
+            # Different colors for different user types
+            if "bike" in user_type.lower() or "cyclist" in user_type.lower():
+                r, g, b = 1.0, 0.8, 0.0  # Yellow for cyclists
+            elif "ped" in user_type.lower():
+                r, g, b = 0.2, 0.9, 0.2  # Green for pedestrians
+            else:
+                r, g, b = 0.9, 0.2, 0.2  # Red for other VRU
+            
+            # Main PSM marker (larger than BSM to distinguish)
+            psm_marker = Marker()
+            psm_marker.header.stamp = self.get_clock().now().to_msg()
+            psm_marker.header.frame_id = self.frame_id
+            psm_marker.ns = "psm_user_points"
+            psm_marker.id = marker_id
+            marker_id += 1
+            psm_marker.type = Marker.CYLINDER
+            psm_marker.action = Marker.ADD
+            psm_marker.pose.position.x = x
+            psm_marker.pose.position.y = y
+            psm_marker.pose.position.z = 0.5
+            psm_marker.scale.x = 0.8
+            psm_marker.scale.y = 0.8
+            psm_marker.scale.z = 1.0
+            psm_marker.color.r = r
+            psm_marker.color.g = g
+            psm_marker.color.b = b
+            psm_marker.color.a = 0.95
+            self._set_lifetime(psm_marker)
+            marker_array.markers.append(psm_marker)
+
+            # Label with type and speed
+            lbl = Marker()
+            lbl.header.stamp = self.get_clock().now().to_msg()
+            lbl.header.frame_id = self.frame_id
+            lbl.ns = "psm_user_labels"
+            lbl.id = marker_id
+            marker_id += 1
+            lbl.type = Marker.TEXT_VIEW_FACING
+            lbl.action = Marker.ADD
+            lbl.pose.position.x = x
+            lbl.pose.position.y = y
+            lbl.pose.position.z = 2.0
+            lbl.scale.z = 0.9
+            lbl.color.r = r
+            lbl.color.g = g
+            lbl.color.b = b
+            lbl.color.a = 0.95
+            self._set_lifetime(lbl)
+            
+            if track.speed_mps >= 0.0:
+                lbl.text = f"PSM {user_type} v={track.speed_mps:.1f}m/s"
+            else:
+                lbl.text = f"PSM {user_type}"
+            marker_array.markers.append(lbl)
+
+        self._pub_psm.publish(marker_array)
+        self._dirty_psm = False
+
     def _publish_markers(self) -> None:
         self._publish_map_spat_markers()
         self._publish_bsm_markers()
+        self._publish_psm_markers()
 
 
 def main() -> None:

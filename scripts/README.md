@@ -33,6 +33,7 @@ ros2 run v2x_ros_driver v2x_inbound_marker_visualizer.py --ros-args \
 	-p inbound_topic:=/comms/inbound_binary_msg \
 	-p marker_topic:=/v2x/map_spat_markers \
 	-p bsm_marker_topic:=/v2x/bsm_markers \
+	-p psm_marker_topic:=/v2x/psm_markers \
 	-p prefer_obu_bsm_anchor:=true \
 	-p obu_reference_bsm_id:=e153df70 \
 	-p frame_id:=map

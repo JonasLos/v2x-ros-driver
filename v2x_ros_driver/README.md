@@ -60,6 +60,7 @@ Output topic:
 
 - `/v2x/map_spat_markers` (`visualization_msgs/msg/MarkerArray`)
 - `/v2x/bsm_markers` (`visualization_msgs/msg/MarkerArray`)
+- `/v2x/psm_markers` (`visualization_msgs/msg/MarkerArray`)
 - `/v2x/map_spat_overlay_text` (`rviz_2d_overlay_msgs/msg/OverlayText`, optional)
 - `/v2x/bsm_overlay_text` (`rviz_2d_overlay_msgs/msg/OverlayText`, optional)
 
@@ -88,6 +89,7 @@ ros2 run v2x_ros_driver v2x_inbound_marker_visualizer.py --ros-args \
 	-p inbound_topic:=/comms/inbound_binary_msg \
 	-p marker_topic:=/v2x/map_spat_markers \
 	-p bsm_marker_topic:=/v2x/bsm_markers \
+	-p psm_marker_topic:=/v2x/psm_markers \
 	-p enable_text_overlay:=true \
 	-p prefer_obu_bsm_anchor:=true \
 	-p obu_reference_bsm_id:=e153df70 \
@@ -102,7 +104,8 @@ ros2 launch v2x_ros_driver v2x_ros_driver.launch.py \
 	inbound_binary_topic:=/comms/inbound_binary_msg \
 	enable_map_spat_visualizer:=False \
 	marker_topic:=/v2x/map_spat_markers \
-	bsm_marker_topic:=/v2x/bsm_markers
+	bsm_marker_topic:=/v2x/bsm_markers \
+	psm_marker_topic:=/v2x/psm_markers
 ```
 
 Optional pre-decoded mode launch:
@@ -121,11 +124,13 @@ RViz setup:
 
 1. Add a `MarkerArray` display and set topic to `/v2x/map_spat_markers`.
 2. Add a second `MarkerArray` display and set topic to `/v2x/bsm_markers`.
-3. Set fixed frame to `map` (or override visualizer `frame_id` parameter to match your frame).
-4. Optional: add two `OverlayText` displays from `rviz_2d_overlay_plugins` for `/v2x/map_spat_overlay_text` and `/v2x/bsm_overlay_text`.
-5. Check the terminal running `v2x_inbound_marker_visualizer.py` for periodic counter logs (`encoded`, `decoded`, `not_decoded`, `bsm_tracked`).
-6. Verify live updates as SPAT changes: lanes switch color (green/yellow/red) and labels update continuously.
-7. Verify BSM updates: cyan vehicle markers and labels appear/move on `/v2x/bsm_markers`.
+3. Add a third `MarkerArray` display and set topic to `/v2x/psm_markers`.
+4. Set fixed frame to `map` (or override visualizer `frame_id` parameter to match your frame).
+5. Optional: add two `OverlayText` displays from `rviz_2d_overlay_plugins` for `/v2x/map_spat_overlay_text` and `/v2x/bsm_overlay_text`.
+6. Check the terminal running `v2x_inbound_marker_visualizer.py` for periodic counter logs (`encoded`, `decoded`, `not_decoded`, `bsm_tracked`, `psm_tracked`).
+7. Verify live updates as SPAT changes: lanes switch color (green/yellow/red) and labels update continuously.
+8. Verify BSM updates: cyan vehicle markers and labels appear/move on `/v2x/bsm_markers`.
+9. Verify PSM updates: cylinder markers and labels appear on `/v2x/psm_markers` with heading arrows when heading is available.
 
 Notes:
 

@@ -68,11 +68,17 @@ Direct decoder run command (from inbound binary topic):
 
 Decoder dependency prerequisite:
 
+`j2735_202409` is provided as a Python wheel from the USDOT FHWA STOL j2735decoder repository (not from this repo). The known working wheel used in this workspace is:
+
+- https://raw.githubusercontent.com/usdot-fhwa-stol/j2735decoder/develop/wheels/j2735_202409-0.1.0-py3-none-any.whl
+
 ```bash
 python3 -m venv /home/jonaslo96/ros2_drivers/.venv
 source /home/jonaslo96/ros2_drivers/.venv/bin/activate
 pip3 install --upgrade pip pycrate
-pip3 install j2735_202409*.whl
+pip3 install "https://raw.githubusercontent.com/usdot-fhwa-stol/j2735decoder/develop/wheels/j2735_202409-0.1.0-py3-none-any.whl"
+# optional alternative if you already downloaded the wheel locally:
+# pip3 install j2735_202409*.whl
 ```
 
 Optional RViz overlay prerequisite on ROS 2 Jazzy:

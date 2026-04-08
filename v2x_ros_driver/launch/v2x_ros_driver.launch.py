@@ -103,6 +103,11 @@ def generate_launch_description():
         name='psm_marker_topic', default_value='/v2x/psm_markers',
         description='Output marker array topic for PSM-only visualization markers')
 
+    tim_marker_topic = LaunchConfiguration('tim_marker_topic')
+    declare_tim_marker_topic_arg = DeclareLaunchArgument(
+        name='tim_marker_topic', default_value='/v2x/tim_markers',
+        description='Output marker array topic for TIM-only visualization markers')
+
     # Get parameter file path
     param_file_path = os.path.join(
         get_package_share_directory('v2x_ros_driver'), 'config/params.yaml')
@@ -209,6 +214,7 @@ def generate_launch_description():
                 'marker_topic': inbound_marker_topic,
                 'bsm_marker_topic': bsm_marker_topic,
                 'psm_marker_topic': psm_marker_topic,
+                'tim_marker_topic': tim_marker_topic,
                 'frame_id': 'map',
                 'enable_deep_scan': True,
             },
@@ -231,6 +237,7 @@ def generate_launch_description():
         declare_inbound_marker_topic_arg,
         declare_bsm_marker_topic_arg,
         declare_psm_marker_topic_arg,
+        declare_tim_marker_topic_arg,
         container,
         activate_node_group_action,
         map_spat_visualizer,

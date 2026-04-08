@@ -80,6 +80,17 @@ class PsmTrackPoint:
     last_update_ns: int
 
 
+@dataclass
+class TimTrackPoint:
+    text: str
+    lat_deg: Optional[float]
+    lon_deg: Optional[float]
+    radius_m: Optional[float]
+    priority: Optional[int]
+    frame_type: str
+    last_update_ns: int
+
+
 def extract_framed_candidates(data: bytes) -> List[Tuple[bytes, str]]:
     candidates: List[Tuple[bytes, str]] = []
 
@@ -241,6 +252,175 @@ def _extract_psm_user_type(value: dict) -> str:
     return "unknown"
 
 
+def _extract_tim_anchor(frame: dict) -> Optional[Tuple[float, float]]:
+    if not isinstance(frame, dict):
+        return None
+
+    # Common TIM roadSignage encoding: msgId.roadSignID.position
+    msg_id = frame.get("msgId")
+    if isinstance(msg_id, dict):
+        road_sign = msg_id.get("roadSignID")
+        if isinstance(road_sign, dict):
+            position = road_sign.get("position")
+            if isinstance(position, dict):
+                lat_raw = position.get("lat")
+                lon_raw = position.get("long")
+                if not isinstance(lon_raw, int):
+                    lon_raw = position.get("lon")
+                if isinstance(lat_raw, int) and isinstance(lon_raw, int):
+                    return lat_raw * 1e-7, lon_raw * 1e-7
+
+    regions = frame.get("regions")
+    if not isinstance(regions, list):
+        return None
+    for region in regions:
+        if not isinstance(region, dict):
+            continue
+        anchor = region.get("anchor")
+        if not isinstance(anchor, dict):
+            continue
+        lat_raw = anchor.get("lat")
+        lon_raw = anchor.get("long")
+        if not isinstance(lon_raw, int):
+            lon_raw = anchor.get("lon")
+        if isinstance(lat_raw, int) and isinstance(lon_raw, int):
+            return lat_raw * 1e-7, lon_raw * 1e-7
+
+        # Another common variant: regions[].description.geometry.circle.center
+        description = region.get("description")
+        if not isinstance(description, dict):
+            continue
+        geometry = description.get("geometry")
+        if not isinstance(geometry, dict):
+            continue
+        circle = geometry.get("circle")
+        if not isinstance(circle, dict):
+            continue
+        center = circle.get("center")
+        if not isinstance(center, dict):
+            continue
+        lat_raw = center.get("lat")
+        lon_raw = center.get("long")
+        if not isinstance(lon_raw, int):
+            lon_raw = center.get("lon")
+        if isinstance(lat_raw, int) and isinstance(lon_raw, int):
+            return lat_raw * 1e-7, lon_raw * 1e-7
+    return None
+
+
+def _extract_tim_text(frame: dict) -> str:
+    if not isinstance(frame, dict):
+        return "TIM advisory"
+
+    parts: List[str] = []
+    frame_type = frame.get("frameType")
+    if isinstance(frame_type, str):
+        parts.append(f"type={frame_type}")
+
+    msg_id = frame.get("msgId")
+    if isinstance(msg_id, dict):
+        road_sign = msg_id.get("roadSignID")
+        if isinstance(road_sign, dict):
+            mutcd = road_sign.get("mutcdCode")
+            if isinstance(mutcd, str):
+                parts.append(f"mutcd={mutcd}")
+
+    priority = frame.get("priority")
+    if isinstance(priority, int):
+        parts.append(f"priority={priority}")
+
+    advisories = []
+    work_zones = []
+    content = frame.get("content")
+    if isinstance(content, dict):
+        advisory_entries = content.get("advisory")
+        if isinstance(advisory_entries, list):
+            for entry in advisory_entries:
+                if not isinstance(entry, dict):
+                    continue
+                item = entry.get("item")
+                if not isinstance(item, dict):
+                    continue
+                itis = item.get("itis")
+                if isinstance(itis, int):
+                    advisories.append(str(itis))
+                elif isinstance(itis, str):
+                    advisories.append(itis)
+
+        workzone_entries = content.get("workZone")
+        if isinstance(workzone_entries, list):
+            for entry in workzone_entries:
+                if not isinstance(entry, dict):
+                    continue
+                item = entry.get("item")
+                if not isinstance(item, dict):
+                    continue
+                itis = item.get("itis")
+                if isinstance(itis, int):
+                    work_zones.append(str(itis))
+                elif isinstance(itis, str):
+                    work_zones.append(itis)
+
+    if advisories:
+        parts.append("itis=" + ",".join(advisories[:12]))
+    if work_zones:
+        parts.append("workzone_itis=" + ",".join(work_zones[:12]))
+
+    if not parts:
+        return "TIM advisory"
+    return " | ".join(parts)
+
+
+def _extract_tim_radius_m(frame: dict) -> Optional[float]:
+    if not isinstance(frame, dict):
+        return None
+
+    regions = frame.get("regions")
+    if not isinstance(regions, list):
+        return None
+
+    for region in regions:
+        if not isinstance(region, dict):
+            continue
+        description = region.get("description")
+        if not isinstance(description, dict):
+            continue
+        geometry = description.get("geometry")
+        if not isinstance(geometry, dict):
+            continue
+        circle = geometry.get("circle")
+        if not isinstance(circle, dict):
+            continue
+
+        radius_raw = circle.get("radius")
+        units = circle.get("units")
+        if not isinstance(radius_raw, int) or radius_raw <= 0:
+            continue
+
+        # Current captures use units=meter; if another unit appears, keep value
+        # as-is rather than dropping the visualization.
+        if isinstance(units, str) and units.lower() == "meter":
+            return float(radius_raw)
+        return float(radius_raw)
+
+    return None
+
+
+def _normalize_tim_packet_id(raw_id) -> str:
+    if raw_id is None:
+        return "none"
+    if isinstance(raw_id, list):
+        return "".join(f"{int(v) & 0xFF:02x}" for v in raw_id)
+    if isinstance(raw_id, dict):
+        for key in ("id", "bytes", "value"):
+            if key in raw_id:
+                return _normalize_tim_packet_id(raw_id[key])
+    if isinstance(raw_id, str):
+        normalized = "".join(ch for ch in raw_id.lower() if ch in "0123456789abcdef")
+        return normalized or raw_id.lower()
+    return str(raw_id).lower()
+
+
 class V2XInboundMarkerVisualizer(Node):
     def __init__(self) -> None:
         super().__init__("v2x_inbound_marker_visualizer")
@@ -249,12 +429,14 @@ class V2XInboundMarkerVisualizer(Node):
         self.marker_topic = self.declare_parameter("marker_topic", "/v2x/map_spat_markers").value
         self.bsm_marker_topic = self.declare_parameter("bsm_marker_topic", "/v2x/bsm_markers").value
         self.psm_marker_topic = self.declare_parameter("psm_marker_topic", "/v2x/psm_markers").value
+        self.tim_marker_topic = self.declare_parameter("tim_marker_topic", "/v2x/tim_markers").value
         self.frame_id = self.declare_parameter("frame_id", "map").value
         self.publish_rate_hz = float(self.declare_parameter("publish_rate_hz", 10.0).value)
         self.lane_line_width = float(self.declare_parameter("lane_line_width", 0.6).value)
         self.bsm_point_size = float(self.declare_parameter("bsm_point_size", 1.2).value)
         self.psm_marker_size = float(self.declare_parameter("psm_marker_size", 1.0).value)
         self.psm_track_timeout_sec = float(self.declare_parameter("psm_track_timeout_sec", 6.0).value)
+        self.tim_track_timeout_sec = float(self.declare_parameter("tim_track_timeout_sec", 20.0).value)
         self.marker_lifetime_sec = float(self.declare_parameter("marker_lifetime_sec", 1.5).value)
         self.enable_text_overlay = bool(self.declare_parameter("enable_text_overlay", True).value)
         self.enable_deep_scan = bool(self.declare_parameter("enable_deep_scan", True).value)
@@ -271,8 +453,9 @@ class V2XInboundMarkerVisualizer(Node):
         except ImportError as exc:
             raise RuntimeError(
                 "Missing Python decoder dependency 'j2735_202409'. Install with: "
-                "activate /home/jonaslo96/ros2_drivers/.venv (or your project venv) and install the wheel: "
-                "pip3 install pycrate --upgrade && pip3 install j2735_202409*.whl"
+                "activate /home/jonaslo96/ros2_drivers/.venv (or your project venv) and run: "
+                "pip3 install pycrate --upgrade && "
+                "pip3 install https://raw.githubusercontent.com/usdot-fhwa-stol/j2735decoder/develop/wheels/j2735_202409-0.1.0-py3-none-any.whl"
             ) from exc
 
         self._message_frame = j2735_202409.MessageFrame.MessageFrame
@@ -281,6 +464,7 @@ class V2XInboundMarkerVisualizer(Node):
         self._spat_state: Dict[str, Dict[int, int]] = {}
         self._bsm_tracks: Dict[str, BsmTrackPoint] = {}
         self._psm_tracks: Dict[str, PsmTrackPoint] = {}
+        self._tim_tracks: Dict[str, TimTrackPoint] = {}
         self._encoded_rx_count = 0
         self._decoded_rx_count = 0
         self._undecoded_rx_count = 0
@@ -291,17 +475,23 @@ class V2XInboundMarkerVisualizer(Node):
         self._dirty_map_spat = True
         self._dirty_bsm = True
         self._dirty_psm = True
+        self._dirty_tim = True
 
         self._sub = self.create_subscription(ByteArray, self.inbound_topic, self._on_inbound, 200)
         self._pub_map_spat = self.create_publisher(MarkerArray, self.marker_topic, 10)
         self._pub_bsm = self.create_publisher(MarkerArray, self.bsm_marker_topic, 10)
         self._pub_psm = self.create_publisher(MarkerArray, self.psm_marker_topic, 10)
+        self._pub_tim = self.create_publisher(MarkerArray, self.tim_marker_topic, 10)
 
         self._overlay_pub_map_spat = None
         self._overlay_pub_bsm = None
+        self._overlay_pub_psm = None
+        self._overlay_pub_tim = None
         if self.enable_text_overlay and OverlayText is not None:
             self._overlay_pub_map_spat = self.create_publisher(OverlayText, "/v2x/map_spat_overlay_text", 10)
             self._overlay_pub_bsm = self.create_publisher(OverlayText, "/v2x/bsm_overlay_text", 10)
+            self._overlay_pub_psm = self.create_publisher(OverlayText, "/v2x/psm_overlay_text", 10)
+            self._overlay_pub_tim = self.create_publisher(OverlayText, "/v2x/tim_overlay_text", 10)
             self.get_logger().info(f"OverlayText enabled via {OVERLAY_MSG_SOURCE}")
         elif self.enable_text_overlay and OverlayText is None:
             self.get_logger().warning(
@@ -316,14 +506,23 @@ class V2XInboundMarkerVisualizer(Node):
         self.get_logger().info(
             f"Inbound marker visualizer started: inbound_topic={self.inbound_topic}, "
             f"map_spat_marker_topic={self.marker_topic}, bsm_marker_topic={self.bsm_marker_topic}, "
-            f"psm_marker_topic={self.psm_marker_topic}, "
+            f"psm_marker_topic={self.psm_marker_topic}, tim_marker_topic={self.tim_marker_topic}, "
             f"obu_reference_bsm_id={self.obu_reference_bsm_id}"
         )
 
-    def _publish_overlay_text(self, text: str, is_map_spat: bool) -> None:
+    def _publish_overlay_text(self, text: str, kind: str) -> None:
         if OverlayText is None:
             return
-        pub = self._overlay_pub_map_spat if is_map_spat else self._overlay_pub_bsm
+        if kind == "map_spat":
+            pub = self._overlay_pub_map_spat
+        elif kind == "bsm":
+            pub = self._overlay_pub_bsm
+        elif kind == "psm":
+            pub = self._overlay_pub_psm
+        elif kind == "tim":
+            pub = self._overlay_pub_tim
+        else:
+            return
         if pub is None:
             return
 
@@ -334,23 +533,45 @@ class V2XInboundMarkerVisualizer(Node):
 
         # jsk_rviz_plugins uses left/top, while rviz_2d_overlay_msgs
         # uses alignment + horizontal_distance/vertical_distance.
+        if kind == "map_spat":
+            top = 10
+        elif kind == "bsm":
+            top = 95
+        elif kind == "psm":
+            top = 180
+        else:
+            top = 265
+
         if hasattr(msg, "left") and hasattr(msg, "top"):
             msg.left = 10
-            msg.top = 10 if is_map_spat else 95
+            msg.top = top
         else:
             msg.horizontal_alignment = OverlayText.LEFT
             msg.vertical_alignment = OverlayText.TOP
             msg.horizontal_distance = 10
-            msg.vertical_distance = 10 if is_map_spat else 95
+            msg.vertical_distance = top
 
         msg.text_size = 14.0
         msg.line_width = 2
         msg.font = "DejaVu Sans Mono"
 
         # Foreground text color
-        msg.fg_color.r = 1.0 if is_map_spat else 0.7
-        msg.fg_color.g = 1.0 if is_map_spat else 0.95
-        msg.fg_color.b = 0.2 if is_map_spat else 1.0
+        if kind == "map_spat":
+            msg.fg_color.r = 1.0
+            msg.fg_color.g = 1.0
+            msg.fg_color.b = 0.2
+        elif kind == "bsm":
+            msg.fg_color.r = 0.7
+            msg.fg_color.g = 0.95
+            msg.fg_color.b = 1.0
+        elif kind == "psm":
+            msg.fg_color.r = 1.0
+            msg.fg_color.g = 0.45
+            msg.fg_color.b = 0.35
+        else:
+            msg.fg_color.r = 1.0
+            msg.fg_color.g = 0.85
+            msg.fg_color.b = 0.25
         msg.fg_color.a = 1.0
 
         # Semi-transparent dark background
@@ -384,7 +605,8 @@ class V2XInboundMarkerVisualizer(Node):
                 f"decoded={self._decoded_rx_count}, "
                 f"not_decoded={self._undecoded_rx_count}, "
                 f"bsm_tracked={len(self._bsm_tracks)}, "
-                f"psm_tracked={len(self._psm_tracks)}"
+                f"psm_tracked={len(self._psm_tracks)}, "
+                f"tim_tracked={len(self._tim_tracks)}"
             )
 
     def _intersection_key(self, inter_id: dict) -> str:
@@ -814,6 +1036,63 @@ class V2XInboundMarkerVisualizer(Node):
 
         self._psm_tracks[psm_id] = new_point
 
+    def _on_tim(self, decoded: dict) -> None:
+        value = decoded.get("value")
+        if not isinstance(value, dict):
+            return
+
+        data_frames = value.get("dataFrames")
+        if not isinstance(data_frames, list):
+            return
+
+        packet_token = _normalize_tim_packet_id(value.get("packetID"))
+        now_ns = self.get_clock().now().nanoseconds
+        current_packet_keys = set()
+
+        for idx, frame in enumerate(data_frames):
+            if not isinstance(frame, dict):
+                continue
+            anchor = _extract_tim_anchor(frame)
+            radius_m = _extract_tim_radius_m(frame)
+            frame_type = frame.get("frameType") if isinstance(frame.get("frameType"), str) else "unknown"
+            priority = frame.get("priority") if isinstance(frame.get("priority"), int) else None
+            text = _extract_tim_text(frame)
+
+            advisory_key = f"{packet_token}:{idx}:{frame_type}"
+            current_packet_keys.add(advisory_key)
+
+            previous = self._tim_tracks.get(advisory_key)
+            new_track = TimTrackPoint(
+                text=text,
+                lat_deg=anchor[0] if anchor else None,
+                lon_deg=anchor[1] if anchor else None,
+                radius_m=radius_m,
+                priority=priority,
+                frame_type=frame_type,
+                last_update_ns=now_ns,
+            )
+
+            if (
+                previous is None
+                or previous.text != new_track.text
+                or previous.priority != new_track.priority
+                or previous.frame_type != new_track.frame_type
+                or previous.lat_deg != new_track.lat_deg
+                or previous.lon_deg != new_track.lon_deg
+                or previous.radius_m != new_track.radius_m
+            ):
+                self._dirty_tim = True
+            self._tim_tracks[advisory_key] = new_track
+
+        stale_packet_keys = [
+            advisory_id
+            for advisory_id in self._tim_tracks.keys()
+            if advisory_id.startswith(f"{packet_token}:") and advisory_id not in current_packet_keys
+        ]
+        for advisory_id in stale_packet_keys:
+            self._tim_tracks.pop(advisory_id, None)
+            self._dirty_tim = True
+
     def _prune_stale_psm_tracks(self) -> None:
         if not self._psm_tracks:
             return
@@ -830,6 +1109,22 @@ class V2XInboundMarkerVisualizer(Node):
             self._psm_tracks.pop(track_id, None)
         self._dirty_psm = True
 
+    def _prune_stale_tim_tracks(self) -> None:
+        if not self._tim_tracks:
+            return
+        now_ns = self.get_clock().now().nanoseconds
+        timeout_ns = int(max(2.0, self.tim_track_timeout_sec) * 1e9)
+        stale_ids = [
+            track_id
+            for track_id, track in self._tim_tracks.items()
+            if (now_ns - track.last_update_ns) > timeout_ns
+        ]
+        if not stale_ids:
+            return
+        for track_id in stale_ids:
+            self._tim_tracks.pop(track_id, None)
+        self._dirty_tim = True
+
     def _on_inbound(self, msg: ByteArray) -> None:
         payload = bytes(msg.content)
         if not payload:
@@ -839,6 +1134,7 @@ class V2XInboundMarkerVisualizer(Node):
         self._dirty_map_spat = True
         self._dirty_bsm = True
         self._dirty_psm = True
+        self._dirty_tim = True
 
         decoded = self._decode_payload(payload)
         if decoded is None:
@@ -862,6 +1158,8 @@ class V2XInboundMarkerVisualizer(Node):
             self._on_bsm(decoded)
         elif driver_type == "PSM":
             self._on_psm(decoded)
+        elif driver_type == "TIM":
+            self._on_tim(decoded)
         elif message_id == 18:
             self._on_map(decoded)
         elif message_id == 19:
@@ -870,6 +1168,8 @@ class V2XInboundMarkerVisualizer(Node):
             self._on_bsm(decoded)
         elif message_id == 32:
             self._on_psm(decoded)
+        elif message_id == 31:
+            self._on_tim(decoded)
 
         self._log_counters_if_due()
 
@@ -971,11 +1271,11 @@ class V2XInboundMarkerVisualizer(Node):
                 marker_array.markers.append(label_marker)
 
             overlay_text = (
-                f"RX encoded: {self._encoded_rx_count} | "
+                f"Map/Spat RX encoded: {self._encoded_rx_count} | "
                 f"decoded: {self._decoded_rx_count} | "
                 f"not decoded: {self._undecoded_rx_count}"
             )
-            self._publish_overlay_text(overlay_text, is_map_spat=True)
+            self._publish_overlay_text(overlay_text, kind="map_spat")
 
         self._pub_map_spat.publish(marker_array)
         self._dirty_map_spat = False
@@ -1048,7 +1348,7 @@ class V2XInboundMarkerVisualizer(Node):
             f"RX encoded: {self._encoded_rx_count} | "
             f"not decoded: {self._undecoded_rx_count}"
         )
-        self._publish_overlay_text(overlay_text, is_map_spat=False)
+        self._publish_overlay_text(overlay_text, kind="bsm")
 
         self._pub_bsm.publish(marker_array)
         self._dirty_bsm = False
@@ -1158,13 +1458,130 @@ class V2XInboundMarkerVisualizer(Node):
                 lbl.text = f"PSM {track.user_type} {short_id}"
             marker_array.markers.append(lbl)
 
+        psm_overlay = (
+            f"PSM tracked: {len(self._psm_tracks)} | "
+            f"RX encoded: {self._encoded_rx_count} | "
+            f"not decoded: {self._undecoded_rx_count}"
+        )
+        self._publish_overlay_text(psm_overlay, kind="psm")
+
         self._pub_psm.publish(marker_array)
         self._dirty_psm = False
+
+    def _publish_tim_markers(self) -> None:
+        self._prune_stale_tim_tracks()
+        if not self._dirty_tim:
+            return
+
+        marker_array = MarkerArray()
+        marker_id = 0
+
+        clear = Marker()
+        clear.header.stamp = self.get_clock().now().to_msg()
+        clear.header.frame_id = self.frame_id
+        clear.action = Marker.DELETEALL
+        marker_array.markers.append(clear)
+
+        if self._anchor_lat_deg is None or self._anchor_lon_deg is None:
+            self._pub_tim.publish(marker_array)
+            self._dirty_tim = False
+            return
+
+        x_base, y_base = 0.0, 0.0
+        fallback_idx = 0
+        for advisory_id, track in self._tim_tracks.items():
+            if track.lat_deg is not None and track.lon_deg is not None:
+                x, y = latlon_to_local_xy(track.lat_deg, track.lon_deg, self._anchor_lat_deg, self._anchor_lon_deg)
+            else:
+                # No geolocation in TIM payload: anchor advisories near map center with offset.
+                x = x_base + 3.5
+                y = y_base - (fallback_idx * 2.2)
+                fallback_idx += 1
+
+            pin = Marker()
+            pin.header.stamp = self.get_clock().now().to_msg()
+            pin.header.frame_id = self.frame_id
+            pin.ns = "tim_advisory_points"
+            pin.id = marker_id
+            marker_id += 1
+            pin.type = Marker.CUBE
+            pin.action = Marker.ADD
+            pin.pose.position.x = x
+            pin.pose.position.y = y
+            pin.pose.position.z = 1.0
+            pin.scale.x = 0.9
+            pin.scale.y = 0.9
+            pin.scale.z = 0.9
+            pin.color.r = 1.0
+            pin.color.g = 0.55
+            pin.color.b = 0.15
+            pin.color.a = 0.95
+            self._set_lifetime(pin)
+            marker_array.markers.append(pin)
+
+            if track.radius_m is not None and track.radius_m > 0.5 and track.lat_deg is not None and track.lon_deg is not None:
+                ring = Marker()
+                ring.header.stamp = self.get_clock().now().to_msg()
+                ring.header.frame_id = self.frame_id
+                ring.ns = "tim_advisory_radius"
+                ring.id = marker_id
+                marker_id += 1
+                ring.type = Marker.LINE_STRIP
+                ring.action = Marker.ADD
+                ring.scale.x = 0.25
+                ring.color.r = 1.0
+                ring.color.g = 0.7
+                ring.color.b = 0.2
+                ring.color.a = 0.92
+                self._set_lifetime(ring)
+
+                steps = 36
+                for step in range(steps + 1):
+                    theta = (2.0 * math.pi * step) / steps
+                    p = Point()
+                    p.x = x + math.cos(theta) * track.radius_m
+                    p.y = y + math.sin(theta) * track.radius_m
+                    p.z = 0.2
+                    ring.points.append(p)
+                marker_array.markers.append(ring)
+
+            txt = Marker()
+            txt.header.stamp = self.get_clock().now().to_msg()
+            txt.header.frame_id = self.frame_id
+            txt.ns = "tim_advisory_labels"
+            txt.id = marker_id
+            marker_id += 1
+            txt.type = Marker.TEXT_VIEW_FACING
+            txt.action = Marker.ADD
+            txt.pose.position.x = x
+            txt.pose.position.y = y
+            txt.pose.position.z = 2.0
+            txt.scale.z = 0.95
+            txt.color.r = 1.0
+            txt.color.g = 0.95
+            txt.color.b = 0.80
+            txt.color.a = 0.98
+            self._set_lifetime(txt)
+            short_id = advisory_id[:8]
+            prefix = f"TIM {track.frame_type} {short_id}"
+            txt.text = f"{prefix}\n{track.text}"
+            marker_array.markers.append(txt)
+
+        tim_overlay = (
+            f"TIM tracked: {len(self._tim_tracks)} | "
+            f"RX encoded: {self._encoded_rx_count} | "
+            f"not decoded: {self._undecoded_rx_count}"
+        )
+        self._publish_overlay_text(tim_overlay, kind="tim")
+
+        self._pub_tim.publish(marker_array)
+        self._dirty_tim = False
 
     def _publish_markers(self) -> None:
         self._publish_map_spat_markers()
         self._publish_bsm_markers()
         self._publish_psm_markers()
+        self._publish_tim_markers()
 
 
 def main() -> None:

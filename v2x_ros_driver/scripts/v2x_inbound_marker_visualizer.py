@@ -440,6 +440,7 @@ class V2XInboundMarkerVisualizer(Node):
         self.marker_lifetime_sec = float(self.declare_parameter("marker_lifetime_sec", 1.5).value)
         self.enable_text_overlay = bool(self.declare_parameter("enable_text_overlay", True).value)
         self.enable_deep_scan = bool(self.declare_parameter("enable_deep_scan", True).value)
+        self.allow_bsm_schema_for_psm = bool(self.declare_parameter("allow_bsm_schema_for_psm", False).value)
         self.counter_log_period_sec = float(self.declare_parameter("counter_log_period_sec", 2.0).value)
         self.node_unit_m = float(self.declare_parameter("map_node_unit_m", 0.01).value)
         self.prefer_obu_bsm_anchor = bool(self.declare_parameter("prefer_obu_bsm_anchor", True).value)
@@ -468,6 +469,12 @@ class V2XInboundMarkerVisualizer(Node):
         self._encoded_rx_count = 0
         self._decoded_rx_count = 0
         self._undecoded_rx_count = 0
+        self._map_rx_count = 0
+        self._spat_rx_count = 0
+        self._bsm_rx_count = 0
+        self._psm_rx_count = 0
+        self._tim_rx_count = 0
+        self._other_rx_count = 0
         self._last_counter_log_ns = 0
         self._anchor_lat_deg: Optional[float] = None
         self._anchor_lon_deg: Optional[float] = None
@@ -977,23 +984,24 @@ class V2XInboundMarkerVisualizer(Node):
         else:
             # Some PSM-labeled traffic in mixed captures decodes with BSM-style
             # coreData fields. Accept that schema so VRU markers are not dropped.
-            core = value.get("coreData")
-            if isinstance(core, dict):
-                lat_raw = core.get("lat")
-                lon_raw = core.get("long")
-                if not isinstance(lon_raw, int):
-                    lon_raw = core.get("lon")
-                if isinstance(lat_raw, int) and isinstance(lon_raw, int):
-                    psm_lat = lat_raw * 1e-7
-                    psm_lon = lon_raw * 1e-7
+            if self.allow_bsm_schema_for_psm:
+                core = value.get("coreData")
+                if isinstance(core, dict):
+                    lat_raw = core.get("lat")
+                    lon_raw = core.get("long")
+                    if not isinstance(lon_raw, int):
+                        lon_raw = core.get("lon")
+                    if isinstance(lat_raw, int) and isinstance(lon_raw, int):
+                        psm_lat = lat_raw * 1e-7
+                        psm_lon = lon_raw * 1e-7
 
-                speed_raw = core.get("speed")
-                if isinstance(speed_raw, int) and speed_raw != 8191:
-                    speed_mps = speed_raw * 0.02
+                    speed_raw = core.get("speed")
+                    if isinstance(speed_raw, int) and speed_raw != 8191:
+                        speed_mps = speed_raw * 0.02
 
-                heading_raw = core.get("heading")
-                if isinstance(heading_raw, int):
-                    heading_deg = heading_raw * 0.0125
+                    heading_raw = core.get("heading")
+                    if isinstance(heading_raw, int):
+                        heading_deg = heading_raw * 0.0125
 
         if psm_lat is None or psm_lon is None:
             return
@@ -1151,25 +1159,37 @@ class V2XInboundMarkerVisualizer(Node):
         # runtime wave mapping and help route mixed captures where decoded ID
         # semantics can vary by framing style.
         if driver_type == "MAP":
+            self._map_rx_count += 1
             self._on_map(decoded)
         elif driver_type == "SPAT":
+            self._spat_rx_count += 1
             self._on_spat(decoded)
         elif driver_type == "BSM":
+            self._bsm_rx_count += 1
             self._on_bsm(decoded)
         elif driver_type == "PSM":
+            self._psm_rx_count += 1
             self._on_psm(decoded)
         elif driver_type == "TIM":
+            self._tim_rx_count += 1
             self._on_tim(decoded)
         elif message_id == 18:
+            self._map_rx_count += 1
             self._on_map(decoded)
         elif message_id == 19:
+            self._spat_rx_count += 1
             self._on_spat(decoded)
         elif message_id == 20:
+            self._bsm_rx_count += 1
             self._on_bsm(decoded)
         elif message_id == 32:
+            self._psm_rx_count += 1
             self._on_psm(decoded)
         elif message_id == 31:
+            self._tim_rx_count += 1
             self._on_tim(decoded)
+        else:
+            self._other_rx_count += 1
 
         self._log_counters_if_due()
 
@@ -1345,7 +1365,7 @@ class V2XInboundMarkerVisualizer(Node):
 
         overlay_text = (
             f"BSM tracked: {len(self._bsm_tracks)} | "
-            f"RX encoded: {self._encoded_rx_count} | "
+            f"BSM RX: {self._bsm_rx_count} | "
             f"not decoded: {self._undecoded_rx_count}"
         )
         self._publish_overlay_text(overlay_text, kind="bsm")
@@ -1460,7 +1480,7 @@ class V2XInboundMarkerVisualizer(Node):
 
         psm_overlay = (
             f"PSM tracked: {len(self._psm_tracks)} | "
-            f"RX encoded: {self._encoded_rx_count} | "
+            f"PSM RX: {self._psm_rx_count} | "
             f"not decoded: {self._undecoded_rx_count}"
         )
         self._publish_overlay_text(psm_overlay, kind="psm")
@@ -1569,7 +1589,7 @@ class V2XInboundMarkerVisualizer(Node):
 
         tim_overlay = (
             f"TIM tracked: {len(self._tim_tracks)} | "
-            f"RX encoded: {self._encoded_rx_count} | "
+            f"TIM RX: {self._tim_rx_count} | "
             f"not decoded: {self._undecoded_rx_count}"
         )
         self._publish_overlay_text(tim_overlay, kind="tim")

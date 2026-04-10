@@ -63,10 +63,35 @@ def generate_launch_description():
         name='enable_inbound_binary_visualizer', default_value='False',
         description="Enable decoder-backed visualizer that subscribes to /comms/inbound_binary_msg directly")
 
+    enable_safety_alert_bridge = LaunchConfiguration('enable_safety_alert_bridge')
+    declare_enable_safety_alert_bridge_arg = DeclareLaunchArgument(
+        name='enable_safety_alert_bridge', default_value='False',
+        description='Enable standalone safety alert bridge alongside raw message transport')
+
     inbound_binary_topic = LaunchConfiguration('inbound_binary_topic')
     declare_inbound_binary_topic_arg = DeclareLaunchArgument(
         name='inbound_binary_topic', default_value='/comms/inbound_binary_msg',
         description='Raw inbound ByteArray topic from v2x_ros_driver')
+
+    safety_alert_topic = LaunchConfiguration('safety_alert_topic')
+    declare_safety_alert_topic_arg = DeclareLaunchArgument(
+        name='safety_alert_topic', default_value='/v2x/safety_alerts',
+        description='Topic for normalized safety alerts emitted by the standalone bridge')
+
+    safety_bridge_obu_host = LaunchConfiguration('safety_bridge_obu_host')
+    declare_safety_bridge_obu_host_arg = DeclareLaunchArgument(
+        name='safety_bridge_obu_host', default_value='127.0.0.1',
+        description='OBU host IP for Commsignia SDK RPC connection')
+
+    safety_bridge_reconnect_delay = LaunchConfiguration('safety_bridge_reconnect_delay')
+    declare_safety_bridge_reconnect_delay_arg = DeclareLaunchArgument(
+        name='safety_bridge_reconnect_delay', default_value='2.0',
+        description='Reconnect delay in seconds for SDK bridge')
+
+    safety_bridge_subscription_key = LaunchConfiguration('safety_bridge_subscription_key')
+    declare_safety_bridge_subscription_key_arg = DeclareLaunchArgument(
+        name='safety_bridge_subscription_key', default_value='0',
+        description='SDK fac_subscribe key (0 subscribes to all facility message types)')
 
     map_topic = LaunchConfiguration('map_topic')
     declare_map_topic_arg = DeclareLaunchArgument(
@@ -107,6 +132,11 @@ def generate_launch_description():
     declare_tim_marker_topic_arg = DeclareLaunchArgument(
         name='tim_marker_topic', default_value='/v2x/tim_markers',
         description='Output marker array topic for TIM-only visualization markers')
+
+    visualization_frame_id = LaunchConfiguration('visualization_frame_id')
+    declare_visualization_frame_id_arg = DeclareLaunchArgument(
+        name='visualization_frame_id', default_value='map',
+        description='TF frame used by MAP/SPAT/BSM/PSM/TIM markers')
 
     # Get parameter file path
     param_file_path = os.path.join(
@@ -197,6 +227,7 @@ def generate_launch_description():
                 'spat_topic': spat_topic,
                 'bsm_topic': bsm_topic,
                 'marker_topic': marker_topic,
+                'frame_id': visualization_frame_id,
             },
             global_params_override_file
         ]
@@ -215,8 +246,28 @@ def generate_launch_description():
                 'bsm_marker_topic': bsm_marker_topic,
                 'psm_marker_topic': psm_marker_topic,
                 'tim_marker_topic': tim_marker_topic,
-                'frame_id': 'map',
+                'frame_id': visualization_frame_id,
                 'enable_deep_scan': True,
+                'prefer_obu_bsm_anchor': False,
+                'lock_global_anchor': True,
+                'allow_bsm_anchor_fallback': True,
+            },
+            global_params_override_file
+        ]
+    )
+
+    safety_alert_bridge = Node(
+        package='v2x_ros_driver',
+        executable='v2x_safety_alert_bridge.py',
+        name='v2x_safety_alert_bridge',
+        condition=IfCondition(enable_safety_alert_bridge),
+        arguments=['--ros-args', '--log-level', log_level],
+        parameters=[
+            {
+                'obu_host': safety_bridge_obu_host,
+                'alert_topic': safety_alert_topic,
+                'reconnect_delay_sec': safety_bridge_reconnect_delay,
+                'subscription_key': safety_bridge_subscription_key,
             },
             global_params_override_file
         ]
@@ -229,7 +280,12 @@ def generate_launch_description():
         declare_enable_v2x_driver_lifecycle,
         declare_enable_map_spat_visualizer,
         declare_enable_inbound_binary_visualizer,
+        declare_enable_safety_alert_bridge_arg,
         declare_inbound_binary_topic_arg,
+        declare_safety_alert_topic_arg,
+        declare_safety_bridge_obu_host_arg,
+        declare_safety_bridge_reconnect_delay_arg,
+        declare_safety_bridge_subscription_key_arg,
         declare_map_topic_arg,
         declare_spat_topic_arg,
         declare_bsm_topic_arg,
@@ -238,8 +294,10 @@ def generate_launch_description():
         declare_bsm_marker_topic_arg,
         declare_psm_marker_topic_arg,
         declare_tim_marker_topic_arg,
+        declare_visualization_frame_id_arg,
         container,
         activate_node_group_action,
         map_spat_visualizer,
-        inbound_decoder_visualizer
+        inbound_decoder_visualizer,
+        safety_alert_bridge
     ])

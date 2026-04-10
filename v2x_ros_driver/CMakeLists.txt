@@ -63,6 +63,7 @@ endif()
 # Install
 install(PROGRAMS
         scripts/v2x_inbound_marker_visualizer.py
+        scripts/v2x_safety_alert_bridge.py
         DESTINATION lib/${PROJECT_NAME}
 )
 

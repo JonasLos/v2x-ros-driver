@@ -65,3 +65,27 @@ ros2 topic hz /v2x/psm_markers
 ros2 topic hz /v2x/tim_markers
 ros2 topic echo /v2x/tim_markers --once
 ```
+
+## 7) Run SDK Safety Bridge (FAC-only safety stream)
+
+This run mode keeps topic semantics:
+
+- `/v2x/safety_alerts`: safety-relevant FAC messages only
+- `/v2x/safety_alerts_debug_raw`: all FAC callbacks from SDK
+
+```bash
+ros2 run v2x_ros_driver v2x_safety_alert_bridge.py --ros-args \
+  -p obu_host:=192.168.0.54 \
+  -p alert_topic:=/v2x/safety_alerts \
+  -p enable_debug_topic:=true \
+  -p debug_topic:=/v2x/safety_alerts_debug_raw \
+  -p enable_raw_inbound_fallback:=false \
+  -p publish_safety_from_raw_inbound:=false
+```
+
+Quick checks:
+
+```bash
+ros2 topic echo /v2x/safety_alerts --once
+ros2 topic echo /v2x/safety_alerts_debug_raw --once
+```

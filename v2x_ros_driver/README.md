@@ -40,6 +40,47 @@ ros2 node list | grep v2x_ros_driver_node
 ros2 topic echo /comms/inbound_binary_msg
 ```
 
+## SDK safety bridge (Commsignia)
+
+`v2x_safety_alert_bridge.py` runs alongside raw transport and subscribes to the
+Commsignia SDK `fac_subscribe` callback stream.
+
+Topic behavior:
+
+- `/v2x/safety_alerts`: safety-relevant FAC messages only
+- `/v2x/safety_alerts_debug_raw`: all FAC messages received via SDK
+
+This split is intentional so downstream consumers can use a filtered safety
+stream while operators can still inspect full FAC ingress on debug.
+
+Enable in launch:
+
+```bash
+ros2 launch v2x_ros_driver v2x_ros_driver.launch.py \
+	enable_safety_alert_bridge:=True \
+	safety_bridge_obu_host:=192.168.0.54 \
+	safety_alert_topic:=/v2x/safety_alerts \
+	safety_bridge_enable_debug_topic:=True \
+	safety_bridge_debug_topic:=/v2x/safety_alerts_debug_raw
+```
+
+Key launch arguments:
+
+- `enable_safety_alert_bridge` (bool): start SDK safety bridge node
+- `safety_bridge_obu_host` (string): OBU RPC endpoint
+- `safety_bridge_subscription_key` (int): FAC subscription key (`0` subscribes to all FAC types)
+- `safety_bridge_min_publish_interval` (double): de-duplication interval for repeated safety emits
+- `safety_bridge_enablement_json` (string): JSON override of safety app enablement map
+- `safety_bridge_enable_debug_topic` (bool): publish all FAC payloads to debug topic
+- `safety_bridge_debug_topic` (string): debug output topic name
+
+Optional fallback knobs (default disabled):
+
+- `safety_bridge_enable_raw_inbound_fallback` (bool)
+- `safety_bridge_publish_safety_from_raw_inbound` (bool)
+
+These remain `False` by default so production behavior stays FAC-SDK-driven.
+
 ## Bird's-eye MAP/SPAT visualization
 
 There are two visualization modes:

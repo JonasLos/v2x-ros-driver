@@ -443,10 +443,12 @@ class V2XInboundMarkerVisualizer(Node):
         self.allow_bsm_schema_for_psm = bool(self.declare_parameter("allow_bsm_schema_for_psm", False).value)
         self.counter_log_period_sec = float(self.declare_parameter("counter_log_period_sec", 2.0).value)
         self.node_unit_m = float(self.declare_parameter("map_node_unit_m", 0.01).value)
-        self.prefer_obu_bsm_anchor = bool(self.declare_parameter("prefer_obu_bsm_anchor", True).value)
+        self.prefer_obu_bsm_anchor = bool(self.declare_parameter("prefer_obu_bsm_anchor", False).value)
         self.obu_reference_bsm_id = normalize_bsm_id(
             self.declare_parameter("obu_reference_bsm_id", "e153df70").value
         )
+        self.lock_global_anchor = bool(self.declare_parameter("lock_global_anchor", True).value)
+        self.allow_bsm_anchor_fallback = bool(self.declare_parameter("allow_bsm_anchor_fallback", True).value)
         self._logged_map_schema = False
 
         try:
@@ -635,9 +637,6 @@ class V2XInboundMarkerVisualizer(Node):
         return None
 
     def _ensure_anchor_from_intersections(self, intersections: List[dict]) -> None:
-        if self._anchor_lat_deg is not None and self._anchor_lon_deg is not None:
-            return
-
         refs: List[Tuple[float, float]] = []
         for inter in intersections:
             if not isinstance(inter, dict):
@@ -656,14 +655,55 @@ class V2XInboundMarkerVisualizer(Node):
         if not refs:
             return
 
-        self._anchor_lat_deg = sum(r[0] for r in refs) / len(refs)
-        self._anchor_lon_deg = sum(r[1] for r in refs) / len(refs)
+        map_lat = sum(r[0] for r in refs) / len(refs)
+        map_lon = sum(r[1] for r in refs) / len(refs)
+
+        # If MAP data is present, it should define the global frame origin for
+        # all V2X markers. This keeps MAP/SPAT geometry stable and allows BSM
+        # actors to move through that fixed frame.
+        if self._anchor_source != "map_center":
+            self._anchor_lat_deg = map_lat
+            self._anchor_lon_deg = map_lon
+            self._anchor_source = "map_center"
+            self._rebuild_map_state_from_raw()
+            self._dirty_bsm = True
+            self._dirty_psm = True
+            self._dirty_tim = True
+            self.get_logger().info(
+                f"Set visualization anchor to map center lat={self._anchor_lat_deg:.8f}, lon={self._anchor_lon_deg:.8f}"
+            )
+            return
+
+        if self.lock_global_anchor:
+            return
+
+        changed = (
+            self._anchor_lat_deg is None
+            or self._anchor_lon_deg is None
+            or self._anchor_source != "map_center"
+            or abs(self._anchor_lat_deg - map_lat) > 1e-9
+            or abs(self._anchor_lon_deg - map_lon) > 1e-9
+        )
+        if not changed:
+            return
+
+        self._anchor_lat_deg = map_lat
+        self._anchor_lon_deg = map_lon
         self._anchor_source = "map_center"
+        self._rebuild_map_state_from_raw()
+        self._dirty_bsm = True
+        self._dirty_psm = True
+        self._dirty_tim = True
         self.get_logger().info(
             f"Set visualization anchor to map center lat={self._anchor_lat_deg:.8f}, lon={self._anchor_lon_deg:.8f}"
         )
 
     def _set_anchor_from_obu(self, lat_deg: float, lon_deg: float) -> None:
+        # Keep MAP/SPAT and actor markers in a stable global frame once MAP
+        # has established a geographic anchor.
+        if self.lock_global_anchor and self._anchor_source == "map_center":
+            return
+
         changed = (
             self._anchor_lat_deg is None
             or self._anchor_lon_deg is None
@@ -919,9 +959,6 @@ class V2XInboundMarkerVisualizer(Node):
                 self._dirty_map_spat = True
 
     def _on_bsm(self, decoded: dict) -> None:
-        if self._anchor_lat_deg is None or self._anchor_lon_deg is None:
-            return
-
         value = decoded.get("value")
         if not isinstance(value, dict):
             return
@@ -944,7 +981,12 @@ class V2XInboundMarkerVisualizer(Node):
 
         vehicle_id = normalize_bsm_id(core.get("id", "unknown"))
 
-        if self.prefer_obu_bsm_anchor and vehicle_id == self.obu_reference_bsm_id:
+        # Fallback anchor: if MAP has not established an anchor yet, use the
+        # first observed BSM point so markers can render immediately.
+        if self.allow_bsm_anchor_fallback and (self._anchor_lat_deg is None or self._anchor_lon_deg is None):
+            self._set_anchor_from_obu(bsm_lat, bsm_lon)
+
+        if (not self.lock_global_anchor) and self.prefer_obu_bsm_anchor and vehicle_id == self.obu_reference_bsm_id:
             self._set_anchor_from_obu(bsm_lat, bsm_lon)
 
         previous = self._bsm_tracks.get(vehicle_id)

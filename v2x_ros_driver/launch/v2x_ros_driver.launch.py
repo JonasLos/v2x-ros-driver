@@ -20,6 +20,7 @@ from ament_index_python import get_package_share_directory
 from launch import LaunchDescription, LaunchContext
 from launch_ros.actions import ComposableNodeContainer, Node
 from launch_ros.descriptions import ComposableNode
+from launch_ros.parameter_descriptions import ParameterValue
 from launch.actions import DeclareLaunchArgument, Shutdown, ExecuteProcess, OpaqueFunction
 from launch.substitutions import LaunchConfiguration
 from carma_ros2_utils.launch.get_current_namespace import GetCurrentNamespace
@@ -92,6 +93,41 @@ def generate_launch_description():
     declare_safety_bridge_subscription_key_arg = DeclareLaunchArgument(
         name='safety_bridge_subscription_key', default_value='0',
         description='SDK fac_subscribe key (0 subscribes to all facility message types)')
+
+    safety_bridge_publish_non_safety_facility = LaunchConfiguration('safety_bridge_publish_non_safety_facility')
+    declare_safety_bridge_publish_non_safety_facility_arg = DeclareLaunchArgument(
+        name='safety_bridge_publish_non_safety_facility', default_value='True',
+        description='If false, only emits facility notifications mapped to safety-relevant classes')
+
+    safety_bridge_min_publish_interval = LaunchConfiguration('safety_bridge_min_publish_interval')
+    declare_safety_bridge_min_publish_interval_arg = DeclareLaunchArgument(
+        name='safety_bridge_min_publish_interval', default_value='0.0',
+        description='Minimum interval in seconds between repeated facility alerts of the same type/key')
+
+    safety_bridge_enablement_json = LaunchConfiguration('safety_bridge_enablement_json')
+    declare_safety_bridge_enablement_json_arg = DeclareLaunchArgument(
+        name='safety_bridge_enablement_json', default_value='',
+        description='Optional JSON object overriding safety app enablement flags in bridge output')
+
+    safety_bridge_enable_debug_topic = LaunchConfiguration('safety_bridge_enable_debug_topic')
+    declare_safety_bridge_enable_debug_topic_arg = DeclareLaunchArgument(
+        name='safety_bridge_enable_debug_topic', default_value='True',
+        description='Enable raw debug stream with every received facility message')
+
+    safety_bridge_debug_topic = LaunchConfiguration('safety_bridge_debug_topic')
+    declare_safety_bridge_debug_topic_arg = DeclareLaunchArgument(
+        name='safety_bridge_debug_topic', default_value='/v2x/safety_alerts_debug_raw',
+        description='Raw debug topic for all received facility messages from SDK bridge')
+
+    safety_bridge_enable_raw_inbound_fallback = LaunchConfiguration('safety_bridge_enable_raw_inbound_fallback')
+    declare_safety_bridge_enable_raw_inbound_fallback_arg = DeclareLaunchArgument(
+        name='safety_bridge_enable_raw_inbound_fallback', default_value='False',
+        description='If true, also subscribe to /comms/inbound_binary_msg for debug and fallback safety inference')
+
+    safety_bridge_publish_safety_from_raw_inbound = LaunchConfiguration('safety_bridge_publish_safety_from_raw_inbound')
+    declare_safety_bridge_publish_safety_from_raw_inbound_arg = DeclareLaunchArgument(
+        name='safety_bridge_publish_safety_from_raw_inbound', default_value='False',
+        description='If true, publish inferred safety alerts from raw inbound message_type hints')
 
     map_topic = LaunchConfiguration('map_topic')
     declare_map_topic_arg = DeclareLaunchArgument(
@@ -268,6 +304,14 @@ def generate_launch_description():
                 'alert_topic': safety_alert_topic,
                 'reconnect_delay_sec': safety_bridge_reconnect_delay,
                 'subscription_key': safety_bridge_subscription_key,
+                'publish_non_safety_facility': safety_bridge_publish_non_safety_facility,
+                'min_publish_interval_sec': safety_bridge_min_publish_interval,
+                'safety_app_enablement_json': ParameterValue(safety_bridge_enablement_json, value_type=str),
+                'enable_debug_topic': safety_bridge_enable_debug_topic,
+                'debug_topic': safety_bridge_debug_topic,
+                'enable_raw_inbound_fallback': safety_bridge_enable_raw_inbound_fallback,
+                'raw_inbound_topic': inbound_binary_topic,
+                'publish_safety_from_raw_inbound': safety_bridge_publish_safety_from_raw_inbound,
             },
             global_params_override_file
         ]
@@ -286,6 +330,13 @@ def generate_launch_description():
         declare_safety_bridge_obu_host_arg,
         declare_safety_bridge_reconnect_delay_arg,
         declare_safety_bridge_subscription_key_arg,
+        declare_safety_bridge_publish_non_safety_facility_arg,
+        declare_safety_bridge_min_publish_interval_arg,
+        declare_safety_bridge_enablement_json_arg,
+        declare_safety_bridge_enable_debug_topic_arg,
+        declare_safety_bridge_debug_topic_arg,
+        declare_safety_bridge_enable_raw_inbound_fallback_arg,
+        declare_safety_bridge_publish_safety_from_raw_inbound_arg,
         declare_map_topic_arg,
         declare_spat_topic_arg,
         declare_bsm_topic_arg,

@@ -29,8 +29,14 @@ ros2 run v2x_ros_driver v2x_inbound_marker_visualizer.py --ros-args \
   -p psm_marker_topic:=/v2x/psm_markers \
   -p tim_marker_topic:=/v2x/tim_markers \
   -p enable_text_overlay:=true \
+  -p use_fixed_global_anchor:=true \
+  -p fixed_anchor_lat_deg:=30.63789534 \
+  -p fixed_anchor_lon_deg:=-96.47777581 \
   -p frame_id:=map
 ```
+
+Use the same fixed anchor values as the vehicle TF map origin so marker
+projection and vehicle pose stay aligned in RViz.
 
 ## 4) Replay Last Bag (Normal)
 

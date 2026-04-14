@@ -174,6 +174,21 @@ def generate_launch_description():
         name='visualization_frame_id', default_value='map',
         description='TF frame used by MAP/SPAT/BSM/PSM/TIM markers')
 
+    use_fixed_global_anchor = LaunchConfiguration('use_fixed_global_anchor')
+    declare_use_fixed_global_anchor_arg = DeclareLaunchArgument(
+        name='use_fixed_global_anchor', default_value='False',
+        description='Use fixed global lat/lon anchor for inbound marker projection')
+
+    fixed_anchor_lat_deg = LaunchConfiguration('fixed_anchor_lat_deg')
+    declare_fixed_anchor_lat_deg_arg = DeclareLaunchArgument(
+        name='fixed_anchor_lat_deg', default_value='0.0',
+        description='Fixed global anchor latitude for inbound marker projection')
+
+    fixed_anchor_lon_deg = LaunchConfiguration('fixed_anchor_lon_deg')
+    declare_fixed_anchor_lon_deg_arg = DeclareLaunchArgument(
+        name='fixed_anchor_lon_deg', default_value='0.0',
+        description='Fixed global anchor longitude for inbound marker projection')
+
     # Get parameter file path
     param_file_path = os.path.join(
         get_package_share_directory('v2x_ros_driver'), 'config/params.yaml')
@@ -287,6 +302,9 @@ def generate_launch_description():
                 'prefer_obu_bsm_anchor': False,
                 'lock_global_anchor': True,
                 'allow_bsm_anchor_fallback': True,
+                'use_fixed_global_anchor': use_fixed_global_anchor,
+                'fixed_anchor_lat_deg': fixed_anchor_lat_deg,
+                'fixed_anchor_lon_deg': fixed_anchor_lon_deg,
             },
             global_params_override_file
         ]
@@ -346,6 +364,9 @@ def generate_launch_description():
         declare_psm_marker_topic_arg,
         declare_tim_marker_topic_arg,
         declare_visualization_frame_id_arg,
+        declare_use_fixed_global_anchor_arg,
+        declare_fixed_anchor_lat_deg_arg,
+        declare_fixed_anchor_lon_deg_arg,
         container,
         activate_node_group_action,
         map_spat_visualizer,

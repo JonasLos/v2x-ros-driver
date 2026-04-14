@@ -449,6 +449,9 @@ class V2XInboundMarkerVisualizer(Node):
         )
         self.lock_global_anchor = bool(self.declare_parameter("lock_global_anchor", True).value)
         self.allow_bsm_anchor_fallback = bool(self.declare_parameter("allow_bsm_anchor_fallback", True).value)
+        self.use_fixed_global_anchor = bool(self.declare_parameter("use_fixed_global_anchor", False).value)
+        self.fixed_anchor_lat_deg = float(self.declare_parameter("fixed_anchor_lat_deg", 0.0).value)
+        self.fixed_anchor_lon_deg = float(self.declare_parameter("fixed_anchor_lon_deg", 0.0).value)
         self._logged_map_schema = False
 
         try:
@@ -511,6 +514,15 @@ class V2XInboundMarkerVisualizer(Node):
 
         period = max(0.1, 1.0 / max(0.1, self.publish_rate_hz))
         self._timer = self.create_timer(period, self._publish_markers)
+
+        if self.use_fixed_global_anchor:
+            self._anchor_lat_deg = self.fixed_anchor_lat_deg
+            self._anchor_lon_deg = self.fixed_anchor_lon_deg
+            self._anchor_source = "fixed_global"
+            self.get_logger().info(
+                "Using fixed global visualization anchor lat=%.8f lon=%.8f"
+                % (self._anchor_lat_deg, self._anchor_lon_deg)
+            )
 
         self.get_logger().info(
             f"Inbound marker visualizer started: inbound_topic={self.inbound_topic}, "
@@ -637,6 +649,9 @@ class V2XInboundMarkerVisualizer(Node):
         return None
 
     def _ensure_anchor_from_intersections(self, intersections: List[dict]) -> None:
+        if self._anchor_source == "fixed_global":
+            return
+
         refs: List[Tuple[float, float]] = []
         for inter in intersections:
             if not isinstance(inter, dict):
@@ -699,6 +714,9 @@ class V2XInboundMarkerVisualizer(Node):
         )
 
     def _set_anchor_from_obu(self, lat_deg: float, lon_deg: float) -> None:
+        if self._anchor_source == "fixed_global":
+            return
+
         # Keep MAP/SPAT and actor markers in a stable global frame once MAP
         # has established a geographic anchor.
         if self.lock_global_anchor and self._anchor_source == "map_center":

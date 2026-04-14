@@ -157,8 +157,20 @@ ros2 launch v2x_ros_driver v2x_ros_driver.launch.py \
 	marker_topic:=/v2x/map_spat_markers \
 	bsm_marker_topic:=/v2x/bsm_markers \
 	psm_marker_topic:=/v2x/psm_markers \
-	tim_marker_topic:=/v2x/tim_markers
+	tim_marker_topic:=/v2x/tim_markers \
+	use_fixed_global_anchor:=True \
+	fixed_anchor_lat_deg:=30.63789534 \
+	fixed_anchor_lon_deg:=-96.47777581
 ```
+
+Fixed global anchor notes for decoder-backed visualization:
+
+- `use_fixed_global_anchor=true` keeps marker projection locked to a stable
+  global map origin.
+- `fixed_anchor_lat_deg` and `fixed_anchor_lon_deg` should match the map origin
+  used by your vehicle TF chain.
+- This avoids marker recentering at intersection MAP centers and keeps vehicle
+  pose and MAP/SPAT geometry aligned in RViz.
 
 Optional pre-decoded mode launch:
 

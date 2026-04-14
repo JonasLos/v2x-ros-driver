@@ -78,6 +78,26 @@ def generate_launch_description():
         name='safety_alert_topic', default_value='/v2x/safety_alerts',
         description='Topic for normalized safety alerts emitted by the standalone bridge')
 
+    safety_alert_mapped_topic = LaunchConfiguration('safety_alert_mapped_topic')
+    declare_safety_alert_mapped_topic_arg = DeclareLaunchArgument(
+        name='safety_alert_mapped_topic', default_value='/v2x/safety_alert_mapped',
+        description='Topic for mapped/derived safety alert abbreviations and confidence')
+
+    safety_alert_debug_raw_topic = LaunchConfiguration('safety_alert_debug_raw_topic')
+    declare_safety_alert_debug_raw_topic_arg = DeclareLaunchArgument(
+        name='safety_alert_debug_raw_topic', default_value='/v2x/safety_alert_debug_raw',
+        description='Topic for raw SDK safety payload passthrough for debugging')
+
+    safety_alert_abbrev_marker_topic = LaunchConfiguration('safety_alert_abbrev_marker_topic')
+    declare_safety_alert_abbrev_marker_topic_arg = DeclareLaunchArgument(
+        name='safety_alert_abbrev_marker_topic', default_value='/v2x/safety_alert_abbrev_marker',
+        description='RViz marker topic showing active safety alert abbreviations')
+
+    safety_alert_abbrev_marker_z = LaunchConfiguration('safety_alert_abbrev_marker_z')
+    declare_safety_alert_abbrev_marker_z_arg = DeclareLaunchArgument(
+        name='safety_alert_abbrev_marker_z', default_value='4.0',
+        description='Z position for the RViz safety alert abbreviation text marker')
+
     safety_bridge_obu_host = LaunchConfiguration('safety_bridge_obu_host')
     declare_safety_bridge_obu_host_arg = DeclareLaunchArgument(
         name='safety_bridge_obu_host', default_value='127.0.0.1',
@@ -92,6 +112,31 @@ def generate_launch_description():
     declare_safety_bridge_subscription_key_arg = DeclareLaunchArgument(
         name='safety_bridge_subscription_key', default_value='0',
         description='SDK fac_subscribe key (0 subscribes to all facility message types)')
+
+    safety_bridge_derive_cff_only = LaunchConfiguration('safety_bridge_derive_cff_only')
+    declare_safety_bridge_derive_cff_only_arg = DeclareLaunchArgument(
+        name='safety_bridge_derive_cff_only', default_value='True',
+        description='If true, publish only alerts derived from CFF/collision indicators')
+
+    safety_bridge_publish_raw_passthrough = LaunchConfiguration('safety_bridge_publish_raw_passthrough')
+    declare_safety_bridge_publish_raw_passthrough_arg = DeclareLaunchArgument(
+        name='safety_bridge_publish_raw_passthrough', default_value='False',
+        description='If true, include raw SDK event payload in published alerts for debugging')
+
+    safety_bridge_dedupe_window_sec = LaunchConfiguration('safety_bridge_dedupe_window_sec')
+    declare_safety_bridge_dedupe_window_sec_arg = DeclareLaunchArgument(
+        name='safety_bridge_dedupe_window_sec', default_value='0.75',
+        description='Minimum seconds between identical alert signatures')
+
+    safety_bridge_critical_ttc_sec = LaunchConfiguration('safety_bridge_critical_ttc_sec')
+    declare_safety_bridge_critical_ttc_sec_arg = DeclareLaunchArgument(
+        name='safety_bridge_critical_ttc_sec', default_value='2.0',
+        description='TTC threshold at or below which alert severity is critical')
+
+    safety_bridge_warning_ttc_sec = LaunchConfiguration('safety_bridge_warning_ttc_sec')
+    declare_safety_bridge_warning_ttc_sec_arg = DeclareLaunchArgument(
+        name='safety_bridge_warning_ttc_sec', default_value='4.0',
+        description='TTC threshold at or below which alert severity is warning')
 
     map_topic = LaunchConfiguration('map_topic')
     declare_map_topic_arg = DeclareLaunchArgument(
@@ -266,8 +311,18 @@ def generate_launch_description():
             {
                 'obu_host': safety_bridge_obu_host,
                 'alert_topic': safety_alert_topic,
+                'mapped_alert_topic': safety_alert_mapped_topic,
+                'debug_raw_topic': safety_alert_debug_raw_topic,
+                'abbrev_marker_topic': safety_alert_abbrev_marker_topic,
+                'abbrev_marker_frame_id': visualization_frame_id,
+                'abbrev_marker_z': safety_alert_abbrev_marker_z,
                 'reconnect_delay_sec': safety_bridge_reconnect_delay,
                 'subscription_key': safety_bridge_subscription_key,
+                'derive_cff_only': safety_bridge_derive_cff_only,
+                'publish_raw_passthrough': safety_bridge_publish_raw_passthrough,
+                'dedupe_window_sec': safety_bridge_dedupe_window_sec,
+                'critical_ttc_sec': safety_bridge_critical_ttc_sec,
+                'warning_ttc_sec': safety_bridge_warning_ttc_sec,
             },
             global_params_override_file
         ]
@@ -283,9 +338,18 @@ def generate_launch_description():
         declare_enable_safety_alert_bridge_arg,
         declare_inbound_binary_topic_arg,
         declare_safety_alert_topic_arg,
+        declare_safety_alert_mapped_topic_arg,
+        declare_safety_alert_debug_raw_topic_arg,
+        declare_safety_alert_abbrev_marker_topic_arg,
+        declare_safety_alert_abbrev_marker_z_arg,
         declare_safety_bridge_obu_host_arg,
         declare_safety_bridge_reconnect_delay_arg,
         declare_safety_bridge_subscription_key_arg,
+        declare_safety_bridge_derive_cff_only_arg,
+        declare_safety_bridge_publish_raw_passthrough_arg,
+        declare_safety_bridge_dedupe_window_sec_arg,
+        declare_safety_bridge_critical_ttc_sec_arg,
+        declare_safety_bridge_warning_ttc_sec_arg,
         declare_map_topic_arg,
         declare_spat_topic_arg,
         declare_bsm_topic_arg,

@@ -6,9 +6,9 @@ driver + visualizer + rosbag replay.
 ## 1) Source Environments
 
 ```bash
-source /home/jonaslo96/ros2_drivers/.venv/bin/activate
+source /home/avalocal/ros_drivers/.venv/bin/activate
 source /opt/ros/jazzy/setup.bash
-source /home/jonaslo96/ros2_drivers/v2x-ros-driver/install/setup.bash
+source /home/avalocal/ros_drivers/install/setup.bash
 ```
 
 ## 2) Launch Driver (Core Node Only)
@@ -32,19 +32,40 @@ ros2 run v2x_ros_driver v2x_inbound_marker_visualizer.py --ros-args \
   -p frame_id:=map
 ```
 
-## 4) Replay Last Bag (Normal)
+## 4) Build Native App-Notif Safety Bridge (Optional)
 
 ```bash
-ros2 bag play /home/jonaslo96/ros2_drivers/v2x-ros-driver/rosbag2_2026_03_26-15_20_55 --clock
+source /opt/ros/jazzy/setup.bash
+colcon build --packages-select v2x_ros_driver --symlink-install \
+  --cmake-args \
+  -DENABLE_COMMSIGNIA_APP_NOTIF_BRIDGE=ON \
+  -DCOMMSIGNIA_APP_NOTIF_SDK_DIR=/absolute/path/to/app-notif-sdk
 ```
 
-## 5) Replay Last Bag with Marker/Overlay Isolation
+## 5) Launch Native App-Notif Safety Bridge
+
+```bash
+ros2 launch v2x_ros_driver v2x_ros_driver.launch.py \
+  enable_safety_alert_bridge:=False \
+  enable_native_safety_alert_bridge:=True \
+  safety_bridge_obu_host:=192.168.0.54 \
+  safety_bridge_obu_port:=43985 \
+  safety_bridge_notif_filter_csv:=FCW,IMA,WWE,WWR
+```
+
+## 6) Replay Last Bag (Normal)
+
+```bash
+ros2 bag play /home/avalocal/ros_drivers/rosbag2_2026_03_26-15_20_55 --clock
+```
+
+## 7) Replay Last Bag with Marker/Overlay Isolation
 
 Use this when you want replayed visualization topics not to interfere with live
 visualizer outputs.
 
 ```bash
-ros2 bag play /home/jonaslo96/ros2_drivers/v2x-ros-driver/rosbag2_2026_03_26-15_20_55 --clock \
+ros2 bag play /home/avalocal/ros_drivers/rosbag2_2026_03_26-15_20_55 --clock \
   --remap /v2x/map_spat_markers:=/replay/v2x/map_spat_markers \
           /v2x/bsm_markers:=/replay/v2x/bsm_markers \
           /v2x/psm_markers:=/replay/v2x/psm_markers \
@@ -56,7 +77,7 @@ ros2 bag play /home/jonaslo96/ros2_drivers/v2x-ros-driver/rosbag2_2026_03_26-15_
           /v2x/tim_overlay_text:=/replay/v2x/tim_overlay_text
 ```
 
-## 6) Useful Checks
+## 8) Useful Checks
 
 ```bash
 ros2 topic hz /v2x/map_spat_markers

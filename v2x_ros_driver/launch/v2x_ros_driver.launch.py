@@ -68,6 +68,11 @@ def generate_launch_description():
         name='enable_safety_alert_bridge', default_value='False',
         description='Enable standalone safety alert bridge alongside raw message transport')
 
+    enable_native_safety_alert_bridge = LaunchConfiguration('enable_native_safety_alert_bridge')
+    declare_enable_native_safety_alert_bridge_arg = DeclareLaunchArgument(
+        name='enable_native_safety_alert_bridge', default_value='False',
+        description='Enable native C++ app-notif safety alert bridge (requires SDK-enabled build)')
+
     inbound_binary_topic = LaunchConfiguration('inbound_binary_topic')
     declare_inbound_binary_topic_arg = DeclareLaunchArgument(
         name='inbound_binary_topic', default_value='/comms/inbound_binary_msg',
@@ -93,6 +98,16 @@ def generate_launch_description():
         name='safety_alert_abbrev_marker_topic', default_value='/v2x/safety_alert_abbrev_marker',
         description='RViz marker topic showing active safety alert abbreviations')
 
+    safety_alert_abbrev_overlay_topic = LaunchConfiguration('safety_alert_abbrev_overlay_topic')
+    declare_safety_alert_abbrev_overlay_topic_arg = DeclareLaunchArgument(
+        name='safety_alert_abbrev_overlay_topic', default_value='/v2x/safety_alert_overlay_text',
+        description='RViz 2D overlay topic showing active safety alert abbreviation text')
+
+    safety_alert_enable_abbrev_overlay = LaunchConfiguration('safety_alert_enable_abbrev_overlay')
+    declare_safety_alert_enable_abbrev_overlay_arg = DeclareLaunchArgument(
+        name='safety_alert_enable_abbrev_overlay', default_value='True',
+        description='Enable safety alert abbreviation screen-space overlay text publication')
+
     safety_alert_abbrev_marker_z = LaunchConfiguration('safety_alert_abbrev_marker_z')
     declare_safety_alert_abbrev_marker_z_arg = DeclareLaunchArgument(
         name='safety_alert_abbrev_marker_z', default_value='4.0',
@@ -102,6 +117,21 @@ def generate_launch_description():
     declare_safety_bridge_obu_host_arg = DeclareLaunchArgument(
         name='safety_bridge_obu_host', default_value='127.0.0.1',
         description='OBU host IP for Commsignia SDK RPC connection')
+
+    safety_bridge_obu_port = LaunchConfiguration('safety_bridge_obu_port')
+    declare_safety_bridge_obu_port_arg = DeclareLaunchArgument(
+        name='safety_bridge_obu_port', default_value='43985',
+        description='OBU native app-notif UDP endpoint port for C++ bridge')
+
+    safety_bridge_local_port = LaunchConfiguration('safety_bridge_local_port')
+    declare_safety_bridge_local_port_arg = DeclareLaunchArgument(
+        name='safety_bridge_local_port', default_value='0',
+        description='Local UDP port for native app-notif C++ bridge client')
+
+    safety_bridge_notif_filter_csv = LaunchConfiguration('safety_bridge_notif_filter_csv')
+    declare_safety_bridge_notif_filter_csv_arg = DeclareLaunchArgument(
+        name='safety_bridge_notif_filter_csv', default_value='',
+        description='Optional comma-separated native notif filters (e.g., FCW,IMA,WWE,WWR)')
 
     safety_bridge_reconnect_delay = LaunchConfiguration('safety_bridge_reconnect_delay')
     declare_safety_bridge_reconnect_delay_arg = DeclareLaunchArgument(
@@ -328,6 +358,37 @@ def generate_launch_description():
         ]
     )
 
+    safety_alert_bridge_native = Node(
+        package='v2x_ros_driver',
+        executable='v2x_safety_alert_bridge_native_exec',
+        name='v2x_safety_alert_bridge_native',
+        condition=IfCondition(enable_native_safety_alert_bridge),
+        arguments=['--ros-args', '--log-level', log_level],
+        parameters=[
+            {
+                'obu_host': safety_bridge_obu_host,
+                'obu_port': safety_bridge_obu_port,
+                'local_port': safety_bridge_local_port,
+                'alert_topic': safety_alert_topic,
+                'mapped_alert_topic': safety_alert_mapped_topic,
+                'debug_raw_topic': safety_alert_debug_raw_topic,
+                'abbrev_marker_topic': safety_alert_abbrev_marker_topic,
+                'abbrev_overlay_topic': safety_alert_abbrev_overlay_topic,
+                'enable_abbrev_overlay': safety_alert_enable_abbrev_overlay,
+                'abbrev_marker_frame_id': visualization_frame_id,
+                'abbrev_marker_z': safety_alert_abbrev_marker_z,
+                'reconnect_delay_sec': safety_bridge_reconnect_delay,
+                'derive_cff_only': safety_bridge_derive_cff_only,
+                'publish_raw_passthrough': safety_bridge_publish_raw_passthrough,
+                'dedupe_window_sec': safety_bridge_dedupe_window_sec,
+                'critical_ttc_sec': safety_bridge_critical_ttc_sec,
+                'warning_ttc_sec': safety_bridge_warning_ttc_sec,
+                'notif_filter_csv': safety_bridge_notif_filter_csv,
+            },
+            global_params_override_file
+        ]
+    )
+
     return LaunchDescription([
         declare_log_level_arg,
         declare_configuration_delay_arg,
@@ -336,13 +397,19 @@ def generate_launch_description():
         declare_enable_map_spat_visualizer,
         declare_enable_inbound_binary_visualizer,
         declare_enable_safety_alert_bridge_arg,
+        declare_enable_native_safety_alert_bridge_arg,
         declare_inbound_binary_topic_arg,
         declare_safety_alert_topic_arg,
         declare_safety_alert_mapped_topic_arg,
         declare_safety_alert_debug_raw_topic_arg,
         declare_safety_alert_abbrev_marker_topic_arg,
+        declare_safety_alert_abbrev_overlay_topic_arg,
+        declare_safety_alert_enable_abbrev_overlay_arg,
         declare_safety_alert_abbrev_marker_z_arg,
         declare_safety_bridge_obu_host_arg,
+        declare_safety_bridge_obu_port_arg,
+        declare_safety_bridge_local_port_arg,
+        declare_safety_bridge_notif_filter_csv_arg,
         declare_safety_bridge_reconnect_delay_arg,
         declare_safety_bridge_subscription_key_arg,
         declare_safety_bridge_derive_cff_only_arg,
@@ -363,5 +430,6 @@ def generate_launch_description():
         activate_node_group_action,
         map_spat_visualizer,
         inbound_decoder_visualizer,
-        safety_alert_bridge
+        safety_alert_bridge,
+        safety_alert_bridge_native
     ])

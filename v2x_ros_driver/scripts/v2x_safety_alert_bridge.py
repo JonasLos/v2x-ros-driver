@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import base64
 import json
 import hashlib
 import threading
@@ -91,8 +92,8 @@ class V2XSafetyAlertBridge(Node):
             "EEBL": ("eebl", "electronic emergency brake", "hardbraking"),
             "GLOSA": ("glosa", "time_to_green", "optimal speed", "green light"),
             "IMA": ("ima", "intersection movement", "intersection alert"),
-            "WWR": ("road weather", "surface condition", "slippery", "ice", "wet"),
-            "WWE": ("weather", "fog", "storm", "wind", "extreme weather"),
+            "WWR": ("wwr", "wrongwayremote", "wrong way remote", "wrong way"),
+            "WWE": ("wwe", "wrongwayentry", "wrong way entry", "wrong way"),
             "TTG": ("ttg", "time_to_green"),
             "CLW": ("clw", "curve", "lane warning"),
             "FCW": ("fcw", "forward collision", "time_to_collision", "ttc"),
@@ -105,7 +106,7 @@ class V2XSafetyAlertBridge(Node):
             "DNPW": ("dnpw", "do not pass"),
             "PCW": ("pcw", "pedestrian", "crosswalk", "vru"),
             "GCW": ("gcw", "generic collision"),
-            "AWW": ("aww", "adverse weather warning"),
+            "AWW": ("aww", "adverse weather warning", "weather", "fog", "storm", "wind", "extreme weather"),
             "OHV": ("ohv", "over height", "over-height"),
             "REW": ("rew", "rear end"),
             "RWW": ("rww", "road work", "work zone", "roadwork"),
@@ -283,16 +284,20 @@ class V2XSafetyAlertBridge(Node):
             data_obj = {"value": data_obj}
 
         stamp = datetime.now(timezone.utc).isoformat()
+        raw_buffer = buffer or b""
         raw_payload: Dict[str, Any] = {
             "source": "commsignia_sdk",
             "event_kind": event_kind,
             "key": int(key),
-            "buffer_len": len(buffer) if buffer is not None else 0,
+            "buffer_len": len(raw_buffer),
             "stamp": stamp,
             "data": data_obj,
         }
+        if raw_buffer:
+            raw_payload["buffer_hex"] = raw_buffer.hex()
+            raw_payload["buffer_b64"] = base64.b64encode(raw_buffer).decode("ascii")
 
-        derived = self._derive_cff(key, data_obj, len(buffer) if buffer is not None else 0)
+        derived = self._derive_cff(key, data_obj, len(raw_buffer))
         mapped_alerts = self._classify_alert_codes(data_obj, derived)
         has_alert_signal = derived is not None or bool(mapped_alerts)
 
@@ -305,7 +310,7 @@ class V2XSafetyAlertBridge(Node):
             mapped_sig = {
                 "key": int(key),
                 "codes": [m["code"] for m in mapped_alerts],
-                "buffer_len": len(buffer) if buffer is not None else 0,
+                "buffer_len": len(raw_buffer),
             }
             dedupe_id = hashlib.sha1(json.dumps(mapped_sig, sort_keys=True).encode("utf-8")).hexdigest()[:12]
         else:
@@ -313,7 +318,7 @@ class V2XSafetyAlertBridge(Node):
                 json.dumps(
                     {
                         "key": int(key),
-                        "buffer_len": len(buffer) if buffer is not None else 0,
+                        "buffer_len": len(raw_buffer),
                         "data": data_obj,
                     },
                     sort_keys=True,
@@ -332,7 +337,7 @@ class V2XSafetyAlertBridge(Node):
             "source": "commsignia_sdk",
             "event_kind": event_kind,
             "key": int(key),
-            "buffer_len": len(buffer) if buffer is not None else 0,
+            "buffer_len": len(raw_buffer),
             "stamp": stamp,
             "alert_id": dedupe_id,
         }
@@ -399,9 +404,8 @@ class V2XSafetyAlertBridge(Node):
 
                     api.fac_subscribe(subscribe_key, self._callback_facility)
                     self.get_logger().info(
-                        "Connected to OBU SDK at %s and subscribed via fac_subscribe key=%d",
-                        self._obu_host,
-                        subscribe_key,
+                        "Connected to OBU SDK at %s and subscribed via fac_subscribe key=%d"
+                        % (self._obu_host, subscribe_key)
                     )
                     self.get_logger().warn(
                         "SDK 20.85 publishes facility receive notifications via fac_subscribe; "

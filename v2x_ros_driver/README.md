@@ -40,6 +40,79 @@ ros2 node list | grep v2x_ros_driver_node
 ros2 topic echo /comms/inbound_binary_msg
 ```
 
+## Safety alert bridges
+
+`v2x_ros_driver` now supports two safety-alert bridge paths:
+
+1. Python bridge (`v2x_safety_alert_bridge.py`):
+	- Uses `pycmssdk` FAC subscription (`fac_subscribe`)
+	- Derives/matches safety alerts from FAC payloads
+	- Works with existing Python-only deployments
+
+2. Native C++ bridge (`v2x_safety_alert_bridge_native_exec`):
+	- Uses Commsignia app-notif SDK (`CffClient::Client` + `Saf::NotifFetcher`)
+	- Subscribes native notification stream directly
+	- Provides highest-fidelity mapping to HMI-style native alerts
+
+### Build native bridge (optional)
+
+The native bridge build is opt-in and requires the extracted Commsignia app-notif SDK path.
+
+```bash
+colcon build --packages-select v2x_ros_driver --symlink-install \
+	--cmake-args \
+	-DENABLE_COMMSIGNIA_APP_NOTIF_BRIDGE=ON \
+	-DCOMMSIGNIA_APP_NOTIF_SDK_DIR=/absolute/path/to/app-notif-sdk
+```
+
+### Launch bridge mode
+
+Python bridge mode:
+
+```bash
+ros2 launch v2x_ros_driver v2x_ros_driver.launch.py \
+	enable_safety_alert_bridge:=True \
+	enable_native_safety_alert_bridge:=False
+```
+
+Native C++ bridge mode:
+
+```bash
+ros2 launch v2x_ros_driver v2x_ros_driver.launch.py \
+	enable_safety_alert_bridge:=False \
+	enable_native_safety_alert_bridge:=True \
+	safety_bridge_obu_host:=192.168.0.54 \
+	safety_bridge_obu_port:=43985 \
+	safety_alert_enable_abbrev_overlay:=True \
+	safety_alert_abbrev_overlay_topic:=/v2x/safety_alert_overlay_text
+```
+
+Do not run both bridges at the same time unless duplicate publishers are intentional.
+
+Safety bridge visualization outputs:
+
+- `/v2x/safety_alert_abbrev_marker` (`visualization_msgs/msg/Marker`) for world-frame text marker
+- `/v2x/safety_alert_overlay_text` (`rviz_2d_overlay_msgs/msg/OverlayText`, native bridge optional) for screen-space abbreviated alert text
+
+### Current alert coverage in code
+
+Current mappings by bridge implementation:
+
+| Bridge | Current alert output behavior |
+| --- | --- |
+| Python (`v2x_safety_alert_bridge.py`) | High-confidence explicit mapping for `EEBL`, `FCW`, `BSW`, `LCA`, `IMA`, `LTA`, `CLW`, `RLV`; TTC-derived `FCW`; keyword-inferred low-confidence mapping for `WWE`, `WWR`, `TTG`, `GLOSA`, `GCW`, `DNPW`, `PCW`, `REW`, `AWW`, `OHV`, `RWW`, `SW`, and others when discoverable in payload text. |
+| Native C++ (`v2x_safety_alert_bridge_native_exec`) | Direct native notification-type mapping for: `FCW`, `BSW`, `LCA`, `EEBL`, `CLW`, `IMA`, `HLW`, `SPD`, `RLV`, `TTG`, `GLOSA`, `WWE`, `LTA`, `RTA`, `WWR`, `GCW`, `DNPW`, `REW`, `TSP`, `PCW` (`VruNotif`), `TIW`, `SVW`, `EVW`; emits typed payload fields in alert JSON (`base_info`, `collision`, `dangerous_object`, `wwe`, `wwr`, `fcw.induced_by`, `glosa` advice blocks); severity now uses native `BaseInfo.level` first with TTC fallback when level is unavailable. |
+
+### Additional SDK-native capabilities not yet implemented
+
+The native bridge now includes typed payload extraction and native severity mapping. Remaining candidate enhancements:
+
+1. Dedicated structured ROS messages (custom msg types) instead of JSON strings.
+2. Separate topics per major alert family (`/v2x/safety_alerts/fcw`, `/v2x/safety_alerts/wwe`, etc.).
+3. Native request/response app interactions (where applicable) in addition to passive notification subscribe.
+
+These are implementation opportunities already supported by the app-notif SDK schema set and fetcher APIs.
+
 ## Bird's-eye MAP/SPAT visualization
 
 There are two visualization modes:
@@ -76,8 +149,8 @@ Decoder dependency prerequisite:
 - https://raw.githubusercontent.com/usdot-fhwa-stol/j2735decoder/develop/wheels/j2735_202409-0.1.0-py3-none-any.whl
 
 ```bash
-python3 -m venv /home/jonaslo96/ros2_drivers/.venv
-source /home/jonaslo96/ros2_drivers/.venv/bin/activate
+python3 -m venv /home/avalocal/ros_drivers/.venv
+source /home/avalocal/ros_drivers/.venv/bin/activate
 pip3 install --upgrade pip pycrate
 pip3 install "https://raw.githubusercontent.com/usdot-fhwa-stol/j2735decoder/develop/wheels/j2735_202409-0.1.0-py3-none-any.whl"
 # optional alternative if you already downloaded the wheel locally:
@@ -91,9 +164,9 @@ sudo apt-get install -y ros-jazzy-rviz-2d-overlay-msgs ros-jazzy-rviz-2d-overlay
 ```
 
 ```bash
-source /home/jonaslo96/ros2_drivers/.venv/bin/activate
+source /home/avalocal/ros_drivers/.venv/bin/activate
 source /opt/ros/jazzy/setup.bash
-source /home/jonaslo96/ros2_drivers/v2x-ros-driver/install/setup.bash
+source /home/avalocal/ros_drivers/install/setup.bash
 ros2 run v2x_ros_driver v2x_inbound_marker_visualizer.py --ros-args \
 	-p inbound_topic:=/comms/inbound_binary_msg \
 	-p marker_topic:=/v2x/map_spat_markers \

@@ -145,7 +145,7 @@ def generate_launch_description():
 
     safety_bridge_derive_cff_only = LaunchConfiguration('safety_bridge_derive_cff_only')
     declare_safety_bridge_derive_cff_only_arg = DeclareLaunchArgument(
-        name='safety_bridge_derive_cff_only', default_value='True',
+        name='safety_bridge_derive_cff_only', default_value='False',
         description='If true, publish only alerts derived from CFF/collision indicators')
 
     safety_bridge_publish_raw_passthrough = LaunchConfiguration('safety_bridge_publish_raw_passthrough')
@@ -358,36 +358,80 @@ def generate_launch_description():
         ]
     )
 
-    safety_alert_bridge_native = Node(
-        package='v2x_ros_driver',
-        executable='v2x_safety_alert_bridge_native_exec',
-        name='v2x_safety_alert_bridge_native',
-        condition=IfCondition(enable_native_safety_alert_bridge),
-        arguments=['--ros-args', '--log-level', log_level],
-        parameters=[
-            {
-                'obu_host': safety_bridge_obu_host,
-                'obu_port': safety_bridge_obu_port,
-                'local_port': safety_bridge_local_port,
-                'alert_topic': safety_alert_topic,
-                'mapped_alert_topic': safety_alert_mapped_topic,
-                'debug_raw_topic': safety_alert_debug_raw_topic,
-                'abbrev_marker_topic': safety_alert_abbrev_marker_topic,
-                'abbrev_overlay_topic': safety_alert_abbrev_overlay_topic,
-                'enable_abbrev_overlay': safety_alert_enable_abbrev_overlay,
-                'abbrev_marker_frame_id': visualization_frame_id,
-                'abbrev_marker_z': safety_alert_abbrev_marker_z,
-                'reconnect_delay_sec': safety_bridge_reconnect_delay,
-                'derive_cff_only': safety_bridge_derive_cff_only,
-                'publish_raw_passthrough': safety_bridge_publish_raw_passthrough,
-                'dedupe_window_sec': safety_bridge_dedupe_window_sec,
-                'critical_ttc_sec': safety_bridge_critical_ttc_sec,
-                'warning_ttc_sec': safety_bridge_warning_ttc_sec,
-                'notif_filter_csv': safety_bridge_notif_filter_csv,
-            },
-            global_params_override_file
-        ]
-    )
+    def launch_safety_bridge_actions(context: LaunchContext):
+        native_enabled = enable_native_safety_alert_bridge.perform(context).lower() in ('1', 'true', 'yes', 'on')
+        python_enabled = enable_safety_alert_bridge.perform(context).lower() in ('1', 'true', 'yes', 'on')
+
+        native_exec = os.path.join(
+            get_package_share_directory('v2x_ros_driver'),
+            '..', '..', 'lib', 'v2x_ros_driver', 'v2x_safety_alert_bridge_native_exec')
+        native_exec = os.path.normpath(native_exec)
+        native_available = os.path.exists(native_exec)
+
+        actions = []
+
+        if native_enabled and native_available:
+            actions.append(Node(
+                package='v2x_ros_driver',
+                executable='v2x_safety_alert_bridge_native_exec',
+                name='v2x_safety_alert_bridge_native',
+                arguments=['--ros-args', '--log-level', log_level],
+                parameters=[
+                    {
+                        'obu_host': safety_bridge_obu_host,
+                        'obu_port': safety_bridge_obu_port,
+                        'local_port': safety_bridge_local_port,
+                        'alert_topic': safety_alert_topic,
+                        'mapped_alert_topic': safety_alert_mapped_topic,
+                        'debug_raw_topic': safety_alert_debug_raw_topic,
+                        'abbrev_marker_topic': safety_alert_abbrev_marker_topic,
+                        'abbrev_overlay_topic': safety_alert_abbrev_overlay_topic,
+                        'enable_abbrev_overlay': safety_alert_enable_abbrev_overlay,
+                        'abbrev_marker_frame_id': visualization_frame_id,
+                        'abbrev_marker_z': safety_alert_abbrev_marker_z,
+                        'reconnect_delay_sec': safety_bridge_reconnect_delay,
+                        'derive_cff_only': safety_bridge_derive_cff_only,
+                        'publish_raw_passthrough': safety_bridge_publish_raw_passthrough,
+                        'dedupe_window_sec': safety_bridge_dedupe_window_sec,
+                        'critical_ttc_sec': safety_bridge_critical_ttc_sec,
+                        'warning_ttc_sec': safety_bridge_warning_ttc_sec,
+                        'notif_filter_csv': safety_bridge_notif_filter_csv,
+                    },
+                    global_params_override_file
+                ]
+            ))
+        elif native_enabled:
+            actions.append(launch.actions.LogInfo(
+                msg='Native safety bridge requested but executable is missing; falling back to python bridge.'))
+            actions.append(Node(
+                package='v2x_ros_driver',
+                executable='v2x_safety_alert_bridge.py',
+                name='v2x_safety_alert_bridge',
+                arguments=['--ros-args', '--log-level', log_level],
+                parameters=[
+                    {
+                        'obu_host': safety_bridge_obu_host,
+                        'alert_topic': safety_alert_topic,
+                        'mapped_alert_topic': safety_alert_mapped_topic,
+                        'debug_raw_topic': safety_alert_debug_raw_topic,
+                        'abbrev_marker_topic': safety_alert_abbrev_marker_topic,
+                        'abbrev_marker_frame_id': visualization_frame_id,
+                        'abbrev_marker_z': safety_alert_abbrev_marker_z,
+                        'reconnect_delay_sec': safety_bridge_reconnect_delay,
+                        'subscription_key': safety_bridge_subscription_key,
+                        'derive_cff_only': safety_bridge_derive_cff_only,
+                        'publish_raw_passthrough': safety_bridge_publish_raw_passthrough,
+                        'dedupe_window_sec': safety_bridge_dedupe_window_sec,
+                        'critical_ttc_sec': safety_bridge_critical_ttc_sec,
+                        'warning_ttc_sec': safety_bridge_warning_ttc_sec,
+                    },
+                    global_params_override_file
+                ]
+            ))
+        elif python_enabled:
+            actions.append(safety_alert_bridge)
+
+        return actions
 
     return LaunchDescription([
         declare_log_level_arg,
@@ -430,6 +474,5 @@ def generate_launch_description():
         activate_node_group_action,
         map_spat_visualizer,
         inbound_decoder_visualizer,
-        safety_alert_bridge,
-        safety_alert_bridge_native
+        OpaqueFunction(function=launch_safety_bridge_actions)
     ])

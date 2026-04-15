@@ -482,7 +482,7 @@ private:
     marker.color.b = 0.2F;
     marker.color.a = 0.95F;
     marker.text = abbrev;
-    marker.lifetime = rclcpp::Duration::from_seconds(1.0);
+    marker.lifetime = rclcpp::Duration::from_seconds(0.2);
     abbrev_marker_pub_->publish(marker);
   }
 

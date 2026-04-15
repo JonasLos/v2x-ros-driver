@@ -31,6 +31,11 @@ except ImportError:
 
 
 VALID_IDS = {0x12, 0x13, 0x14, 0x1D, 0x1E, 0x1F, 0x20, 0x29}
+WGS84_A = 6378137.0
+WGS84_F = 1.0 / 298.257223563
+WGS84_E2 = WGS84_F * (2.0 - WGS84_F)
+WGS84_E_PRIME2 = WGS84_E2 / (1.0 - WGS84_E2)
+UTM_K0 = 0.9996
 
 
 def _try_load_j2735_decoder_module():
@@ -157,6 +162,60 @@ def latlon_to_local_xy(lat_deg: float, lon_deg: float, ref_lat_deg: float, ref_l
     x = (lon - ref_lon) * math.cos(ref_lat) * earth_radius_m
     y = (lat - ref_lat) * earth_radius_m
     return x, y
+
+
+def latlon_to_utm_xy(lat_deg: float, lon_deg: float, zone_override: int = 0) -> Tuple[float, float]:
+    # Standard WGS84 UTM projection for metric global XY marker placement.
+    lat = max(min(lat_deg, 84.0), -80.0)
+    lon = ((lon_deg + 180.0) % 360.0) - 180.0
+
+    if zone_override and 1 <= zone_override <= 60:
+        zone = int(zone_override)
+    else:
+        zone = int((lon + 180.0) / 6.0) + 1
+
+    lat_rad = math.radians(lat)
+    lon_rad = math.radians(lon)
+    lon0_rad = math.radians((zone - 1) * 6 - 180 + 3)
+
+    sin_lat = math.sin(lat_rad)
+    cos_lat = math.cos(lat_rad)
+    tan_lat = math.tan(lat_rad)
+
+    n = WGS84_A / math.sqrt(1.0 - WGS84_E2 * sin_lat * sin_lat)
+    t = tan_lat * tan_lat
+    c = WGS84_E_PRIME2 * cos_lat * cos_lat
+    a = cos_lat * (lon_rad - lon0_rad)
+
+    m = WGS84_A * (
+        (1.0 - WGS84_E2 / 4.0 - 3.0 * WGS84_E2 * WGS84_E2 / 64.0 - 5.0 * WGS84_E2**3 / 256.0) * lat_rad
+        - (3.0 * WGS84_E2 / 8.0 + 3.0 * WGS84_E2 * WGS84_E2 / 32.0 + 45.0 * WGS84_E2**3 / 1024.0)
+        * math.sin(2.0 * lat_rad)
+        + (15.0 * WGS84_E2 * WGS84_E2 / 256.0 + 45.0 * WGS84_E2**3 / 1024.0) * math.sin(4.0 * lat_rad)
+        - (35.0 * WGS84_E2**3 / 3072.0) * math.sin(6.0 * lat_rad)
+    )
+
+    easting = UTM_K0 * n * (
+        a
+        + (1.0 - t + c) * (a**3) / 6.0
+        + (5.0 - 18.0 * t + t * t + 72.0 * c - 58.0 * WGS84_E_PRIME2) * (a**5) / 120.0
+    ) + 500000.0
+
+    northing = UTM_K0 * (
+        m
+        + n
+        * tan_lat
+        * (
+            (a * a) / 2.0
+            + (5.0 - t + 9.0 * c + 4.0 * c * c) * (a**4) / 24.0
+            + (61.0 - 58.0 * t + t * t + 600.0 * c - 330.0 * WGS84_E_PRIME2) * (a**6) / 720.0
+        )
+    )
+
+    if lat < 0.0:
+        northing += 10000000.0
+
+    return easting, northing
 
 
 def normalize_bsm_id(raw_id) -> str:
@@ -444,6 +503,8 @@ class V2XInboundMarkerVisualizer(Node):
         self.counter_log_period_sec = float(self.declare_parameter("counter_log_period_sec", 2.0).value)
         self.node_unit_m = float(self.declare_parameter("map_node_unit_m", 0.01).value)
         self.prefer_obu_bsm_anchor = bool(self.declare_parameter("prefer_obu_bsm_anchor", True).value)
+        self.use_utm_global_coordinates = bool(self.declare_parameter("use_utm_global_coordinates", True).value)
+        self.utm_zone_override = int(self.declare_parameter("utm_zone_override", 0).value)
         self.obu_reference_bsm_id = normalize_bsm_id(
             self.declare_parameter("obu_reference_bsm_id", "e153df70").value
         )
@@ -514,8 +575,19 @@ class V2XInboundMarkerVisualizer(Node):
             f"Inbound marker visualizer started: inbound_topic={self.inbound_topic}, "
             f"map_spat_marker_topic={self.marker_topic}, bsm_marker_topic={self.bsm_marker_topic}, "
             f"psm_marker_topic={self.psm_marker_topic}, tim_marker_topic={self.tim_marker_topic}, "
-            f"obu_reference_bsm_id={self.obu_reference_bsm_id}"
+            f"obu_reference_bsm_id={self.obu_reference_bsm_id}, "
+            f"use_utm_global_coordinates={self.use_utm_global_coordinates}, "
+            f"utm_zone_override={self.utm_zone_override}"
         )
+
+    def _latlon_to_marker_xy(self, lat_deg: float, lon_deg: float) -> Optional[Tuple[float, float]]:
+        if self.use_utm_global_coordinates:
+            return latlon_to_utm_xy(lat_deg, lon_deg, self.utm_zone_override)
+
+        if self._anchor_lat_deg is None or self._anchor_lon_deg is None:
+            return None
+
+        return latlon_to_local_xy(lat_deg, lon_deg, self._anchor_lat_deg, self._anchor_lon_deg)
 
     def _publish_overlay_text(self, text: str, kind: str) -> None:
         if OverlayText is None:
@@ -681,7 +753,7 @@ class V2XInboundMarkerVisualizer(Node):
         self._dirty_bsm = True
 
     def _build_map_entry(self, inter: dict) -> Optional[Tuple[str, dict]]:
-        if self._anchor_lat_deg is None or self._anchor_lon_deg is None:
+        if (not self.use_utm_global_coordinates) and (self._anchor_lat_deg is None or self._anchor_lon_deg is None):
             return None
 
         if not isinstance(inter, dict):
@@ -702,12 +774,10 @@ class V2XInboundMarkerVisualizer(Node):
 
         ref_lat = ref_lat_raw * 1e-7
         ref_lon = ref_lon_raw * 1e-7
-        inter_origin_x, inter_origin_y = latlon_to_local_xy(
-            ref_lat,
-            ref_lon,
-            self._anchor_lat_deg,
-            self._anchor_lon_deg,
-        )
+        origin_xy = self._latlon_to_marker_xy(ref_lat, ref_lon)
+        if origin_xy is None:
+            return None
+        inter_origin_x, inter_origin_y = origin_xy
 
         lanes = inter.get("laneSet", [])
         if not isinstance(lanes, list):
@@ -782,13 +852,9 @@ class V2XInboundMarkerVisualizer(Node):
                 if isinstance(lat_raw, int) and isinstance(lon_raw, int):
                     node_lat = lat_raw * 1e-7
                     node_lon = lon_raw * 1e-7
-                    if self._anchor_lat_deg is not None and self._anchor_lon_deg is not None:
-                        current_x, current_y = latlon_to_local_xy(
-                            node_lat,
-                            node_lon,
-                            self._anchor_lat_deg,
-                            self._anchor_lon_deg,
-                        )
+                    marker_xy = self._latlon_to_marker_xy(node_lat, node_lon)
+                    if marker_xy is not None:
+                        current_x, current_y = marker_xy
             else:
                 applied_delta = False
                 for key in ("node-XY1", "node-XY2", "node-XY3", "node-XY4", "node-XY5", "node-XY6"):
@@ -848,7 +914,7 @@ class V2XInboundMarkerVisualizer(Node):
             self._logged_map_schema = True
 
         self._ensure_anchor_from_intersections(intersections)
-        if self._anchor_lat_deg is None or self._anchor_lon_deg is None:
+        if (not self.use_utm_global_coordinates) and (self._anchor_lat_deg is None or self._anchor_lon_deg is None):
             return
 
         for inter in intersections:
@@ -919,7 +985,7 @@ class V2XInboundMarkerVisualizer(Node):
                 self._dirty_map_spat = True
 
     def _on_bsm(self, decoded: dict) -> None:
-        if self._anchor_lat_deg is None or self._anchor_lon_deg is None:
+        if (not self.use_utm_global_coordinates) and (self._anchor_lat_deg is None or self._anchor_lon_deg is None):
             return
 
         value = decoded.get("value")
@@ -963,7 +1029,7 @@ class V2XInboundMarkerVisualizer(Node):
             self._dirty_bsm = True
 
     def _on_psm(self, decoded: dict) -> None:
-        if self._anchor_lat_deg is None or self._anchor_lon_deg is None:
+        if (not self.use_utm_global_coordinates) and (self._anchor_lat_deg is None or self._anchor_lon_deg is None):
             return
 
         value = decoded.get("value")
@@ -1314,9 +1380,10 @@ class V2XInboundMarkerVisualizer(Node):
         marker_array.markers.append(clear)
 
         for vehicle_id, track in self._bsm_tracks.items():
-            if self._anchor_lat_deg is None or self._anchor_lon_deg is None:
+            marker_xy = self._latlon_to_marker_xy(track.lat_deg, track.lon_deg)
+            if marker_xy is None:
                 continue
-            x, y = latlon_to_local_xy(track.lat_deg, track.lon_deg, self._anchor_lat_deg, self._anchor_lon_deg)
+            x, y = marker_xy
 
             veh_marker = Marker()
             veh_marker.header.stamp = self.get_clock().now().to_msg()
@@ -1396,9 +1463,10 @@ class V2XInboundMarkerVisualizer(Node):
         marker_array.markers.append(clear)
 
         for psm_id, track in self._psm_tracks.items():
-            if self._anchor_lat_deg is None or self._anchor_lon_deg is None:
+            marker_xy = self._latlon_to_marker_xy(track.lat_deg, track.lon_deg)
+            if marker_xy is None:
                 continue
-            x, y = latlon_to_local_xy(track.lat_deg, track.lon_deg, self._anchor_lat_deg, self._anchor_lon_deg)
+            x, y = marker_xy
 
             r, g, b, a = self._psm_color(track.user_type)
 
@@ -1502,7 +1570,7 @@ class V2XInboundMarkerVisualizer(Node):
         clear.action = Marker.DELETEALL
         marker_array.markers.append(clear)
 
-        if self._anchor_lat_deg is None or self._anchor_lon_deg is None:
+        if (not self.use_utm_global_coordinates) and (self._anchor_lat_deg is None or self._anchor_lon_deg is None):
             self._pub_tim.publish(marker_array)
             self._dirty_tim = False
             return
@@ -1511,7 +1579,10 @@ class V2XInboundMarkerVisualizer(Node):
         fallback_idx = 0
         for advisory_id, track in self._tim_tracks.items():
             if track.lat_deg is not None and track.lon_deg is not None:
-                x, y = latlon_to_local_xy(track.lat_deg, track.lon_deg, self._anchor_lat_deg, self._anchor_lon_deg)
+                marker_xy = self._latlon_to_marker_xy(track.lat_deg, track.lon_deg)
+                if marker_xy is None:
+                    continue
+                x, y = marker_xy
             else:
                 # No geolocation in TIM payload: anchor advisories near map center with offset.
                 x = x_base + 3.5

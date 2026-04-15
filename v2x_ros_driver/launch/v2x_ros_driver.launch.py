@@ -210,7 +210,7 @@ def generate_launch_description():
 
     visualization_frame_id = LaunchConfiguration('visualization_frame_id')
     declare_visualization_frame_id_arg = DeclareLaunchArgument(
-        name='visualization_frame_id', default_value='map',
+        name='visualization_frame_id', default_value='world',
         description='TF frame used by MAP/SPAT/BSM/PSM/TIM markers')
 
     # Get parameter file path

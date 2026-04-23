@@ -4,6 +4,7 @@
 #include <cmath>
 #include <cstdint>
 #include <iomanip>
+#include <functional>
 #include <memory>
 #include <mutex>
 #include <sstream>
@@ -338,6 +339,7 @@ public:
     abbrev_marker_frame_id_ = declare_parameter<std::string>("abbrev_marker_frame_id", "map");
     abbrev_marker_z_ = declare_parameter<double>("abbrev_marker_z", 4.0);
     enable_abbrev_overlay_ = declare_parameter<bool>("enable_abbrev_overlay", true);
+    abbrev_stale_timeout_sec_ = declare_parameter<double>("abbrev_stale_timeout_sec", 1.0);
 
     reconnect_delay_sec_ = declare_parameter<double>("reconnect_delay_sec", 2.0);
     derive_cff_only_ = declare_parameter<bool>("derive_cff_only", false);
@@ -358,6 +360,10 @@ public:
         abbrev_overlay_topic_, rclcpp::QoS(10));
     }
 #endif
+
+    stale_clear_timer_ = create_wall_timer(
+      std::chrono::milliseconds(200),
+      std::bind(&V2XSafetyAlertBridgeNative::clear_stale_abbrev_outputs, this));
 
     worker_ = std::thread(&V2XSafetyAlertBridgeNative::session_loop, this);
 
@@ -457,6 +463,55 @@ private:
     return true;
   }
 
+  void touch_abbrev_activity()
+  {
+    std::lock_guard<std::mutex> lock(abbrev_state_mutex_);
+    last_abbrev_activity_ = std::chrono::steady_clock::now();
+  }
+
+  void clear_stale_abbrev_outputs()
+  {
+    if (abbrev_stale_timeout_sec_ <= 0.0) {
+      return;
+    }
+
+    bool clear_marker = false;
+    bool clear_overlay = false;
+
+    {
+      std::lock_guard<std::mutex> lock(abbrev_state_mutex_);
+      const auto now = std::chrono::steady_clock::now();
+      const double elapsed = std::chrono::duration_cast<std::chrono::duration<double>>(
+        now - last_abbrev_activity_).count();
+      if (elapsed < abbrev_stale_timeout_sec_) {
+        return;
+      }
+
+      clear_marker = marker_active_;
+      clear_overlay = overlay_active_;
+      marker_active_ = false;
+      overlay_active_ = false;
+    }
+
+    if (clear_marker) {
+      visualization_msgs::msg::Marker marker;
+      marker.header.stamp = now();
+      marker.header.frame_id = abbrev_marker_frame_id_;
+      marker.ns = "safety_alert_abbrev";
+      marker.id = 1;
+      marker.action = visualization_msgs::msg::Marker::DELETE;
+      abbrev_marker_pub_->publish(marker);
+    }
+
+#if V2X_HAS_OVERLAY_TEXT
+    if (clear_overlay && enable_abbrev_overlay_ && abbrev_overlay_pub_) {
+      rviz_2d_overlay_msgs::msg::OverlayText msg;
+      msg.action = rviz_2d_overlay_msgs::msg::OverlayText::DELETE;
+      abbrev_overlay_pub_->publish(msg);
+    }
+#endif
+  }
+
   void publish_abbrev_marker(const std::string & abbrev)
   {
     visualization_msgs::msg::Marker marker;
@@ -468,6 +523,8 @@ private:
     if (abbrev.empty()) {
       marker.action = visualization_msgs::msg::Marker::DELETE;
       abbrev_marker_pub_->publish(marker);
+      std::lock_guard<std::mutex> lock(abbrev_state_mutex_);
+      marker_active_ = false;
       return;
     }
 
@@ -484,6 +541,9 @@ private:
     marker.text = abbrev;
     marker.lifetime = rclcpp::Duration::from_seconds(0.2);
     abbrev_marker_pub_->publish(marker);
+
+    std::lock_guard<std::mutex> lock(abbrev_state_mutex_);
+    marker_active_ = true;
   }
 
   void publish_abbrev_overlay(const std::string & abbrev)
@@ -514,11 +574,19 @@ private:
     msg.bg_color.a = 0.45F;
 
     if (abbrev.empty()) {
-      msg.text = "Safety: --";
+      msg.action = rviz_2d_overlay_msgs::msg::OverlayText::DELETE;
+      msg.text = "";
+      abbrev_overlay_pub_->publish(msg);
+      std::lock_guard<std::mutex> lock(abbrev_state_mutex_);
+      overlay_active_ = false;
+      return;
     } else {
       msg.text = "Safety: " + abbrev;
     }
     abbrev_overlay_pub_->publish(msg);
+
+    std::lock_guard<std::mutex> lock(abbrev_state_mutex_);
+    overlay_active_ = true;
 #else
     (void)abbrev;
 #endif
@@ -717,6 +785,7 @@ private:
     mapped_msg.data = mapped_buf.GetString();
     mapped_alert_pub_->publish(mapped_msg);
 
+    touch_abbrev_activity();
     publish_abbrev_marker(abbrev);
     publish_abbrev_overlay(abbrev);
   }
@@ -733,6 +802,7 @@ private:
   std::string abbrev_marker_frame_id_;
 
   double abbrev_marker_z_ {4.0};
+  double abbrev_stale_timeout_sec_ {1.0};
   bool enable_abbrev_overlay_ {true};
   double reconnect_delay_sec_ {2.0};
   bool derive_cff_only_ {false};
@@ -752,7 +822,12 @@ private:
 
   std::atomic<bool> stop_ {false};
   std::thread worker_;
+  rclcpp::TimerBase::SharedPtr stale_clear_timer_;
   std::mutex cache_mutex_;
+  std::mutex abbrev_state_mutex_;
+  std::chrono::steady_clock::time_point last_abbrev_activity_ {std::chrono::steady_clock::now()};
+  bool marker_active_ {false};
+  bool overlay_active_ {false};
   std::unordered_map<std::string, std::chrono::steady_clock::time_point> last_alert_by_id_;
 };
 

@@ -15,8 +15,10 @@ set(node_exec v2x_ros_driver_node_exec)
 set(node_lib v2x_ros_driver_node)
 set(visualizer_exec v2x_map_spat_visualizer_exec)
 set(native_safety_bridge_exec v2x_safety_alert_bridge_native_exec)
+set(rtor_obu_warning_exec v2x_rtor_obu_warning_exec)
 
 option(ENABLE_COMMSIGNIA_APP_NOTIF_BRIDGE "Build native Commsignia app-notification safety bridge" OFF)
+option(ENABLE_COMMSIGNIA_RTOR_OBU_APP "Build standalone Commsignia RTOR OBU warning app" OFF)
 set(COMMSIGNIA_APP_NOTIF_SDK_DIR "" CACHE PATH "Path to extracted Commsignia app-notif-sdk root directory")
 
 # Includes
@@ -74,6 +76,33 @@ if(ENABLE_COMMSIGNIA_APP_NOTIF_BRIDGE)
         endif()
 endif()
 
+if(ENABLE_COMMSIGNIA_RTOR_OBU_APP)
+        if("${COMMSIGNIA_APP_NOTIF_SDK_DIR}" STREQUAL "" AND DEFINED ENV{COMMSIGNIA_APP_NOTIF_SDK_DIR})
+                set(COMMSIGNIA_APP_NOTIF_SDK_DIR "$ENV{COMMSIGNIA_APP_NOTIF_SDK_DIR}")
+        endif()
+
+        if(EXISTS "${COMMSIGNIA_APP_NOTIF_SDK_DIR}/include/cffclient/AggregatingClient.h" AND
+                 EXISTS "${COMMSIGNIA_APP_NOTIF_SDK_DIR}/include/cffclient/tools/Geodesy.h")
+                ament_auto_add_executable(${rtor_obu_warning_exec}
+                                                src/rtor_obu_warning_app.cpp
+                                                ${COMMSIGNIA_APP_NOTIF_SDK_DIR}/src/Client.cpp
+                                                ${COMMSIGNIA_APP_NOTIF_SDK_DIR}/src/EntityAggregator.cpp
+                                                ${COMMSIGNIA_APP_NOTIF_SDK_DIR}/src/Geodesy.cpp
+                                                ${COMMSIGNIA_APP_NOTIF_SDK_DIR}/src/UnsolicitedDispatcher.cpp
+                )
+
+                target_include_directories(${rtor_obu_warning_exec} PRIVATE
+                                                ${COMMSIGNIA_APP_NOTIF_SDK_DIR}/include
+                )
+                target_compile_definitions(${rtor_obu_warning_exec} PRIVATE
+                        CFFCLIENT_USE_SOCKET=1
+                )
+        else()
+                message(WARNING
+                        "ENABLE_COMMSIGNIA_RTOR_OBU_APP=ON but COMMSIGNIA_APP_NOTIF_SDK_DIR is not set to a valid app-notif-sdk root; skipping ${rtor_obu_warning_exec} build")
+        endif()
+endif()
+
 # Register component
 rclcpp_components_register_nodes(${node_lib} "V2XDriverApplication::Node")
 
@@ -107,5 +136,5 @@ install(PROGRAMS
 )
 
 ament_auto_package(
-        INSTALL_TO_SHARE config etc launch
+        INSTALL_TO_SHARE config docs etc launch
 )

@@ -63,15 +63,15 @@ def generate_launch_description():
         name='enable_inbound_binary_visualizer', default_value='False',
         description="Enable decoder-backed visualizer that subscribes to /comms/inbound_binary_msg directly")
 
-    enable_safety_alert_bridge = LaunchConfiguration('enable_safety_alert_bridge')
-    declare_enable_safety_alert_bridge_arg = DeclareLaunchArgument(
-        name='enable_safety_alert_bridge', default_value='False',
-        description='Enable standalone safety alert bridge alongside raw message transport')
-
     enable_native_safety_alert_bridge = LaunchConfiguration('enable_native_safety_alert_bridge')
     declare_enable_native_safety_alert_bridge_arg = DeclareLaunchArgument(
         name='enable_native_safety_alert_bridge', default_value='False',
         description='Enable native C++ app-notif safety alert bridge (requires SDK-enabled build)')
+
+    enable_dbw_lights_sti_bridge = LaunchConfiguration('enable_dbw_lights_sti_bridge')
+    declare_enable_dbw_lights_sti_bridge_arg = DeclareLaunchArgument(
+        name='enable_dbw_lights_sti_bridge', default_value='True',
+        description='Enable DBW vehicle state to Commsignia STI bridge')
 
     inbound_binary_topic = LaunchConfiguration('inbound_binary_topic')
     declare_inbound_binary_topic_arg = DeclareLaunchArgument(
@@ -331,36 +331,8 @@ def generate_launch_description():
         ]
     )
 
-    safety_alert_bridge = Node(
-        package='v2x_ros_driver',
-        executable='v2x_safety_alert_bridge.py',
-        name='v2x_safety_alert_bridge',
-        condition=IfCondition(enable_safety_alert_bridge),
-        arguments=['--ros-args', '--log-level', log_level],
-        parameters=[
-            {
-                'obu_host': safety_bridge_obu_host,
-                'alert_topic': safety_alert_topic,
-                'mapped_alert_topic': safety_alert_mapped_topic,
-                'debug_raw_topic': safety_alert_debug_raw_topic,
-                'abbrev_marker_topic': safety_alert_abbrev_marker_topic,
-                'abbrev_marker_frame_id': visualization_frame_id,
-                'abbrev_marker_z': safety_alert_abbrev_marker_z,
-                'reconnect_delay_sec': safety_bridge_reconnect_delay,
-                'subscription_key': safety_bridge_subscription_key,
-                'derive_cff_only': safety_bridge_derive_cff_only,
-                'publish_raw_passthrough': safety_bridge_publish_raw_passthrough,
-                'dedupe_window_sec': safety_bridge_dedupe_window_sec,
-                'critical_ttc_sec': safety_bridge_critical_ttc_sec,
-                'warning_ttc_sec': safety_bridge_warning_ttc_sec,
-            },
-            global_params_override_file
-        ]
-    )
-
     def launch_safety_bridge_actions(context: LaunchContext):
         native_enabled = enable_native_safety_alert_bridge.perform(context).lower() in ('1', 'true', 'yes', 'on')
-        python_enabled = enable_safety_alert_bridge.perform(context).lower() in ('1', 'true', 'yes', 'on')
 
         native_exec = os.path.join(
             get_package_share_directory('v2x_ros_driver'),
@@ -402,36 +374,18 @@ def generate_launch_description():
             ))
         elif native_enabled:
             actions.append(launch.actions.LogInfo(
-                msg='Native safety bridge requested but executable is missing; falling back to python bridge.'))
-            actions.append(Node(
-                package='v2x_ros_driver',
-                executable='v2x_safety_alert_bridge.py',
-                name='v2x_safety_alert_bridge',
-                arguments=['--ros-args', '--log-level', log_level],
-                parameters=[
-                    {
-                        'obu_host': safety_bridge_obu_host,
-                        'alert_topic': safety_alert_topic,
-                        'mapped_alert_topic': safety_alert_mapped_topic,
-                        'debug_raw_topic': safety_alert_debug_raw_topic,
-                        'abbrev_marker_topic': safety_alert_abbrev_marker_topic,
-                        'abbrev_marker_frame_id': visualization_frame_id,
-                        'abbrev_marker_z': safety_alert_abbrev_marker_z,
-                        'reconnect_delay_sec': safety_bridge_reconnect_delay,
-                        'subscription_key': safety_bridge_subscription_key,
-                        'derive_cff_only': safety_bridge_derive_cff_only,
-                        'publish_raw_passthrough': safety_bridge_publish_raw_passthrough,
-                        'dedupe_window_sec': safety_bridge_dedupe_window_sec,
-                        'critical_ttc_sec': safety_bridge_critical_ttc_sec,
-                        'warning_ttc_sec': safety_bridge_warning_ttc_sec,
-                    },
-                    global_params_override_file
-                ]
-            ))
-        elif python_enabled:
-            actions.append(safety_alert_bridge)
+                msg='Native safety bridge requested but executable is missing; bridge will not be launched.'))
 
         return actions
+
+    dbw_lights_sti_bridge = Node(
+        package='v2x_ros_driver',
+        executable='dbw_lights_sti_bridge.py',
+        name='dbw_lights_sti_bridge',
+        condition=IfCondition(enable_dbw_lights_sti_bridge),
+        arguments=['--ros-args', '--log-level', log_level],
+        parameters=[global_params_override_file]
+    )
 
     return LaunchDescription([
         declare_log_level_arg,
@@ -440,8 +394,8 @@ def generate_launch_description():
         declare_enable_v2x_driver_lifecycle,
         declare_enable_map_spat_visualizer,
         declare_enable_inbound_binary_visualizer,
-        declare_enable_safety_alert_bridge_arg,
         declare_enable_native_safety_alert_bridge_arg,
+        declare_enable_dbw_lights_sti_bridge_arg,
         declare_inbound_binary_topic_arg,
         declare_safety_alert_topic_arg,
         declare_safety_alert_mapped_topic_arg,
@@ -474,5 +428,6 @@ def generate_launch_description():
         activate_node_group_action,
         map_spat_visualizer,
         inbound_decoder_visualizer,
+        dbw_lights_sti_bridge,
         OpaqueFunction(function=launch_safety_bridge_actions)
     ])

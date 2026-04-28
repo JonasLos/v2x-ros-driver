@@ -43,7 +43,7 @@ class DbwLightsStiBridge(Node):
                                "/raptor_dbw_interface/gear_report")
         self.declare_parameter("reconnect_delay_sec", 2.0)
         # Hazard is inferred when both LEFT and RIGHT are seen within this window.
-        self.declare_parameter("hazard_window_sec", 2.5)
+        self.declare_parameter("hazard_window_sec", 0.5)
 
         self._obu_host = self.get_parameter("obu_host").get_parameter_value().string_value
         self._obu_port = self.get_parameter("obu_port").get_parameter_value().integer_value
@@ -162,9 +162,12 @@ class DbwLightsStiBridge(Node):
         """
         Return (left_on, right_on, hazard_on).
 
-        Hazard is inferred when both LEFT and RIGHT have been seen within
-        hazard_window_sec — handles vehicles that alternate LEFT/RIGHT at
-        the blink rate instead of sending an explicit HAZARDS value.
+        Latches LEFT/RIGHT across the blink-OFF half of the cycle: NONE
+        frames are ignored, and a direction stays asserted for
+        hazard_window_sec after the most recent active frame. Hazard is
+        inferred when both LEFT and RIGHT have been seen within that
+        window — handles vehicles that alternate LEFT/RIGHT at the blink
+        rate instead of sending an explicit HAZARDS value.
         """
         now = time.monotonic()
 
@@ -176,9 +179,6 @@ class DbwLightsStiBridge(Node):
             # Explicit HAZARDS — stamp both directions.
             self._last_left_ts = now
             self._last_right_ts = now
-        elif ts_value == TurnSignal.NONE:
-            self._last_left_ts = None
-            self._last_right_ts = None
 
         left_recent = (
             self._last_left_ts is not None

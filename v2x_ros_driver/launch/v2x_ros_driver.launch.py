@@ -73,6 +73,51 @@ def generate_launch_description():
         name='enable_dbw_lights_sti_bridge', default_value='True',
         description='Enable DBW vehicle state to Commsignia STI bridge')
 
+    dbw_sti_obu_host = LaunchConfiguration('dbw_sti_obu_host')
+    declare_dbw_sti_obu_host_arg = DeclareLaunchArgument(
+        name='dbw_sti_obu_host', default_value='127.0.0.1',
+        description='OBU host IP for the DBW STI bridge session')
+
+    dbw_sti_obu_port = LaunchConfiguration('dbw_sti_obu_port')
+    declare_dbw_sti_obu_port_arg = DeclareLaunchArgument(
+        name='dbw_sti_obu_port', default_value='7942',
+        description='OBU STI API port for the DBW bridge')
+
+    dbw_sti_reconnect_delay = LaunchConfiguration('dbw_sti_reconnect_delay')
+    declare_dbw_sti_reconnect_delay_arg = DeclareLaunchArgument(
+        name='dbw_sti_reconnect_delay', default_value='2.0',
+        description='Reconnect delay in seconds for the DBW STI bridge')
+
+    enable_rtor_node = LaunchConfiguration('enable_rtor_node')
+    declare_enable_rtor_node_arg = DeclareLaunchArgument(
+        name='enable_rtor_node', default_value='False',
+        description='Enable the V2X RTOR (right-turn-on-red) hazard node')
+
+    rtor_alerts_topic = LaunchConfiguration('rtor_alerts_topic')
+    declare_rtor_alerts_topic_arg = DeclareLaunchArgument(
+        name='rtor_alerts_topic', default_value='/v2x/rtor_alerts',
+        description='Topic for RTOR JSON hazard alerts')
+
+    rtor_markers_topic = LaunchConfiguration('rtor_markers_topic')
+    declare_rtor_markers_topic_arg = DeclareLaunchArgument(
+        name='rtor_markers_topic', default_value='/v2x/rtor_markers',
+        description='Topic for RTOR hazard RViz markers')
+
+    rtor_overlay_topic = LaunchConfiguration('rtor_overlay_topic')
+    declare_rtor_overlay_topic_arg = DeclareLaunchArgument(
+        name='rtor_overlay_topic', default_value='/v2x/rtor_overlay_text',
+        description='Topic for RTOR screen-space overlay text')
+
+    rtor_obu_reference_bsm_id = LaunchConfiguration('rtor_obu_reference_bsm_id')
+    declare_rtor_obu_reference_bsm_id_arg = DeclareLaunchArgument(
+        name='rtor_obu_reference_bsm_id', default_value='e153df70',
+        description='Hex TemporaryID of the OBU loopback BSM (identifies the ego vehicle)')
+
+    rtor_require_right_turn_signal = LaunchConfiguration('rtor_require_right_turn_signal')
+    declare_rtor_require_right_turn_signal_arg = DeclareLaunchArgument(
+        name='rtor_require_right_turn_signal', default_value='True',
+        description='If true, gate RTOR evaluation on the ego right-turn signal extracted from BSM partII')
+
     inbound_binary_topic = LaunchConfiguration('inbound_binary_topic')
     declare_inbound_binary_topic_arg = DeclareLaunchArgument(
         name='inbound_binary_topic', default_value='/comms/inbound_binary_msg',
@@ -384,7 +429,34 @@ def generate_launch_description():
         name='dbw_lights_sti_bridge',
         condition=IfCondition(enable_dbw_lights_sti_bridge),
         arguments=['--ros-args', '--log-level', log_level],
-        parameters=[global_params_override_file]
+        parameters=[
+            {
+                'obu_host': dbw_sti_obu_host,
+                'obu_port': dbw_sti_obu_port,
+                'reconnect_delay_sec': dbw_sti_reconnect_delay,
+            },
+            global_params_override_file
+        ]
+    )
+
+    rtor_node = Node(
+        package='v2x_ros_driver',
+        executable='v2x_rtor_node.py',
+        name='v2x_rtor_node',
+        condition=IfCondition(enable_rtor_node),
+        arguments=['--ros-args', '--log-level', log_level],
+        parameters=[
+            {
+                'inbound_topic': inbound_binary_topic,
+                'alerts_topic': rtor_alerts_topic,
+                'markers_topic': rtor_markers_topic,
+                'overlay_topic': rtor_overlay_topic,
+                'frame_id': visualization_frame_id,
+                'obu_reference_bsm_id': rtor_obu_reference_bsm_id,
+                'require_right_turn_signal': rtor_require_right_turn_signal,
+            },
+            global_params_override_file
+        ]
     )
 
     return LaunchDescription([
@@ -396,6 +468,15 @@ def generate_launch_description():
         declare_enable_inbound_binary_visualizer,
         declare_enable_native_safety_alert_bridge_arg,
         declare_enable_dbw_lights_sti_bridge_arg,
+        declare_dbw_sti_obu_host_arg,
+        declare_dbw_sti_obu_port_arg,
+        declare_dbw_sti_reconnect_delay_arg,
+        declare_enable_rtor_node_arg,
+        declare_rtor_alerts_topic_arg,
+        declare_rtor_markers_topic_arg,
+        declare_rtor_overlay_topic_arg,
+        declare_rtor_obu_reference_bsm_id_arg,
+        declare_rtor_require_right_turn_signal_arg,
         declare_inbound_binary_topic_arg,
         declare_safety_alert_topic_arg,
         declare_safety_alert_mapped_topic_arg,
@@ -429,5 +510,6 @@ def generate_launch_description():
         map_spat_visualizer,
         inbound_decoder_visualizer,
         dbw_lights_sti_bridge,
+        rtor_node,
         OpaqueFunction(function=launch_safety_bridge_actions)
     ])

@@ -35,13 +35,52 @@ A RTOR hazard cycle fires only when **all** of the following hold:
 When all six hold, the node classifies remote vehicles and VRUs near the
 intersection by distance and TTC, and publishes hazards.
 
+## VRU crosswalk geometry
+
+VRU (Pedestrian/Cyclist) tracks received via PSM are evaluated independently
+of the six-gate RTOR cycle and are always visualised on the overlay.
+
+### MAP lane classification
+
+When a MAP message is parsed, every lane is inspected for
+`laneAttributes.laneType`. Lanes whose type contains `crosswalk` or
+`pedestrian` are flagged `is_crosswalk=True` and their decoded lat/lon
+polylines are stored in the intersection cache.
+
+### Distance measurement
+
+For each active VRU track the reference distance `d_ref` is computed as:
+
+1. **Crosswalk geometry available** — minimum point-to-polyline distance from
+   the VRU's lat/lon to every crosswalk lane polyline in the nearest
+   intersection.
+2. **No crosswalk geometry** (fallback) — straight-line distance from the VRU
+   to the ego vehicle.
+
+### Severity tiers
+
+| Tier | Condition | Overlay colour |
+|------|-----------|----------------|
+| **WARNING** | `d_ref ≤ vru_warning_distance_m` (default 4 m) | Red — VRU is on/inside the crosswalk |
+| **CAUTION** | `d_ref ≤ vru_caution_distance_m` (default 10 m) | Amber — VRU is near the crosswalk |
+| Vicinity | VRU within `intersection_radius_m` but outside caution zone | Light-blue — VRU in intersection area |
+| Clear | No VRUs in vicinity | Grey — none |
+
+WARNING is a strict subset of CAUTION (a VRU counted as WARNING is also
+counted as CAUTION internally).
+
 ## Outputs
 
 | Topic | Type | Notes |
 | --- | --- | --- |
 | `/v2x/rtor_alerts` | `std_msgs/String` | JSON: `severity`, `intersection`, `lane_id`, `signal_group`, `ego`, `hazards[]` |
 | `/v2x/rtor_markers` | `visualization_msgs/MarkerArray` | One coloured cylinder per hazard, in `frame_id` (default `world`) |
-| `/v2x/rtor_overlay_text` | `rviz_2d_overlay_msgs/OverlayText` | Single-line screen overlay (only if the package is installed) |
+| `/v2x/rtor_overlay_text` | `rviz_2d_overlay_msgs/OverlayText` | RTOR lane/signal status overlay (position top-left) |
+| `/v2x/rtor_vru_overlay_text` | `rviz_2d_overlay_msgs/OverlayText` | VRU severity overlay — WARNING/CAUTION/vicinity/none |
+
+The overlay package is resolved at runtime: `rviz_2d_overlay_msgs` is tried
+first, then `jsk_rviz_plugins`. If neither is installed the publishers are
+skipped silently.
 
 ## Parameters
 
@@ -49,6 +88,7 @@ intersection by distance and TTC, and publishes hazards.
 | --- | --- | --- |
 | `inbound_topic` | `/comms/inbound_binary_msg` | Source ByteArray topic |
 | `alerts_topic`, `markers_topic`, `overlay_topic` | `/v2x/rtor_*` | Output topic names |
+| `vru_stats_overlay_topic` | `/v2x/rtor_vru_overlay_text` | VRU severity overlay topic |
 | `frame_id` | `world` | TF frame for marker placement |
 | `obu_reference_bsm_id` | `e153df70` | Hex TemporaryID identifying the ego loopback BSM |
 | `require_right_turn_signal` | `True` | Gate evaluation on ego right-turn-signal flag |

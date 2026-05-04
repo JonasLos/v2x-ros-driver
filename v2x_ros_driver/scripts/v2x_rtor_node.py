@@ -452,6 +452,9 @@ class V2XRtorNode(Node):
         self.require_right_turn_signal = bool(
             self.declare_parameter("require_right_turn_signal", True).value
         )
+        self.allow_alerts_without_map_right_turn = bool(
+            self.declare_parameter("allow_alerts_without_map_right_turn", False).value
+        )
         self.intersection_radius_m = float(
             self.declare_parameter("intersection_radius_m", 80.0).value
         )
@@ -595,6 +598,7 @@ class V2XRtorNode(Node):
             f"v2x_rtor_node ready — inbound={self.inbound_topic}, "
             f"obu_id={self.obu_reference_bsm_id}, "
             f"require_right_turn_signal={self.require_right_turn_signal}, "
+            f"allow_alerts_without_map_right_turn={self.allow_alerts_without_map_right_turn}, "
             f"overlay={'enabled' if OVERLAY_MSG_AVAILABLE else 'disabled (no msg pkg)'}"
         )
 
@@ -1123,6 +1127,7 @@ class V2XRtorNode(Node):
             f"right_turn_signal={self._ego.right_turn_signal} "
             f"left_turn_signal={self._ego.left_turn_signal} "
             f"require_right_turn_signal={self.require_right_turn_signal} "
+            f"allow_alerts_without_map_right_turn={self.allow_alerts_without_map_right_turn} "
             f"ego_age_sec={ego_age_sec:.2f} "
             f"intersection={intersection_key} "
             f"lane_id={lane_id} "
@@ -1153,7 +1158,7 @@ class V2XRtorNode(Node):
 
         self._publish_lane_allowance_status(intersection, ego_lane)
 
-        if ego_lane.right_turn_allowed is False:
+        if ego_lane.right_turn_allowed is False and not self.allow_alerts_without_map_right_turn:
             self._maybe_log_debug_status(stage="lane_not_right_turn", intersection=intersection, lane=ego_lane)
             return  # known not a right-turn lane
         # right_turn_allowed == None falls through; we treat unknown-maneuver lanes as candidates.
@@ -1211,6 +1216,7 @@ class V2XRtorNode(Node):
             "signal_group": lane.signal_group,
             "right_turn_allowed": lane.right_turn_allowed,
             "right_turn_allowance": allowance,
+            "allow_alerts_without_map_right_turn": self.allow_alerts_without_map_right_turn,
             "right_turn_signal": self._ego.right_turn_signal,
             "require_right_turn_signal": self.require_right_turn_signal,
         }

@@ -75,7 +75,7 @@ def generate_launch_description():
 
     dbw_sti_obu_host = LaunchConfiguration('dbw_sti_obu_host')
     declare_dbw_sti_obu_host_arg = DeclareLaunchArgument(
-        name='dbw_sti_obu_host', default_value='127.0.0.1',
+        name='dbw_sti_obu_host', default_value='192.168.0.54',
         description='OBU host IP for the DBW STI bridge session')
 
     dbw_sti_obu_port = LaunchConfiguration('dbw_sti_obu_port')
@@ -117,6 +117,11 @@ def generate_launch_description():
     declare_rtor_require_right_turn_signal_arg = DeclareLaunchArgument(
         name='rtor_require_right_turn_signal', default_value='True',
         description='If true, gate RTOR evaluation on the ego right-turn signal extracted from BSM partII')
+
+    rtor_allow_alerts_without_map_right_turn = LaunchConfiguration('rtor_allow_alerts_without_map_right_turn')
+    declare_rtor_allow_alerts_without_map_right_turn_arg = DeclareLaunchArgument(
+        name='rtor_allow_alerts_without_map_right_turn', default_value='False',
+        description='If true, allow RTOR alerts even when MAP lane maneuver data says right turn is not allowed')
 
     inbound_binary_topic = LaunchConfiguration('inbound_binary_topic')
     declare_inbound_binary_topic_arg = DeclareLaunchArgument(
@@ -160,7 +165,7 @@ def generate_launch_description():
 
     safety_bridge_obu_host = LaunchConfiguration('safety_bridge_obu_host')
     declare_safety_bridge_obu_host_arg = DeclareLaunchArgument(
-        name='safety_bridge_obu_host', default_value='127.0.0.1',
+        name='safety_bridge_obu_host', default_value='192.168.0.54',
         description='OBU host IP for Commsignia SDK RPC connection')
 
     safety_bridge_obu_port = LaunchConfiguration('safety_bridge_obu_port')
@@ -454,6 +459,7 @@ def generate_launch_description():
                 'frame_id': visualization_frame_id,
                 'obu_reference_bsm_id': rtor_obu_reference_bsm_id,
                 'require_right_turn_signal': rtor_require_right_turn_signal,
+                'allow_alerts_without_map_right_turn': rtor_allow_alerts_without_map_right_turn,
             },
             global_params_override_file
         ]
@@ -477,6 +483,7 @@ def generate_launch_description():
         declare_rtor_overlay_topic_arg,
         declare_rtor_obu_reference_bsm_id_arg,
         declare_rtor_require_right_turn_signal_arg,
+        declare_rtor_allow_alerts_without_map_right_turn_arg,
         declare_inbound_binary_topic_arg,
         declare_safety_alert_topic_arg,
         declare_safety_alert_mapped_topic_arg,

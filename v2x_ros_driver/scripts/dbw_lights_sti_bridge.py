@@ -54,6 +54,7 @@ class DbwLightsStiBridge(Node):
         self._api = None
         self._api_lock = threading.Lock()
         self._stop = threading.Event()
+        self._reconnect_requested = threading.Event()  # modified for reconnect/stale issue
 
         # Change-detection caches (per-group).
         self._last_lights: dict = {}
@@ -89,6 +90,7 @@ class DbwLightsStiBridge(Node):
 
     def _sdk_loop(self) -> None:
         while rclpy.ok() and not self._stop.is_set():
+            self._reconnect_requested.clear()  # modified for reconnect/stale issue
             try:
                 from pycmssdk import create_cms_api
             except ImportError:
@@ -108,7 +110,11 @@ class DbwLightsStiBridge(Node):
                     self.get_logger().info(
                         "Connected to OBU STI API at %s:%d" % (self._obu_host, self._obu_port)
                     )
-                    while rclpy.ok() and not self._stop.is_set():
+                    while (  # modified for reconnect/stale issue
+                        rclpy.ok()  # modified for reconnect/stale issue
+                        and not self._stop.is_set()  # modified for reconnect/stale issue
+                        and not self._reconnect_requested.is_set()  # modified for reconnect/stale issue
+                    ):
                         time.sleep(0.1)
 
             except Exception as exc:
@@ -137,6 +143,20 @@ class DbwLightsStiBridge(Node):
         with self._api_lock:
             return self._api
 
+    def _invalidate_api(self, api, exc: Exception) -> None:  # modified for reconnect/stale issue
+        should_log = False  # modified for reconnect/stale issue
+        with self._api_lock:
+            if self._api is api:  # modified for reconnect/stale issue
+                self._api = None  # modified for reconnect/stale issue
+                should_log = not self._reconnect_requested.is_set()  # modified for reconnect/stale issue
+                self._reconnect_requested.set()  # modified for reconnect/stale issue
+
+        if should_log:  # modified for reconnect/stale issue
+            self.get_logger().warn(
+                "sti_set failed: %s. Reconnecting in %.1fs"
+                % (str(exc), self._reconnect_delay)  # modified for reconnect/stale issue
+            )
+
     def _push_sti(self, items_dict: dict, cache: dict) -> bool:
         """Call sti_set only if items_dict differs from cache. Returns True on success."""
         if items_dict == cache:
@@ -154,7 +174,7 @@ class DbwLightsStiBridge(Node):
             cache.update(items_dict)
             return True
         except Exception as exc:
-            self.get_logger().warn("sti_set failed: %s" % str(exc))
+            self._invalidate_api(api, exc)  # modified for reconnect/stale issue
             cache.clear()   # force retry next message
             return False
 

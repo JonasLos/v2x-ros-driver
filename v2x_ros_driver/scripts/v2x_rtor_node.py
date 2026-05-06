@@ -50,6 +50,7 @@ except ImportError:
 
 
 VALID_FRAME_IDS = {0x12, 0x13, 0x14, 0x1D, 0x1E, 0x1F, 0x20, 0x29}
+SDSM_MESSAGE_IDS = {28, 41}
 EARTH_RADIUS_M = 6378137.0
 RED_EVENT_STATES = {"stop-And-Remain", "stop-Then-Proceed", "stopAndRemain", "stopThenProceed"}
 
@@ -474,7 +475,7 @@ class V2XRtorNode(Node):
             self.declare_parameter("vehicle_caution_ttc_sec", 5.0).value
         )
         self.vru_warning_distance_m = float(
-            self.declare_parameter("vru_warning_distance_m", 4.0).value
+            self.declare_parameter("vru_warning_distance_m", 2.0).value
         )
         self.vru_caution_distance_m = float(
             self.declare_parameter("vru_caution_distance_m", 10.0).value
@@ -565,6 +566,7 @@ class V2XRtorNode(Node):
         self._last_lane_debug_log_ns = 0
         self._last_lane_allowance_status: Optional[Tuple[str, int, Optional[bool]]] = None
         self._rx_bsm_count = 0
+        self._rx_sdsm_count = 0
         self._rx_psm_count = 0
         self._rx_map_count = 0
         self._rx_spat_count = 0
@@ -623,10 +625,23 @@ class V2XRtorNode(Node):
         msg_kind = self._classify_driver_type(driver_type)
         if msg_kind == "other":
             msg_kind = self._classify_decoded(msg_id_field, value)
+        elif msg_kind == "psm":
+            # Driver message labels can be ambiguous; verify payload shape before classifying as VRU.
+            structural_kind = self._classify_decoded(msg_id_field, value)
+            if structural_kind in {"bsm", "sdsm"}:
+                self.get_logger().debug(
+                    "PSM driver_type overridden by structure: "
+                    f"msg_id={msg_id_field} psm->{structural_kind}"
+                )
+                msg_kind = structural_kind
+
+        self.get_logger().debug(f"Message routing: driver_type={driver_type} msg_id={msg_id_field} -> kind={msg_kind}")
 
         if msg_kind == "bsm":
             self._rx_bsm_count += 1
             self._handle_bsm(value)
+        elif msg_kind == "sdsm":
+            self._rx_sdsm_count += 1
         elif msg_kind == "psm":
             self._rx_psm_count += 1
             self._handle_psm(value)
@@ -656,6 +671,8 @@ class V2XRtorNode(Node):
             return "bsm"
         if norm in {"PSM", "PERSONALSAFETYMESSAGE"}:
             return "psm"
+        if norm in {"SDSM", "SENSORDATASHARINGMESSAGE"}:
+            return "sdsm"
         return "other"
 
     def _maybe_log_rx_counters(self) -> None:
@@ -669,6 +686,7 @@ class V2XRtorNode(Node):
         self.get_logger().info(
             "RTOR rx counters: "
             f"bsm={self._rx_bsm_count} "
+            f"sdsm={self._rx_sdsm_count} "
             f"spat={self._rx_spat_count} "
             f"map={self._rx_map_count} "
             f"psm={self._rx_psm_count} "
@@ -713,8 +731,12 @@ class V2XRtorNode(Node):
         return None
 
     def _classify_decoded(self, msg_id_field, value: dict) -> str:
+        if isinstance(msg_id_field, int) and msg_id_field in SDSM_MESSAGE_IDS:
+            self.get_logger().debug(f"Classified as SDSM (messageId={msg_id_field})")
+            return "sdsm"
         if isinstance(value, dict):
             if "coreData" in value and isinstance(value.get("coreData"), dict):
+                self.get_logger().debug("Classified as BSM (has coreData)")
                 return "bsm"
             if "intersections" in value:
                 states = None
@@ -722,9 +744,16 @@ class V2XRtorNode(Node):
                     if isinstance(inter, dict) and "states" in inter:
                         states = inter["states"]
                         break
-                return "spat" if states is not None else "map"
+                result = "spat" if states is not None else "map"
+                self.get_logger().debug(f"Classified as {result} (has intersections)")
+                return result
+            if "objects" in value and "refPos" in value:
+                self.get_logger().debug("Classified as SDSM (has objects + refPos)")
+                return "sdsm"
             if "basicType" in value or "pathHistory" in value or value.get("id") and "secMark" in value:
+                self.get_logger().debug("Classified as PSM (has basicType/pathHistory/secMark)")
                 return "psm"
+        self.get_logger().debug("Classified as OTHER")
         return "other"
 
     # --- per-message handlers ---
@@ -819,6 +848,8 @@ class V2XRtorNode(Node):
                     break
 
         psm_id = normalize_id(value.get("id", value.get("coreData", {}).get("id", "unknown")))
+        self.get_logger().debug(f"PSM/VRU received: id={psm_id} lat={lat:.7f} lon={lon:.7f} type={user_type} speed={speed:.2f}")
+        
         track = self._vrus.setdefault(psm_id, VruTrack())
         track.last_update_ns = self.get_clock().now().nanoseconds
         track.lat = lat

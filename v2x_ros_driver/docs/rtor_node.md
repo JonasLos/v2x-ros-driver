@@ -3,10 +3,15 @@
 `v2x_rtor_node.py` is a Python ROS 2 node that detects right-turn-on-red
 (RTOR) hazards by consuming the OBU's raw inbound V2X stream.
 
-It decodes MAP, SPAT, BSM, and PSM messages from `/comms/inbound_binary_msg`,
+It decodes MAP, SPAT, BSM, PSM, and SDSM messages from `/comms/inbound_binary_msg`,
 tracks the ego vehicle by looped-back BSM TemporaryID, caches MAP geometry,
 and publishes both RTOR hazard alerts and lane-status/debug state for the
 matched approach lane.
+
+Inbound message routing uses driver-provided type labels when available, then
+confirms structure for ambiguous PSM labels. If a message arrives labeled PSM
+but payload structure matches BSM (`coreData`) or SDSM (`objects` + `refPos` or
+SDSM messageId), RTOR re-routes it away from VRU tracking.
 
 ## Inputs
 
@@ -87,7 +92,7 @@ For each active VRU track the reference distance `d_ref` is computed as:
 
 | Tier | Condition | Overlay colour |
 |------|-----------|----------------|
-| **WARNING** | `d_ref ≤ vru_warning_distance_m` (default 4 m) | Red — VRU is on/inside the crosswalk |
+| **WARNING** | `d_ref ≤ vru_warning_distance_m` (default 2 m) | Red — VRU is on/inside the crosswalk |
 | **CAUTION** | `d_ref ≤ vru_caution_distance_m` (default 10 m) | Amber — VRU is near the crosswalk |
 | Vicinity | VRU within `intersection_radius_m` but outside caution zone | Light-blue — VRU in intersection area |
 | Clear | No VRUs in vicinity | Grey — none |
@@ -123,7 +128,7 @@ skipped silently.
 | `lane_match_max_distance_m` | `4.5` | Max point-to-polyline distance to claim a lane |
 | `vehicle_warning_distance_m` / `_caution_distance_m` | `12.0` / `30.0` | Vehicle hazard distance thresholds |
 | `vehicle_warning_ttc_sec` / `_caution_ttc_sec` | `2.5` / `5.0` | Vehicle hazard TTC thresholds |
-| `vru_warning_distance_m` / `_caution_distance_m` | `4.0` / `10.0` | VRU hazard distance thresholds |
+| `vru_warning_distance_m` / `_caution_distance_m` | `2.0` / `10.0` | VRU hazard distance thresholds |
 | `heading_conflict_min_deg` | `65.0` | Heading delta to label a remote vehicle as crossing/oncoming |
 | `remote_track_timeout_sec` | `2.5` | TTL on remote BSM/PSM tracks |
 | `spat_timeout_sec` | `3.0` | Max age of cached SPAT before we refuse to gate on it |

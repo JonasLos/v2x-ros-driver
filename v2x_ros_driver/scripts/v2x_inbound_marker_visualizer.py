@@ -96,6 +96,17 @@ class TimTrackPoint:
     last_update_ns: int
 
 
+@dataclass
+class SdsmTrackPoint:
+    lat_deg: float
+    lon_deg: float
+    speed_mps: float
+    heading_deg: Optional[float]
+    obj_type: str
+    obj_type_enum: int
+    last_update_ns: int
+
+
 def extract_framed_candidates(data: bytes) -> List[Tuple[bytes, str]]:
     candidates: List[Tuple[bytes, str]] = []
 
@@ -488,6 +499,7 @@ class V2XInboundMarkerVisualizer(Node):
         self.marker_topic = self.declare_parameter("marker_topic", "/v2x/map_spat_markers").value
         self.bsm_marker_topic = self.declare_parameter("bsm_marker_topic", "/v2x/bsm_markers").value
         self.psm_marker_topic = self.declare_parameter("psm_marker_topic", "/v2x/psm_markers").value
+        self.sdsm_marker_topic = self.declare_parameter("sdsm_marker_topic", "/v2x/sdsm_markers").value
         self.tim_marker_topic = self.declare_parameter("tim_marker_topic", "/v2x/tim_markers").value
         self.frame_id = self.declare_parameter("frame_id", "map").value
         self.publish_rate_hz = float(self.declare_parameter("publish_rate_hz", 10.0).value)
@@ -495,6 +507,7 @@ class V2XInboundMarkerVisualizer(Node):
         self.bsm_point_size = float(self.declare_parameter("bsm_point_size", 1.2).value)
         self.psm_marker_size = float(self.declare_parameter("psm_marker_size", 1.0).value)
         self.psm_track_timeout_sec = float(self.declare_parameter("psm_track_timeout_sec", 6.0).value)
+        self.sdsm_track_timeout_sec = float(self.declare_parameter("sdsm_track_timeout_sec", 6.0).value)
         self.tim_track_timeout_sec = float(self.declare_parameter("tim_track_timeout_sec", 20.0).value)
         self.marker_lifetime_sec = float(self.declare_parameter("marker_lifetime_sec", 1.5).value)
         self.enable_text_overlay = bool(self.declare_parameter("enable_text_overlay", True).value)
@@ -526,6 +539,7 @@ class V2XInboundMarkerVisualizer(Node):
         self._spat_state: Dict[str, Dict[int, int]] = {}
         self._bsm_tracks: Dict[str, BsmTrackPoint] = {}
         self._psm_tracks: Dict[str, PsmTrackPoint] = {}
+        self._sdsm_tracks: Dict[str, SdsmTrackPoint] = {}
         self._tim_tracks: Dict[str, TimTrackPoint] = {}
         self._encoded_rx_count = 0
         self._decoded_rx_count = 0
@@ -534,6 +548,7 @@ class V2XInboundMarkerVisualizer(Node):
         self._spat_rx_count = 0
         self._bsm_rx_count = 0
         self._psm_rx_count = 0
+        self._sdsm_rx_count = 0
         self._tim_rx_count = 0
         self._other_rx_count = 0
         self._last_counter_log_ns = 0
@@ -543,22 +558,26 @@ class V2XInboundMarkerVisualizer(Node):
         self._dirty_map_spat = True
         self._dirty_bsm = True
         self._dirty_psm = True
+        self._dirty_sdsm = True
         self._dirty_tim = True
 
         self._sub = self.create_subscription(ByteArray, self.inbound_topic, self._on_inbound, 200)
         self._pub_map_spat = self.create_publisher(MarkerArray, self.marker_topic, 10)
         self._pub_bsm = self.create_publisher(MarkerArray, self.bsm_marker_topic, 10)
         self._pub_psm = self.create_publisher(MarkerArray, self.psm_marker_topic, 10)
+        self._pub_sdsm = self.create_publisher(MarkerArray, self.sdsm_marker_topic, 10)
         self._pub_tim = self.create_publisher(MarkerArray, self.tim_marker_topic, 10)
 
         self._overlay_pub_map_spat = None
         self._overlay_pub_bsm = None
         self._overlay_pub_psm = None
+        self._overlay_pub_sdsm = None
         self._overlay_pub_tim = None
         if self.enable_text_overlay and OverlayText is not None:
             self._overlay_pub_map_spat = self.create_publisher(OverlayText, "/v2x/map_spat_overlay_text", 10)
             self._overlay_pub_bsm = self.create_publisher(OverlayText, "/v2x/bsm_overlay_text", 10)
             self._overlay_pub_psm = self.create_publisher(OverlayText, "/v2x/psm_overlay_text", 10)
+            self._overlay_pub_sdsm = self.create_publisher(OverlayText, "/v2x/sdsm_overlay_text", 10)
             self._overlay_pub_tim = self.create_publisher(OverlayText, "/v2x/tim_overlay_text", 10)
             self.get_logger().info(f"OverlayText enabled via {OVERLAY_MSG_SOURCE}")
         elif self.enable_text_overlay and OverlayText is None:
@@ -598,6 +617,8 @@ class V2XInboundMarkerVisualizer(Node):
             pub = self._overlay_pub_bsm
         elif kind == "psm":
             pub = self._overlay_pub_psm
+        elif kind == "sdsm":
+            pub = self._overlay_pub_sdsm
         elif kind == "tim":
             pub = self._overlay_pub_tim
         else:
@@ -618,8 +639,10 @@ class V2XInboundMarkerVisualizer(Node):
             top = 95
         elif kind == "psm":
             top = 180
-        else:
+        elif kind == "sdsm":
             top = 265
+        else:
+            top = 350
 
         if hasattr(msg, "left") and hasattr(msg, "top"):
             msg.left = 10
@@ -647,6 +670,10 @@ class V2XInboundMarkerVisualizer(Node):
             msg.fg_color.r = 1.0
             msg.fg_color.g = 0.45
             msg.fg_color.b = 0.35
+        elif kind == "sdsm":
+            msg.fg_color.r = 0.8
+            msg.fg_color.g = 0.2
+            msg.fg_color.b = 0.8
         else:
             msg.fg_color.r = 1.0
             msg.fg_color.g = 0.85
@@ -683,8 +710,16 @@ class V2XInboundMarkerVisualizer(Node):
                 f"encoded={self._encoded_rx_count}, "
                 f"decoded={self._decoded_rx_count}, "
                 f"not_decoded={self._undecoded_rx_count}, "
+                f"map={self._map_rx_count}, "
+                f"spat={self._spat_rx_count}, "
+                f"bsm={self._bsm_rx_count}, "
+                f"psm={self._psm_rx_count}, "
+                f"sdsm={self._sdsm_rx_count}, "
+                f"tim={self._tim_rx_count}, "
+                f"other={self._other_rx_count}, "
                 f"bsm_tracked={len(self._bsm_tracks)}, "
                 f"psm_tracked={len(self._psm_tracks)}, "
+                f"sdsm_tracked={len(self._sdsm_tracks)}, "
                 f"tim_tracked={len(self._tim_tracks)}"
             )
 
@@ -986,13 +1021,16 @@ class V2XInboundMarkerVisualizer(Node):
 
     def _on_bsm(self, decoded: dict) -> None:
         if (not self.use_utm_global_coordinates) and (self._anchor_lat_deg is None or self._anchor_lon_deg is None):
+            self.get_logger().debug("BSM dropped: local coords mode but anchor not set")
             return
 
         value = decoded.get("value")
         if not isinstance(value, dict):
+            self.get_logger().debug("BSM dropped: value not dict")
             return
         core = value.get("coreData", {})
         if not isinstance(core, dict):
+            self.get_logger().debug("BSM dropped: coreData not dict")
             return
 
         lat_raw = core.get("lat")
@@ -1000,6 +1038,7 @@ class V2XInboundMarkerVisualizer(Node):
         if not isinstance(lon_raw, int):
             lon_raw = core.get("lon")
         if not isinstance(lat_raw, int) or not isinstance(lon_raw, int):
+            self.get_logger().debug(f"BSM dropped: invalid lat={lat_raw} lon={lon_raw}")
             return
 
         bsm_lat = lat_raw * 1e-7
@@ -1009,6 +1048,8 @@ class V2XInboundMarkerVisualizer(Node):
         speed_mps = speed_raw * 0.02 if isinstance(speed_raw, int) and speed_raw != 8191 else -1.0
 
         vehicle_id = normalize_bsm_id(core.get("id", "unknown"))
+        
+        self.get_logger().debug(f"BSM received: id={vehicle_id} lat={bsm_lat:.7f} lon={bsm_lon:.7f} speed={speed_mps:.2f}")
 
         if self.prefer_obu_bsm_anchor and vehicle_id == self.obu_reference_bsm_id:
             self._set_anchor_from_obu(bsm_lat, bsm_lon)
@@ -1018,6 +1059,7 @@ class V2XInboundMarkerVisualizer(Node):
         if previous is None:
             self._bsm_tracks[vehicle_id] = new_point
             self._dirty_bsm = True
+            self.get_logger().debug(f"BSM tracked: id={vehicle_id}")
             return
 
         if (
@@ -1110,6 +1152,101 @@ class V2XInboundMarkerVisualizer(Node):
 
         self._psm_tracks[psm_id] = new_point
 
+    def _on_sdsm(self, decoded: dict) -> None:
+        if (not self.use_utm_global_coordinates) and (self._anchor_lat_deg is None or self._anchor_lon_deg is None):
+            return
+
+        value = decoded.get("value")
+        if not isinstance(value, dict):
+            return
+
+        objects_list = value.get("objects")
+        if not isinstance(objects_list, list):
+            return
+
+        ref_pos = value.get("refPos")
+        if not isinstance(ref_pos, dict):
+            return
+
+        ref_lat = _extract_float_candidate(ref_pos.get("lat"), 1e-7)
+        ref_lon = _extract_float_candidate(ref_pos.get("long") or ref_pos.get("lon"), 1e-7)
+        if ref_lat is None or ref_lon is None:
+            return
+
+        now_ns = self.get_clock().now().nanoseconds
+
+        for obj_idx, obj in enumerate(objects_list):
+            if not isinstance(obj, dict):
+                continue
+
+            obj_type_val = obj.get("objType") or obj.get("obj_type")
+            if isinstance(obj_type_val, dict):
+                obj_type_val = obj_type_val.get("value", obj_type_val.get("enum", 0))
+            if not isinstance(obj_type_val, int):
+                obj_type_val = 0
+
+            obj_type_name = {0: "UNKNOWN", 1: "VEHICLE", 2: "VRU", 3: "ANIMAL"}.get(obj_type_val, "UNKNOWN")
+
+            common_data = obj.get("detObjCommon") or obj.get("common")
+            if not isinstance(common_data, dict):
+                continue
+
+            obj_pos = common_data.get("position") or common_data.get("pos")
+            if not isinstance(obj_pos, dict):
+                continue
+
+            obj_lat_raw = obj_pos.get("lat") or obj_pos.get("latitude")
+            obj_lon_raw = obj_pos.get("long") or obj_pos.get("lon") or obj_pos.get("longitude")
+            obj_lat = _extract_float_candidate(obj_lat_raw, 1e-7)
+            obj_lon = _extract_float_candidate(obj_lon_raw, 1e-7)
+            if obj_lat is None or obj_lon is None:
+                continue
+
+            speed_raw = common_data.get("speed")
+            speed_mps = _extract_float_candidate(speed_raw, 0.02 if isinstance(speed_raw, int) else 1.0)
+            if speed_mps is None:
+                speed_mps = -1.0
+
+            heading_raw = common_data.get("heading")
+            heading_deg = _extract_float_candidate(heading_raw, 0.0125 if isinstance(heading_raw, int) else 1.0)
+
+            sdsm_id = f"{ref_lat:.7f}_{ref_lon:.7f}_{obj_idx}"
+
+            new_point = SdsmTrackPoint(
+                lat_deg=obj_lat,
+                lon_deg=obj_lon,
+                speed_mps=speed_mps,
+                heading_deg=heading_deg,
+                obj_type=obj_type_name,
+                obj_type_enum=obj_type_val,
+                last_update_ns=now_ns,
+            )
+
+            previous = self._sdsm_tracks.get(sdsm_id)
+            if previous is None:
+                self._sdsm_tracks[sdsm_id] = new_point
+                self._dirty_sdsm = True
+                continue
+
+            if (
+                abs(previous.lat_deg - new_point.lat_deg) > 1e-7
+                or abs(previous.lon_deg - new_point.lon_deg) > 1e-7
+                or abs(previous.speed_mps - new_point.speed_mps) > 0.1
+                or previous.obj_type_enum != new_point.obj_type_enum
+                or (
+                    previous.heading_deg is None
+                    and new_point.heading_deg is not None
+                )
+                or (
+                    previous.heading_deg is not None
+                    and new_point.heading_deg is not None
+                    and abs(previous.heading_deg - new_point.heading_deg) > 1.0
+                )
+            ):
+                self._dirty_sdsm = True
+
+            self._sdsm_tracks[sdsm_id] = new_point
+
     def _on_tim(self, decoded: dict) -> None:
         value = decoded.get("value")
         if not isinstance(value, dict):
@@ -1183,6 +1320,22 @@ class V2XInboundMarkerVisualizer(Node):
             self._psm_tracks.pop(track_id, None)
         self._dirty_psm = True
 
+    def _prune_stale_sdsm_tracks(self) -> None:
+        if not self._sdsm_tracks:
+            return
+        now_ns = self.get_clock().now().nanoseconds
+        timeout_ns = int(max(0.5, self.sdsm_track_timeout_sec) * 1e9)
+        stale_ids = [
+            track_id
+            for track_id, track in self._sdsm_tracks.items()
+            if (now_ns - track.last_update_ns) > timeout_ns
+        ]
+        if not stale_ids:
+            return
+        for track_id in stale_ids:
+            self._sdsm_tracks.pop(track_id, None)
+        self._dirty_sdsm = True
+
     def _prune_stale_tim_tracks(self) -> None:
         if not self._tim_tracks:
             return
@@ -1199,6 +1352,34 @@ class V2XInboundMarkerVisualizer(Node):
             self._tim_tracks.pop(track_id, None)
         self._dirty_tim = True
 
+    def _classify_msg_type_by_structure(self, decoded: dict) -> str:
+        """Fallback classifier to distinguish BSM from PSM when messageId is ambiguous (20)."""
+        value = decoded.get("value")
+        if not isinstance(value, dict):
+            return "unknown"
+        
+        # BSM has coreData, PSM does not
+        if "coreData" in value:
+            self.get_logger().debug("Inferred type: BSM (has coreData)")
+            return "bsm"
+        
+        # PSM has basicType (or personal safety message fields)
+        if "basicType" in value:
+            self.get_logger().debug("Inferred type: PSM (has basicType)")
+            return "psm"
+        
+        # PSM may have position as a dict (not nested in coreData)
+        pos = value.get("position")
+        if isinstance(pos, dict) and ("lat" in pos or "latitude" in pos):
+            # Check for PSM-specific fields
+            if "heading" in value or "pathHistory" in value:
+                self.get_logger().debug("Inferred type: PSM (has position + heading/pathHistory)")
+                return "psm"
+        
+        # Default: treat as BSM since BSM is more common in mixed V2X streams
+        self.get_logger().debug("Inferred type: BSM (default)")
+        return "bsm"
+
     def _on_inbound(self, msg: ByteArray) -> None:
         payload = bytes(msg.content)
         if not payload:
@@ -1208,6 +1389,7 @@ class V2XInboundMarkerVisualizer(Node):
         self._dirty_map_spat = True
         self._dirty_bsm = True
         self._dirty_psm = True
+        self._dirty_sdsm = True
         self._dirty_tim = True
 
         decoded = self._decode_payload(payload)
@@ -1220,6 +1402,8 @@ class V2XInboundMarkerVisualizer(Node):
 
         message_id = decoded.get("messageId")
         driver_type = (msg.message_type or "").strip().upper()
+
+        self.get_logger().debug(f"Inbound message: driver_type='{driver_type}', messageId={message_id}")
 
         # Prefer driver-provided type tags when available. They are derived from
         # runtime wave mapping and help route mixed captures where decoded ID
@@ -1234,8 +1418,18 @@ class V2XInboundMarkerVisualizer(Node):
             self._bsm_rx_count += 1
             self._on_bsm(decoded)
         elif driver_type == "PSM":
+            # When marked as PSM but messageId=20 (BSM), use structure to disambiguate
+            if message_id == 20:
+                inferred_type = self._classify_msg_type_by_structure(decoded)
+                if inferred_type == "bsm":
+                    self._bsm_rx_count += 1
+                    self._on_bsm(decoded)
+                    return
             self._psm_rx_count += 1
             self._on_psm(decoded)
+        elif driver_type == "SDSM":
+            self._sdsm_rx_count += 1
+            self._on_sdsm(decoded)
         elif driver_type == "TIM":
             self._tim_rx_count += 1
             self._on_tim(decoded)
@@ -1246,11 +1440,23 @@ class V2XInboundMarkerVisualizer(Node):
             self._spat_rx_count += 1
             self._on_spat(decoded)
         elif message_id == 20:
-            self._bsm_rx_count += 1
-            self._on_bsm(decoded)
+            # messageId=20 can be BSM or PSM; use structure to disambiguate
+            inferred_type = self._classify_msg_type_by_structure(decoded)
+            if inferred_type == "bsm":
+                self._bsm_rx_count += 1
+                self._on_bsm(decoded)
+            else:
+                self._psm_rx_count += 1
+                self._on_psm(decoded)
         elif message_id == 32:
             self._psm_rx_count += 1
             self._on_psm(decoded)
+        elif message_id == 28:
+            self._sdsm_rx_count += 1
+            self._on_sdsm(decoded)
+        elif message_id == 41:
+            self._sdsm_rx_count += 1
+            self._on_sdsm(decoded)
         elif message_id == 31:
             self._tim_rx_count += 1
             self._on_tim(decoded)
@@ -1379,11 +1585,16 @@ class V2XInboundMarkerVisualizer(Node):
         clear.action = Marker.DELETEALL
         marker_array.markers.append(clear)
 
+        self.get_logger().debug(f"Publishing BSM markers: {len(self._bsm_tracks)} tracked vehicles, UTM={self.use_utm_global_coordinates}")
+
         for vehicle_id, track in self._bsm_tracks.items():
             marker_xy = self._latlon_to_marker_xy(track.lat_deg, track.lon_deg)
             if marker_xy is None:
+                self.get_logger().debug(f"BSM marker skipped for {vehicle_id}: coordinate conversion returned None (anchor={self._anchor_lat_deg}, {self._anchor_lon_deg})")
                 continue
             x, y = marker_xy
+            
+            self.get_logger().debug(f"BSM marker rendered for {vehicle_id}: x={x:.2f} y={y:.2f}")
 
             veh_marker = Marker()
             veh_marker.header.stamp = self.get_clock().now().to_msg()
@@ -1447,6 +1658,16 @@ class V2XInboundMarkerVisualizer(Node):
         if "pedestrian" in user_type_lower:
             return 0.2, 0.9, 0.2, 0.95
         return 0.95, 0.25, 0.2, 0.95
+
+    def _sdsm_color(self, obj_type_enum: int) -> Tuple[float, float, float, float]:
+        if obj_type_enum == 1:  # VEHICLE
+            return 0.0, 0.9, 1.0, 0.85  # Cyan
+        elif obj_type_enum == 2:  # VRU
+            return 1.0, 0.5, 0.0, 0.85  # Orange
+        elif obj_type_enum == 3:  # ANIMAL
+            return 0.5, 0.25, 0.0, 0.85  # Brown
+        else:  # UNKNOWN
+            return 0.5, 0.5, 0.5, 0.85  # Gray
 
     def _publish_psm_markers(self) -> None:
         self._prune_stale_psm_tracks()
@@ -1555,6 +1776,114 @@ class V2XInboundMarkerVisualizer(Node):
 
         self._pub_psm.publish(marker_array)
         self._dirty_psm = False
+
+    def _publish_sdsm_markers(self) -> None:
+        self._prune_stale_sdsm_tracks()
+        if not self._dirty_sdsm:
+            return
+
+        marker_array = MarkerArray()
+        marker_id = 0
+
+        clear = Marker()
+        clear.header.stamp = self.get_clock().now().to_msg()
+        clear.header.frame_id = self.frame_id
+        clear.action = Marker.DELETEALL
+        marker_array.markers.append(clear)
+
+        for sdsm_id, track in self._sdsm_tracks.items():
+            marker_xy = self._latlon_to_marker_xy(track.lat_deg, track.lon_deg)
+            if marker_xy is None:
+                continue
+            x, y = marker_xy
+
+            r, g, b, a = self._sdsm_color(track.obj_type_enum)
+
+            sdsm_marker = Marker()
+            sdsm_marker.header.stamp = self.get_clock().now().to_msg()
+            sdsm_marker.header.frame_id = self.frame_id
+            sdsm_marker.ns = "sdsm_tracks"
+            sdsm_marker.id = marker_id
+            marker_id += 1
+            sdsm_marker.type = Marker.CYLINDER
+            sdsm_marker.action = Marker.ADD
+            sdsm_marker.pose.position.x = x
+            sdsm_marker.pose.position.y = y
+            sdsm_marker.pose.position.z = 0.8
+            sdsm_marker.scale.x = self.psm_marker_size
+            sdsm_marker.scale.y = self.psm_marker_size
+            sdsm_marker.scale.z = 1.8
+            sdsm_marker.color.r = r
+            sdsm_marker.color.g = g
+            sdsm_marker.color.b = b
+            sdsm_marker.color.a = a
+            self._set_lifetime(sdsm_marker)
+            marker_array.markers.append(sdsm_marker)
+
+            heading_deg = track.heading_deg
+            if heading_deg is not None:
+                heading_marker = Marker()
+                heading_marker.header.stamp = self.get_clock().now().to_msg()
+                heading_marker.header.frame_id = self.frame_id
+                heading_marker.ns = "sdsm_heading"
+                heading_marker.id = marker_id
+                marker_id += 1
+                heading_marker.type = Marker.ARROW
+                heading_marker.action = Marker.ADD
+                heading_marker.scale.x = 1.8
+                heading_marker.scale.y = 0.25
+                heading_marker.scale.z = 0.25
+                heading_marker.color.r = r
+                heading_marker.color.g = g
+                heading_marker.color.b = b
+                heading_marker.color.a = a
+                self._set_lifetime(heading_marker)
+
+                theta = math.radians(heading_deg)
+                tail = Point()
+                tail.x = x
+                tail.y = y
+                tail.z = 1.6
+                tip = Point()
+                tip.x = x + math.cos(theta) * 2.0
+                tip.y = y + math.sin(theta) * 2.0
+                tip.z = 1.6
+                heading_marker.points = [tail, tip]
+                marker_array.markers.append(heading_marker)
+
+            lbl = Marker()
+            lbl.header.stamp = self.get_clock().now().to_msg()
+            lbl.header.frame_id = self.frame_id
+            lbl.ns = "sdsm_labels"
+            lbl.id = marker_id
+            marker_id += 1
+            lbl.type = Marker.TEXT_VIEW_FACING
+            lbl.action = Marker.ADD
+            lbl.pose.position.x = x
+            lbl.pose.position.y = y
+            lbl.pose.position.z = 2.5
+            lbl.scale.z = 1.0
+            lbl.color.r = 1.0
+            lbl.color.g = 1.0
+            lbl.color.b = 1.0
+            lbl.color.a = 0.95
+            self._set_lifetime(lbl)
+            short_id = sdsm_id[:16]
+            if track.speed_mps >= 0.0:
+                lbl.text = f"SDSM {track.obj_type} {short_id} v={track.speed_mps:.1f}m/s"
+            else:
+                lbl.text = f"SDSM {track.obj_type} {short_id}"
+            marker_array.markers.append(lbl)
+
+        sdsm_overlay = (
+            f"SDSM tracked: {len(self._sdsm_tracks)} | "
+            f"SDSM RX: {self._sdsm_rx_count} | "
+            f"not decoded: {self._undecoded_rx_count}"
+        )
+        self._publish_overlay_text(sdsm_overlay, kind="sdsm")
+
+        self._pub_sdsm.publish(marker_array)
+        self._dirty_sdsm = False
 
     def _publish_tim_markers(self) -> None:
         self._prune_stale_tim_tracks()
@@ -1672,6 +2001,7 @@ class V2XInboundMarkerVisualizer(Node):
         self._publish_map_spat_markers()
         self._publish_bsm_markers()
         self._publish_psm_markers()
+        self._publish_sdsm_markers()
         self._publish_tim_markers()
 
 

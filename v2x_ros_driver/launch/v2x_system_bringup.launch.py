@@ -177,7 +177,7 @@ def generate_launch_description():
         ),
         DeclareLaunchArgument(
             'v2x_rtor_require_right_turn_signal',
-            default_value='true',
+            default_value='false',
             description='If true, gate RTOR evaluation on the ego right-turn signal extracted from BSM partII',
         ),
         DeclareLaunchArgument(

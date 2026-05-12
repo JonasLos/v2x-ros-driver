@@ -568,9 +568,9 @@ private:
     msg.width = 320;
     msg.height = 68;
     msg.horizontal_alignment = rviz_2d_overlay_msgs::msg::OverlayText::LEFT;
-    msg.vertical_alignment = rviz_2d_overlay_msgs::msg::OverlayText::TOP;
+    msg.vertical_alignment = rviz_2d_overlay_msgs::msg::OverlayText::BOTTOM;
     msg.horizontal_distance = 10;
-    msg.vertical_distance = 640;
+    msg.vertical_distance = 20;
     msg.text_size = 24.0;
     msg.line_width = 2;
     msg.font = "DejaVu Sans Mono";
@@ -764,7 +764,7 @@ private:
       std::string glosa_overlay_detail;
       if (const auto * advices = glo->advices(); advices != nullptr && advices->size() > 0U) {
         const auto * advice = advices->Get(0);
-        if (advice != nullptr) {
+        if (advice != nullptr && advice->speedAdvice() > 0.0f) {
           glosa_overlay_detail = "Advisory: " + format_mph(advice->speedAdvice() * 2.2369362920544) + " mph";
         }
       }

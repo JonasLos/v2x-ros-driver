@@ -120,7 +120,7 @@ def generate_launch_description():
 
     rtor_allow_alerts_without_map_right_turn = LaunchConfiguration('rtor_allow_alerts_without_map_right_turn')
     declare_rtor_allow_alerts_without_map_right_turn_arg = DeclareLaunchArgument(
-        name='rtor_allow_alerts_without_map_right_turn', default_value='False',
+        name='rtor_allow_alerts_without_map_right_turn', default_value='True',
         description='If true, allow RTOR alerts even when MAP lane maneuver data says right turn is not allowed')
 
     inbound_binary_topic = LaunchConfiguration('inbound_binary_topic')

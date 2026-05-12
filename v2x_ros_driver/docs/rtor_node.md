@@ -148,12 +148,12 @@ skipped silently.
 ## Launch surface
 
 Base package launch arguments in `v2x_ros_driver.launch.py` default the RTOR
-node on and the MAP-right-turn override off:
+node on and the MAP-right-turn override on:
 
 | Launch Argument | Default |
 | --- | --- |
 | `enable_rtor_node` | `True` |
-| `rtor_allow_alerts_without_map_right_turn` | `False` |
+| `rtor_allow_alerts_without_map_right_turn` | `True` |
 
 The wrapper bringup in `v2x_system_bringup.launch.py` currently exposes the
 same RTOR arguments with V2X-prefixed names and defaults the testing override
@@ -166,7 +166,7 @@ on:
 
 ## Run
 
-Via the package's launch file (off by default):
+Via the package's launch file (defaults):
 
 ```bash
 ros2 launch v2x_ros_driver v2x_ros_driver.launch.py enable_rtor_node:=True

@@ -90,7 +90,7 @@ def generate_launch_description():
 
     enable_rtor_node = LaunchConfiguration('enable_rtor_node')
     declare_enable_rtor_node_arg = DeclareLaunchArgument(
-        name='enable_rtor_node', default_value='False',
+        name='enable_rtor_node', default_value='True',
         description='Enable the V2X RTOR (right-turn-on-red) hazard node')
 
     rtor_alerts_topic = LaunchConfiguration('rtor_alerts_topic')

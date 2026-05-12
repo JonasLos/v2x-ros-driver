@@ -66,6 +66,13 @@ std::string trim_copy(const std::string & in)
   return in.substr(begin, end - begin + 1);
 }
 
+std::string format_mph(double speed_mph)
+{
+  std::ostringstream oss;
+  oss << std::fixed << std::setprecision(1) << speed_mph;
+  return oss.str();
+}
+
 std::vector<std::string> split_csv(const std::string & csv)
 {
   std::vector<std::string> tokens;
@@ -295,6 +302,7 @@ rapidjson::Value to_json_advised_speed(
     return out;
   }
   out.AddMember("value", advised->value(), alloc);
+  out.AddMember("value_mph", advised->value() * 2.2369362920544, alloc);
   out.AddMember(
     "change",
     rapidjson::Value(Saf::Notif::EnumNameSpeedChangeDirection(advised->change()), alloc),
@@ -312,7 +320,9 @@ rapidjson::Value to_json_full_speed_advice(
   }
   out.AddMember("signal_group", full->signalGroup(), alloc);
   out.AddMember("green_start_speed", full->greenStartSpeed(), alloc);
+  out.AddMember("green_start_speed_mph", full->greenStartSpeed() * 2.2369362920544, alloc);
   out.AddMember("green_end_speed", full->greenEndSpeed(), alloc);
+  out.AddMember("green_end_speed_mph", full->greenEndSpeed() * 2.2369362920544, alloc);
   out.AddMember("min_speed_change_advice", to_json_advised_speed(full->minSpeedChangeAdvice(), alloc), alloc);
   out.AddMember("highest_speed_advice", to_json_advised_speed(full->highestSpeedAdvice(), alloc), alloc);
   return out;
@@ -546,7 +556,7 @@ private:
     marker_active_ = true;
   }
 
-  void publish_abbrev_overlay(const std::string & abbrev)
+  void publish_abbrev_overlay(const std::string & abbrev, const std::string & detail = std::string())
   {
 #if V2X_HAS_OVERLAY_TEXT
     if (!enable_abbrev_overlay_ || !abbrev_overlay_pub_) {
@@ -560,7 +570,7 @@ private:
     msg.horizontal_alignment = rviz_2d_overlay_msgs::msg::OverlayText::LEFT;
     msg.vertical_alignment = rviz_2d_overlay_msgs::msg::OverlayText::TOP;
     msg.horizontal_distance = 10;
-    msg.vertical_distance = 350;
+    msg.vertical_distance = 640;
     msg.text_size = 24.0;
     msg.line_width = 2;
     msg.font = "DejaVu Sans Mono";
@@ -582,6 +592,9 @@ private:
       return;
     } else {
       msg.text = "Safety: " + abbrev;
+      if (!detail.empty()) {
+        msg.text += "\n" + detail;
+      }
     }
     abbrev_overlay_pub_->publish(msg);
 
@@ -719,6 +732,7 @@ private:
       typed.AddMember("wwr", wwr_json, alert_alloc);
     }
 
+    bool glosa_overlay_published = false;
     if (const auto * glo = notif.payload_as_GloNotif(); glo != nullptr) {
       rapidjson::Value glo_json(rapidjson::kObjectType);
       glo_json.AddMember("speed_limit", glo->speedLimit(), alert_alloc);
@@ -732,6 +746,7 @@ private:
           rapidjson::Value item(rapidjson::kObjectType);
           item.AddMember("signal_group", advice->signalGroup(), alert_alloc);
           item.AddMember("speed_advice", advice->speedAdvice(), alert_alloc);
+          item.AddMember("speed_advice_mph", advice->speedAdvice() * 2.2369362920544, alert_alloc);
           advices_json.PushBack(item, alert_alloc);
         }
       }
@@ -745,6 +760,18 @@ private:
       }
       glo_json.AddMember("full_advices", full_advices_json, alert_alloc);
       typed.AddMember("glosa", glo_json, alert_alloc);
+
+      std::string glosa_overlay_detail;
+      if (const auto * advices = glo->advices(); advices != nullptr && advices->size() > 0U) {
+        const auto * advice = advices->Get(0);
+        if (advice != nullptr) {
+          glosa_overlay_detail = "Advisory: " + format_mph(advice->speedAdvice() * 2.2369362920544) + " mph";
+        }
+      }
+      if (!glosa_overlay_detail.empty()) {
+        publish_abbrev_overlay(abbrev, glosa_overlay_detail);
+        glosa_overlay_published = true;
+      }
     }
 
     if (typed.MemberCount() > 0U) {
@@ -787,7 +814,9 @@ private:
 
     touch_abbrev_activity();
     publish_abbrev_marker(abbrev);
-    publish_abbrev_overlay(abbrev);
+    if (type_name != "GloNotif" || !glosa_overlay_published) {
+      publish_abbrev_overlay(abbrev);
+    }
   }
 
   std::string obu_host_;

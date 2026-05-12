@@ -27,9 +27,10 @@ ros2 run v2x_ros_driver v2x_inbound_marker_visualizer.py --ros-args \
   -p marker_topic:=/v2x/map_spat_markers \
   -p bsm_marker_topic:=/v2x/bsm_markers \
   -p psm_marker_topic:=/v2x/psm_markers \
+  -p sdsm_marker_topic:=/v2x/sdsm_markers \
   -p tim_marker_topic:=/v2x/tim_markers \
   -p enable_text_overlay:=true \
-  -p frame_id:=map
+  -p frame_id:=world
 ```
 
 ## 4) Build Native App-Notif Safety Bridge (Optional)
@@ -46,7 +47,6 @@ colcon build --packages-select v2x_ros_driver --symlink-install \
 
 ```bash
 ros2 launch v2x_ros_driver v2x_ros_driver.launch.py \
-  enable_safety_alert_bridge:=False \
   enable_native_safety_alert_bridge:=True \
   safety_bridge_obu_host:=192.168.0.54 \
   safety_bridge_obu_port:=43985 \
@@ -69,12 +69,17 @@ ros2 bag play /home/avalocal/ros_drivers/rosbag2_2026_03_26-15_20_55 --clock \
   --remap /v2x/map_spat_markers:=/replay/v2x/map_spat_markers \
           /v2x/bsm_markers:=/replay/v2x/bsm_markers \
           /v2x/psm_markers:=/replay/v2x/psm_markers \
+          /v2x/sdsm_markers:=/replay/v2x/sdsm_markers \
           /v2x/tim_markers:=/replay/v2x/tim_markers \
           /v2x/inbound_map_spat_markers:=/replay/v2x/inbound_map_spat_markers \
           /v2x/map_spat_overlay_text:=/replay/v2x/map_spat_overlay_text \
           /v2x/bsm_overlay_text:=/replay/v2x/bsm_overlay_text \
           /v2x/psm_overlay_text:=/replay/v2x/psm_overlay_text \
-          /v2x/tim_overlay_text:=/replay/v2x/tim_overlay_text
+          /v2x/sdsm_overlay_text:=/replay/v2x/sdsm_overlay_text \
+          /v2x/tim_overlay_text:=/replay/v2x/tim_overlay_text \
+          /v2x/rtor_overlay_text:=/replay/v2x/rtor_overlay_text \
+          /v2x/rtor_vru_overlay_text:=/replay/v2x/rtor_vru_overlay_text \
+          /v2x/safety_alert_overlay_text:=/replay/v2x/safety_alert_overlay_text
 ```
 
 ## 8) Useful Checks
@@ -83,6 +88,8 @@ ros2 bag play /home/avalocal/ros_drivers/rosbag2_2026_03_26-15_20_55 --clock \
 ros2 topic hz /v2x/map_spat_markers
 ros2 topic hz /v2x/bsm_markers
 ros2 topic hz /v2x/psm_markers
+ros2 topic hz /v2x/sdsm_markers
 ros2 topic hz /v2x/tim_markers
 ros2 topic echo /v2x/tim_markers --once
+ros2 topic echo /v2x/rtor_alerts --once
 ```

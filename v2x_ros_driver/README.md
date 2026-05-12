@@ -67,19 +67,16 @@ colcon build --packages-select v2x_ros_driver --symlink-install \
 
 ### Launch bridge mode
 
-Python bridge mode:
+Python bridge mode (run standalone):
 
 ```bash
-ros2 launch v2x_ros_driver v2x_ros_driver.launch.py \
-	enable_safety_alert_bridge:=True \
-	enable_native_safety_alert_bridge:=False
+ros2 run v2x_ros_driver v2x_safety_alert_bridge.py
 ```
 
 Native C++ bridge mode:
 
 ```bash
 ros2 launch v2x_ros_driver v2x_ros_driver.launch.py \
-	enable_safety_alert_bridge:=False \
 	enable_native_safety_alert_bridge:=True \
 	safety_bridge_obu_host:=192.168.0.54 \
 	safety_bridge_obu_port:=43985 \
@@ -101,7 +98,7 @@ Current mappings by bridge implementation:
 | Bridge | Current alert output behavior |
 | --- | --- |
 | Python (`v2x_safety_alert_bridge.py`) | High-confidence explicit mapping for `EEBL`, `FCW`, `BSW`, `LCA`, `IMA`, `LTA`, `CLW`, `RLV`; TTC-derived `FCW`; keyword-inferred low-confidence mapping for `WWE`, `WWR`, `TTG`, `GLOSA`, `GCW`, `DNPW`, `PCW`, `REW`, `AWW`, `OHV`, `RWW`, `SW`, and others when discoverable in payload text. |
-| Native C++ (`v2x_safety_alert_bridge_native_exec`) | Direct native notification-type mapping for: `FCW`, `BSW`, `LCA`, `EEBL`, `CLW`, `IMA`, `HLW`, `SPD`, `RLV`, `TTG`, `GLOSA`, `WWE`, `LTA`, `RTA`, `WWR`, `GCW`, `DNPW`, `REW`, `TSP`, `PCW` (`VruNotif`), `TIW`, `SVW`, `EVW`; emits typed payload fields in alert JSON (`base_info`, `collision`, `dangerous_object`, `wwe`, `wwr`, `fcw.induced_by`, `glosa` advice blocks); severity now uses native `BaseInfo.level` first with TTC fallback when level is unavailable. |
+| Native C++ (`v2x_safety_alert_bridge_native_exec`) | Direct native notification-type mapping for: `FCW`, `BSW`, `LCA`, `EEBL`, `CLW`, `IMA`, `HLW`, `SPD`, `RLV`, `TTG`, `GLOSA`, `WWE`, `LTA`, `RTA`, `WWR`, `GCW`, `DNPW`, `REW`, `TSP`, `PCW` (`VruNotif`), `TIW`, `SVW`, `EVW`; emits typed payload fields in alert JSON (`base_info`, `collision`, `dangerous_object`, `wwe`, `wwr`, `fcw.induced_by`, `glosa` advice blocks); includes GLOSA speed advisory fields in mph (`value_mph`, `speed_advice_mph`, `green_start_speed_mph`, `green_end_speed_mph`) and overlays `Advisory: <mph> mph` when advice is available; severity uses native `BaseInfo.level` first with TTC fallback when level is unavailable. |
 
 ### Additional SDK-native capabilities not yet implemented
 
@@ -215,20 +212,23 @@ RViz setup:
 3. Add a third `MarkerArray` display and set topic to `/v2x/psm_markers`.
 4. Add a fourth `MarkerArray` display and set topic to `/v2x/sdsm_markers`.
 5. Add a fifth `MarkerArray` display and set topic to `/v2x/tim_markers`.
-6. Set fixed frame to `map` (or override visualizer `frame_id` parameter to match your frame).
-7. Optional: add five `OverlayText` displays from `rviz_2d_overlay_plugins` for `/v2x/map_spat_overlay_text`, `/v2x/bsm_overlay_text`, `/v2x/psm_overlay_text`, `/v2x/sdsm_overlay_text`, and `/v2x/tim_overlay_text`.
-8. Check the terminal running `v2x_inbound_marker_visualizer.py` for periodic counter logs (`encoded`, `decoded`, `not_decoded`, `map`, `spat`, `bsm`, `psm`, `sdsm`, `tim`, `other`, `bsm_tracked`, `psm_tracked`, `sdsm_tracked`, `tim_tracked`).
-9. Verify live updates as SPAT changes: lanes switch color (green/yellow/red) and labels update continuously.
-10. Verify BSM updates: cyan vehicle markers and labels appear/move on `/v2x/bsm_markers`.
-11. Verify PSM updates: cylinder markers and labels appear on `/v2x/psm_markers` with heading arrows when heading is available.
-12. Verify SDSM updates: object markers appear on `/v2x/sdsm_markers` with object-class coloring.
-13. Verify TIM updates: advisory markers and verbose labels appear on `/v2x/tim_markers`; advisories without geolocation are rendered near the map anchor.
+6. Set fixed frame to `world` (or override visualizer `frame_id` parameter to match your frame).
+7. Optional: add `OverlayText` displays from `rviz_2d_overlay_plugins` for `/v2x/map_spat_overlay_text`, `/v2x/bsm_overlay_text`, `/v2x/psm_overlay_text`, `/v2x/sdsm_overlay_text`, and `/v2x/tim_overlay_text`.
+8. If RTOR is enabled, add `/v2x/rtor_vru_overlay_text` and `/v2x/rtor_overlay_text` overlays.
+9. If native safety bridge is enabled, add `/v2x/safety_alert_overlay_text` overlay.
+10. Check the terminal running `v2x_inbound_marker_visualizer.py` for periodic counter logs (`encoded`, `decoded`, `not_decoded`, `map`, `spat`, `bsm`, `psm`, `sdsm`, `tim`, `other`, `bsm_tracked`, `psm_tracked`, `sdsm_tracked`, `tim_tracked`).
+11. Verify live updates as SPAT changes: lanes switch color (green/yellow/red) and labels update continuously.
+12. Verify BSM updates: cyan vehicle markers and labels appear/move on `/v2x/bsm_markers`.
+13. Verify PSM updates: cylinder markers and labels appear on `/v2x/psm_markers` with heading arrows when heading is available.
+14. Verify SDSM updates: object markers appear on `/v2x/sdsm_markers` with object-class coloring.
+15. Verify TIM updates: advisory markers and verbose labels appear on `/v2x/tim_markers`; advisories without geolocation are rendered near the map anchor.
 
 Notes:
 
 - The visualizer auto-detects `j2735_202409` from the active Python environment and also falls back to a nearby workspace `.venv` when available.
 - On ROS 2 Jazzy, `jsk_rviz_plugins` is typically not packaged; use `rviz_2d_overlay_msgs` and `rviz_2d_overlay_plugins` instead.
 - If overlay packages are unavailable, map/SPAT/BSM markers still render normally and only the counter overlay is skipped.
+- Current default overlay stack order is top-to-bottom inbound overlays first, then RTOR overlays, then safety-alert overlay to avoid text overlap.
 
 ## IFM vs C2P mode selection
 

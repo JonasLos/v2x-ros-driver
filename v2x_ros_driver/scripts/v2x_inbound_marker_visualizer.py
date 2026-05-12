@@ -8,7 +8,8 @@ import math
 import sys
 from pathlib import Path
 from dataclasses import dataclass
-from typing import Dict, List, Optional, Tuple
+from datetime import datetime, timezone
+from typing import Any, Dict, List, Optional, Tuple
 
 import rclpy
 from carma_driver_msgs.msg import ByteArray
@@ -491,6 +492,87 @@ def _normalize_tim_packet_id(raw_id) -> str:
     return str(raw_id).lower()
 
 
+def _utc_time_of_hour_tenths() -> float:
+    now = datetime.now(timezone.utc)
+    return (now.minute * 60.0 + now.second) * 10.0 + (now.microsecond / 100000.0)
+
+
+def _timemark_remaining_sec(value: Optional[int], reference_tenths: Optional[float] = None) -> Optional[float]:
+    if isinstance(value, dict):
+        for key in ("value", "timemark", "time"):
+            candidate = value.get(key)
+            if isinstance(candidate, int):
+                value = candidate
+                break
+
+    if not isinstance(value, int) or value == 36001 or value < 0 or value > 36000:
+        return None
+
+    base_tenths = reference_tenths if isinstance(reference_tenths, (int, float)) else _utc_time_of_hour_tenths()
+    remaining_tenths = float(value) - float(base_tenths)
+    if remaining_tenths < 0.0:
+        remaining_tenths += 36000.0
+    if remaining_tenths < 0.0:
+        return None
+    return remaining_tenths / 10.0
+
+
+def _spat_timing_remaining_sec(timing: Any, reference_tenths: Optional[float] = None) -> Optional[float]:
+    if not isinstance(timing, dict):
+        return None
+
+    field_candidates = (
+        ("min_end_time", "minEndTime"),
+        ("likely_time", "likelyTime"),
+        ("max_end_time", "maxEndTime"),
+    )
+
+    for snake_key, camel_key in field_candidates:
+        exists_keys = (
+            f"{snake_key}_exists",
+            f"{camel_key}_exists",
+            f"{camel_key}Exists",
+        )
+        if any(k in timing and timing.get(k) is False for k in exists_keys):
+            continue
+
+        remaining = _timemark_remaining_sec(timing.get(snake_key), reference_tenths)
+        if remaining is None:
+            remaining = _timemark_remaining_sec(timing.get(camel_key), reference_tenths)
+        if remaining is not None:
+            return remaining
+
+    return None
+
+
+def _extract_spat_reference_tenths(intersection: Dict[str, Any]) -> Optional[float]:
+    def _read_optional_int(*keys: str) -> Optional[int]:
+        for key in keys:
+            if key in intersection:
+                value = intersection.get(key)
+                if isinstance(value, int):
+                    return value
+        return None
+
+    moy = _read_optional_int("moy", "MOY")
+    time_stamp_ms = _read_optional_int("time_stamp", "timeStamp")
+
+    if isinstance(time_stamp_ms, int) and 0 <= time_stamp_ms <= 59999:
+        minute_of_hour = 0
+        if isinstance(moy, int) and 0 <= moy < 527040:
+            minute_of_hour = moy % 60
+        else:
+            minute_of_hour = int(_utc_time_of_hour_tenths() // 600.0) % 60
+        return float(minute_of_hour * 600) + (float(time_stamp_ms) / 100.0)
+
+    if isinstance(moy, int) and 0 <= moy < 527040:
+        minute_of_hour = moy % 60
+        second_of_minute = datetime.now(timezone.utc).second
+        return float(minute_of_hour * 600 + second_of_minute * 10)
+
+    return None
+
+
 class V2XInboundMarkerVisualizer(Node):
     def __init__(self) -> None:
         super().__init__("v2x_inbound_marker_visualizer")
@@ -536,7 +618,7 @@ class V2XInboundMarkerVisualizer(Node):
         self._message_frame = j2735_202409.MessageFrame.MessageFrame
         self._map_state: Dict[str, dict] = {}
         self._map_raw: Dict[str, dict] = {}
-        self._spat_state: Dict[str, Dict[int, int]] = {}
+        self._spat_state: Dict[str, Dict[int, Dict[str, Any]]] = {}
         self._bsm_tracks: Dict[str, BsmTrackPoint] = {}
         self._psm_tracks: Dict[str, PsmTrackPoint] = {}
         self._sdsm_tracks: Dict[str, SdsmTrackPoint] = {}
@@ -977,6 +1059,7 @@ class V2XInboundMarkerVisualizer(Node):
         intersections = value.get("intersections")
         if not isinstance(intersections, list):
             return
+        now_ns = self.get_clock().now().nanoseconds
 
         for inter in intersections:
             if not isinstance(inter, dict):
@@ -989,7 +1072,8 @@ class V2XInboundMarkerVisualizer(Node):
             if not isinstance(states, list):
                 continue
 
-            sg_to_phase: Dict[int, int] = {}
+            inter_ref_tenths = _extract_spat_reference_tenths(inter)
+            sg_to_phase: Dict[int, Dict[str, Any]] = {}
             for state in states:
                 if not isinstance(state, dict):
                     continue
@@ -1012,7 +1096,13 @@ class V2XInboundMarkerVisualizer(Node):
                     "caution-Conflicting-Traffic": 9,
                 }
                 if isinstance(event_state, str):
-                    sg_to_phase[sg] = phase_map.get(event_state, 0)
+                    timing = sts[0].get("timing")
+                    sg_to_phase[sg] = {
+                        "phase": phase_map.get(event_state, 0),
+                        "timing": timing if isinstance(timing, dict) else {},
+                        "reference_tenths": inter_ref_tenths,
+                        "rx_time_ns": now_ns,
+                    }
 
             key = self._intersection_key(inter_id)
             if self._spat_state.get(key) != sg_to_phase:
@@ -1490,6 +1580,23 @@ class V2XInboundMarkerVisualizer(Node):
         }
         return names.get(phase, "UNAVAILABLE")
 
+    def _current_spat_reference_tenths(self, sg_state: Dict[str, Any]) -> Optional[float]:
+        reference_tenths = sg_state.get("reference_tenths")
+        rx_time_ns = sg_state.get("rx_time_ns")
+        if not isinstance(reference_tenths, (int, float)) or not isinstance(rx_time_ns, int):
+            return None
+
+        now_ns = self.get_clock().now().nanoseconds
+        elapsed_tenths = max(0.0, float(now_ns - rx_time_ns) / 1e8)
+        return (float(reference_tenths) + elapsed_tenths) % 36000.0
+
+    def _spat_label_suffix(self, sg_state: Dict[str, Any]) -> str:
+        reference_tenths = self._current_spat_reference_tenths(sg_state)
+        countdown_sec = _spat_timing_remaining_sec(sg_state.get("timing"), reference_tenths)
+        if countdown_sec is None:
+            return ""
+        return f" | {countdown_sec:.1f}s"
+
     def _set_lifetime(self, marker: Marker) -> None:
         marker.lifetime.sec = int(self.marker_lifetime_sec)
         marker.lifetime.nanosec = int((self.marker_lifetime_sec - int(self.marker_lifetime_sec)) * 1e9)
@@ -1509,12 +1616,19 @@ class V2XInboundMarkerVisualizer(Node):
 
         for inter_key, map_data in self._map_state.items():
             spat = self._spat_state.get(inter_key, {})
+            countdown_candidates: List[float] = []
 
             for lane in map_data["lanes"]:
                 phase = 0
+                sg_state: Dict[str, Any] = {}
                 sg = lane.get("signal_group")
                 if isinstance(sg, int):
-                    phase = spat.get(sg, 0)
+                    sg_state = spat.get(sg, {}) if isinstance(spat.get(sg), dict) else {}
+                    phase = sg_state.get("phase", 0) if isinstance(sg_state.get("phase"), int) else 0
+                    reference_tenths = self._current_spat_reference_tenths(sg_state)
+                    countdown_sec = _spat_timing_remaining_sec(sg_state.get("timing"), reference_tenths)
+                    if countdown_sec is not None:
+                        countdown_candidates.append(countdown_sec)
                 r, g, b, a = self._phase_color(phase)
 
                 lane_marker = Marker()
@@ -1559,18 +1673,21 @@ class V2XInboundMarkerVisualizer(Node):
                 label_marker.pose.position.y = mid[1]
                 label_marker.pose.position.z = 1.5
                 signal_part = f"SG:{sg}" if isinstance(sg, int) else "SG:-"
-                label_marker.text = f"Lane {lane['lane_id']} | {signal_part} | {self._phase_name(phase)}"
+                label_marker.text = f"Lane {lane['lane_id']} | {signal_part} | {self._phase_name(phase)}{self._spat_label_suffix(sg_state)}"
                 marker_array.markers.append(label_marker)
 
+            next_change_text = ""
+            if countdown_candidates:
+                next_change_text = f" | next change {min(countdown_candidates):.1f}s"
             overlay_text = (
                 f"Map/Spat RX encoded: {self._encoded_rx_count} | "
                 f"decoded: {self._decoded_rx_count} | "
-                f"not decoded: {self._undecoded_rx_count}"
+                f"not decoded: {self._undecoded_rx_count}{next_change_text}"
             )
             self._publish_overlay_text(overlay_text, kind="map_spat")
 
         self._pub_map_spat.publish(marker_array)
-        self._dirty_map_spat = False
+        self._dirty_map_spat = bool(self._spat_state)
 
     def _publish_bsm_markers(self) -> None:
         if not self._dirty_bsm:

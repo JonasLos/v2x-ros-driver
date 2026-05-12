@@ -451,10 +451,10 @@ class V2XRtorNode(Node):
             self.declare_parameter("obu_reference_bsm_id", "e153df70").value
         )
         self.require_right_turn_signal = bool(
-            self.declare_parameter("require_right_turn_signal", True).value
+            self.declare_parameter("require_right_turn_signal", False).value
         )
         self.allow_alerts_without_map_right_turn = bool(
-            self.declare_parameter("allow_alerts_without_map_right_turn", False).value
+            self.declare_parameter("allow_alerts_without_map_right_turn", True).value
         )
         self.intersection_radius_m = float(
             self.declare_parameter("intersection_radius_m", 80.0).value
@@ -1298,12 +1298,12 @@ class V2XRtorNode(Node):
         msg.height = 48
         if hasattr(msg, "left") and hasattr(msg, "top"):
             msg.left = 10
-            msg.top = 250
+            msg.top = 440
         else:
             msg.horizontal_alignment = OverlayText.LEFT
             msg.vertical_alignment = OverlayText.TOP
             msg.horizontal_distance = 10
-            msg.vertical_distance = 250
+            msg.vertical_distance = 440
         msg.text_size = 15.0
         msg.line_width = 2
         msg.font = "DejaVu Sans Mono"
@@ -1344,12 +1344,12 @@ class V2XRtorNode(Node):
         msg.height = 64
         if hasattr(msg, "left") and hasattr(msg, "top"):
             msg.left = 10
-            msg.top = 300
+            msg.top = 500
         else:
             msg.horizontal_alignment = OverlayText.LEFT
             msg.vertical_alignment = OverlayText.TOP
             msg.horizontal_distance = 10
-            msg.vertical_distance = 300
+            msg.vertical_distance = 500
         msg.text_size = 15.0
         msg.line_width = 2
         msg.font = "DejaVu Sans Mono"
@@ -1694,12 +1694,12 @@ class V2XRtorNode(Node):
         msg.height = 60
         if hasattr(msg, "left") and hasattr(msg, "top"):
             msg.left = 10
-            msg.top = 350
+            msg.top = 560
         else:
             msg.horizontal_alignment = OverlayText.LEFT
             msg.vertical_alignment = OverlayText.TOP
             msg.horizontal_distance = 10
-            msg.vertical_distance = 350
+            msg.vertical_distance = 560
         msg.text_size = 16.0
         msg.line_width = 2
         msg.font = "DejaVu Sans Mono"

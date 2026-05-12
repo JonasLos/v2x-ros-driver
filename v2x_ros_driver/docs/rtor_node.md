@@ -122,8 +122,8 @@ skipped silently.
 | `vru_stats_overlay_topic` | `/v2x/rtor_vru_overlay_text` | VRU severity overlay topic |
 | `frame_id` | `world` | TF frame for marker placement |
 | `obu_reference_bsm_id` | `e153df70` | Hex TemporaryID identifying the ego loopback BSM |
-| `require_right_turn_signal` | `True` | Gate evaluation on ego right-turn-signal flag |
-| `allow_alerts_without_map_right_turn` | `False` | Testing override: allow alerts even when MAP lane maneuver data explicitly disallows right turn |
+| `require_right_turn_signal` | `False` | Gate evaluation on ego right-turn-signal flag |
+| `allow_alerts_without_map_right_turn` | `True` | Testing override: allow alerts even when MAP lane maneuver data explicitly disallows right turn |
 | `intersection_radius_m` | `80.0` | Max ego-to-refPoint distance to consider an intersection |
 | `lane_match_max_distance_m` | `4.5` | Max point-to-polyline distance to claim a lane |
 | `vehicle_warning_distance_m` / `_caution_distance_m` | `12.0` / `30.0` | Vehicle hazard distance thresholds |
@@ -148,11 +148,11 @@ skipped silently.
 ## Launch surface
 
 Base package launch arguments in `v2x_ros_driver.launch.py` default the RTOR
-node off and the MAP-right-turn override off:
+node on and the MAP-right-turn override off:
 
 | Launch Argument | Default |
 | --- | --- |
-| `enable_rtor_node` | `False` |
+| `enable_rtor_node` | `True` |
 | `rtor_allow_alerts_without_map_right_turn` | `False` |
 
 The wrapper bringup in `v2x_system_bringup.launch.py` currently exposes the

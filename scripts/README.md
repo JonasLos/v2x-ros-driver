@@ -1,6 +1,46 @@
 # Scripts
 
-This directory contains runtime diagnostics and decode helpers for `v2x_ros_driver`.
+This directory contains runtime diagnostics, message publishers, and decode helpers for `v2x_ros_driver`.
+
+## `v2x_sdsm_publisher.py`
+
+Publishes local sensor detections as J2735 Sensor Data Sharing Messages (SDSM) via OBU's Facilities-Layer API. The OBU autonomously signs and broadcasts SDSM messages to other V2X units.
+
+### Quick Start
+
+```bash
+# Enable SDSM publisher
+ros2 launch v2x_ros_driver v2x_ros_driver.launch.py enable_sdsm_publisher:=True
+```
+
+### Key Features
+- **Detection Input**: Subscribes to detection topic (yolo_msgs/DetectionArray preferred, with fallbacks)
+- **GPS Integration**: Supports NavSatFix and GPSFix (NovAtel-optimized)
+- **Local Frame Transform**: Converts detection coordinates from sensor frame → odom frame → lat/lon
+- **Track Management**: Maintains object state with configurable timeout
+- **J2735 Encoding**: Encodes detected objects as UPER-formatted DetectedObjectData
+- **FAC Transmission**: Pushes objects to OBU via Facilities-Layer API; OBU handles signing and broadcast
+
+### Parameters
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| `detection_topic` | `/fused_bbox` | Detection input topic |
+| `gps_fix_topic` | `/novatel/oem7/gps` | GPS position input (gps_msgs/GPSFix) |
+| `odom_topic` | `/novatel/oem7/odom` | Ego odometry for transforms |
+| `publish_rate_hz` | `5.0` | Heartbeat rate (Hz) |
+| `obu_host` | `127.0.0.1` | OBU Facilities-Layer API endpoint |
+| `obu_port` | `7942` | OBU Facilities-Layer API port |
+
+### Health Monitoring
+```
+INFO: SDSM health: tracks=5 gps_ready=True odom_ready=True send_ok=123 send_fail=0
+```
+Logs every 2 seconds. Expected output shows active tracks, GPS availability, and FAC transmission counters.
+
+### For Detailed Documentation
+See [SDSM_PUBLISHER.md](SDSM_PUBLISHER.md) for comprehensive guide including troubleshooting, J2735 encoding details, and architecture.
+
+---
 
 ## Visualizer runtime prerequisites
 

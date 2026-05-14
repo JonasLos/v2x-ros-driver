@@ -205,6 +205,11 @@ def generate_launch_description():
             default_value=v2x_override_file,
             description='Path to v2x global override file (set listening_port to match OBU mode)',
         ),
+        DeclareLaunchArgument(
+            'enable_sdsm',
+            default_value='false',
+            description='Enable SDSM publisher (FAC-layer, signed broadcast to other OBUs). Set true to activate.',
+        ),
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(base_launch),
             launch_arguments={
@@ -241,6 +246,7 @@ def generate_launch_description():
                 'inbound_marker_topic': LaunchConfiguration('v2x_inbound_marker_topic'),
                 'visualization_frame_id': LaunchConfiguration('v2x_visualization_frame'),
                 'global_params_override_file': LaunchConfiguration('v2x_global_params_override_file'),
+                'enable_sdsm_publisher': LaunchConfiguration('enable_sdsm'),
             }.items(),
         ),
     ])

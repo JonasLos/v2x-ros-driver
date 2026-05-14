@@ -465,6 +465,72 @@ def generate_launch_description():
         ]
     )
 
+    enable_sdsm_publisher = LaunchConfiguration('enable_sdsm_publisher')
+    declare_enable_sdsm_publisher_arg = DeclareLaunchArgument(
+        name='enable_sdsm_publisher', default_value='False',
+        description='Enable local detection to outbound SDSM publisher node')
+
+    sdsm_detection_topic = LaunchConfiguration('sdsm_detection_topic')
+    declare_sdsm_detection_topic_arg = DeclareLaunchArgument(
+        name='sdsm_detection_topic', default_value='/fused_bbox',
+        description='DetectionArray input topic used for local object tracking in SDSM')
+
+    sdsm_gps_topic = LaunchConfiguration('sdsm_gps_topic')
+    declare_sdsm_gps_topic_arg = DeclareLaunchArgument(
+        name='sdsm_gps_topic', default_value='/novatel/oem7/fix',
+        description='NavSatFix topic used for ego geodetic anchor')
+
+    sdsm_odom_topic = LaunchConfiguration('sdsm_odom_topic')
+    declare_sdsm_odom_topic_arg = DeclareLaunchArgument(
+        name='sdsm_odom_topic', default_value='/novatel/oem7/odom',
+        description='Odometry topic used for ego local-frame anchor')
+
+    sdsm_target_frame = LaunchConfiguration('sdsm_target_frame')
+    declare_sdsm_target_frame_arg = DeclareLaunchArgument(
+        name='sdsm_target_frame', default_value='odom',
+        description='Target local frame for detection coordinates')
+
+    sdsm_publish_rate_hz = LaunchConfiguration('sdsm_publish_rate_hz')
+    declare_sdsm_publish_rate_hz_arg = DeclareLaunchArgument(
+        name='sdsm_publish_rate_hz', default_value='5.0',
+        description='Heartbeat publish rate in Hz for periodic SDSM updates')
+
+    sdsm_backend_mode = LaunchConfiguration('sdsm_backend_mode')
+    declare_sdsm_backend_mode_arg = DeclareLaunchArgument(
+        name='sdsm_backend_mode', default_value='fac_layer',
+        description='SDSM transmission backend: fac_layer (OBU facilities layer - signed broadcast visible to other OBUs) or phase2_sdk (raw WSMP, unsigned)')
+
+    sdsm_obu_host = LaunchConfiguration('sdsm_obu_host')
+    declare_sdsm_obu_host_arg = DeclareLaunchArgument(
+        name='sdsm_obu_host', default_value='192.168.0.54',
+        description='OBU host IP for SDSM Direct SDK transmission')
+
+    sdsm_obu_port = LaunchConfiguration('sdsm_obu_port')
+    declare_sdsm_obu_port_arg = DeclareLaunchArgument(
+        name='sdsm_obu_port', default_value='7942',
+        description='OBU port for SDSM Direct SDK transmission')
+
+    sdsm_publisher_node = Node(
+        package='v2x_ros_driver',
+        executable='v2x_sdsm_publisher.py',
+        name='v2x_sdsm_publisher',
+        condition=IfCondition(enable_sdsm_publisher),
+        arguments=['--ros-args', '--log-level', log_level],
+        parameters=[
+            {
+                'detection_topic': sdsm_detection_topic,
+                'gps_topic': sdsm_gps_topic,
+                'odom_topic': sdsm_odom_topic,
+                'target_frame': sdsm_target_frame,
+                'publish_rate_hz': sdsm_publish_rate_hz,
+                'backend_mode': sdsm_backend_mode,
+                'obu_host': sdsm_obu_host,
+                'obu_port': sdsm_obu_port,
+            },
+            global_params_override_file
+        ]
+    )
+
     return LaunchDescription([
         declare_log_level_arg,
         declare_configuration_delay_arg,
@@ -484,6 +550,15 @@ def generate_launch_description():
         declare_rtor_obu_reference_bsm_id_arg,
         declare_rtor_require_right_turn_signal_arg,
         declare_rtor_allow_alerts_without_map_right_turn_arg,
+        declare_enable_sdsm_publisher_arg,
+        declare_sdsm_detection_topic_arg,
+        declare_sdsm_gps_topic_arg,
+        declare_sdsm_odom_topic_arg,
+        declare_sdsm_target_frame_arg,
+        declare_sdsm_publish_rate_hz_arg,
+        declare_sdsm_backend_mode_arg,
+        declare_sdsm_obu_host_arg,
+        declare_sdsm_obu_port_arg,
         declare_inbound_binary_topic_arg,
         declare_safety_alert_topic_arg,
         declare_safety_alert_mapped_topic_arg,
@@ -518,5 +593,6 @@ def generate_launch_description():
         inbound_decoder_visualizer,
         dbw_lights_sti_bridge,
         rtor_node,
+        sdsm_publisher_node,
         OpaqueFunction(function=launch_safety_bridge_actions)
     ])

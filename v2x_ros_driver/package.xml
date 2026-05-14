@@ -22,6 +22,14 @@
   <depend>std_srvs</depend>
   <depend>visualization_msgs</depend>
   <depend>geometry_msgs</depend>
+  <depend>sensor_msgs</depend>
+  <depend>gps_msgs</depend>
+  <depend>nav_msgs</depend>
+  <depend>tf2_ros</depend>
+  <depend>tf2_geometry_msgs</depend>
+  <depend>vision_msgs</depend>
+  <depend>carma_cooperative_perception_interfaces</depend>
+  <depend>yolo_msgs</depend>
 
   <depend>j2735_v2x_msgs</depend>
   <depend>carma_driver_msgs</depend>

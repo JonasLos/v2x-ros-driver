@@ -104,7 +104,6 @@ install(PROGRAMS
         scripts/v2x_safety_alert_bridge.py
         scripts/dbw_lights_sti_bridge.py
         scripts/v2x_rtor_node.py
-        scripts/v2x_psm_publisher.py
         scripts/v2x_sdsm_publisher.py
         DESTINATION lib/${PROJECT_NAME}
 )

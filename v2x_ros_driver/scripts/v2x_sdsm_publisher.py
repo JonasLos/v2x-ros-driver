@@ -329,7 +329,7 @@ class V2XSdsmPublisher(Node):
         self.create_timer(heartbeat_period, self._on_heartbeat)
 
         self.get_logger().info(
-            f"V2X SDSM Publisher initialized: backend={self.backend_mode} "
+            f"V2X SDSM Publisher initialized: backend=fac_layer "
             f"rate={self.publish_rate_hz}Hz obu={self.obu_host}:{self.obu_port}"
         )
 

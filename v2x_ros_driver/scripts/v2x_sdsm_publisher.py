@@ -23,7 +23,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, Optional, Tuple
-
+import utm
 import rclpy
 from carma_driver_msgs.msg import ByteArray
 from geometry_msgs.msg import PointStamped
@@ -408,9 +408,8 @@ class V2XSdsmPublisher(Node):
                 if pt_fallback is None:
                     continue
                 x_m, y_m, z_m = pt_fallback
-
             # Convert to lat/lon
-            latlon = self._local_xy_to_latlon(x_m, y_m)
+            latlon = utm.to_latlon(x_m, y_m, 14, 'N')
             if latlon is None:
                 continue
 
@@ -570,7 +569,7 @@ class V2XSdsmPublisher(Node):
             pt.point.x, pt.point.y, pt.point.z, self._ego_orientation_xyzw
         )
         ex, ey, ez = self._ego_pose_xyz
-        return ex + rx, ey + ry, ez + rz
+        return ex + ry, ey + rx, ez + rz
 
     @staticmethod
     def _rotate_point_by_quaternion(
@@ -603,20 +602,22 @@ class V2XSdsmPublisher(Node):
             r20 * x + r21 * y + r22 * z,
         )
 
-    def _local_xy_to_latlon(self, x_m: float, y_m: float) -> Optional[Tuple[float, float]]:
-        """Convert local x/y to lat/lon."""
-        if self._gps_lat_lon is None or self._ego_xy is None:
-            return None
-
-        ego_lat, ego_lon = self._gps_lat_lon
-        ego_x, ego_y = self._ego_xy
-        dx = x_m - ego_x
-        dy = y_m - ego_y
-
-        lat = ego_lat + math.degrees(dy / EARTH_RADIUS_M)
-        cos_lat = max(0.05, math.cos(math.radians(ego_lat)))
-        lon = ego_lon + math.degrees(dx / (EARTH_RADIUS_M * cos_lat))
-        return lat, lon
+    def _extract_yaw_from_quaternion(self, quat_xyzw: Tuple[float, float, float, float]) -> float:
+        """Extract yaw (Z-axis rotation) from quaternion."""
+        qx, qy, qz, qw = quat_xyzw
+        # Normalize quaternion
+        norm = math.sqrt(qx * qx + qy * qy + qz * qz + qw * qw)
+        if norm <= 1e-9:
+            return 0.0
+        qx /= norm
+        qy /= norm
+        qz /= norm
+        qw /= norm
+        
+        # Extract yaw from quaternion
+        # yaw = atan2(2*(qw*qz + qx*qy), 1 - 2*(qy^2 + qz^2))
+        yaw = math.atan2(2.0 * (qw * qz + qx * qy), 1.0 - 2.0 * (qy * qy + qz * qz))
+        return yaw
 
     def _extract_label(self, det) -> str:
         for attr in ("label", "class_name", "name", "class_id", "id"):
